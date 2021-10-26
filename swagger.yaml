@@ -1,0 +1,279 @@
+swagger: "2.0"
+info:
+    description: "This is a **sample** Key Management Entity."
+    version: "0.0.1"
+    title: "Key Management Entity"
+    contact:
+        email: "nicolo4.sala@mail.polimi.it"
+host: "localhost:5000" # TODO
+basePath: "/api/v1/keys"
+schemes:
+    - "https"
+    - "http"
+paths:
+    /{slave_SAE_ID}/status:
+        get:
+            summary: "Get status"
+            description: "Returns Status from a KME to the calling SAE. Status contains information on keys available to be requested by a master SAE for a specified slave SAE."
+            operationId: "getStatus"
+            produces:
+                - "application/json"
+            parameters:
+                - name: "slave_SAE_ID"
+                  in: "path"
+                  description: "URL-encoded SAE ID of slave SAE."
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Success."
+                    schema:
+                        $ref: "#/definitions/Status"
+                "400":
+                    description: "Bad request format."
+                    schema:
+                        $ref: "#/definitions/Error"
+                "401":
+                    description: "Unauthorized."
+                "503":
+                    description: "Server-side error."
+                    schema:
+                        $ref: "#/definitions/Error"
+    /{slave_SAE_ID}/enc_keys:
+        get:
+            summary: "Get key"
+            description: "Returns Key container data from the KME to the calling master SAE. Key container data contains one or more keys. The calling master SAE may supply Key request data to specify the requirement on Key container data. The slave SAE specified by the slave_SAE_ID parameter may subsequently request matching keys from a remote KME using key_ID identifiers from the returned Key container."
+            operationId: "getKey"
+            produces:
+                - "application/json"
+            parameters:
+                - name: "slave_SAE_ID"
+                  in: "path"
+                  description: "URL-encoded SAE ID of slave SAE."
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Success."
+                    schema:
+                        $ref: "#/definitions/KeyContainer"
+                "400":
+                    description: "Bad request format."
+                    schema:
+                        $ref: "#/definitions/Error"
+                "401":
+                    description: "Unauthorized."
+                "503":
+                    description: "Server-side error."
+                    schema:
+                        $ref: "#/definitions/Error"
+        post:
+            summary: "Post key"
+            description: "Returns Key container data from the KME to the calling master SAE. Key container data contains one or more keys. The calling master SAE may supply Key request data to specify the requirement on Key container data. The slave SAE specified by the slave_SAE_ID parameter may subsequently request matching keys from a remote KME using key_ID identifiers from the returned Key container."
+            operationId: "postKey"
+            consumes:
+                - "application/json"
+            produces:
+                - "application/json"
+            parameters:
+                - name: "slave_SAE_ID"
+                  in: "path"
+                  description: "URL-encoded SAE ID of slave SAE."
+                  required: true
+                  type: "string"
+                - name: "Key request"
+                  in: "body"
+                  required: true
+                  schema:
+                      $ref: "#/definitions/KeyRequest"
+            responses:
+                "200":
+                    description: "Success."
+                    schema:
+                        $ref: "#/definitions/KeyContainer"
+                "400":
+                    description: "Bad request format."
+                    schema:
+                        $ref: "#/definitions/Error"
+                "401":
+                    description: "Unauthorized."
+                "503":
+                    description: "Server-side error."
+                    schema:
+                        $ref: "#/definitions/Error"
+    /{master_SAE_ID}/dec_keys:
+        get:
+            summary: "Get key with key IDs"
+            description: "Returns Key container from the KME to the calling slave SAE. Key container contains keys matching those previously delivered to a remote master SAE based on the Key IDs supplied from the remote master SAE in response to its call to Get key. The KME shall reject the request with a 401 HTTP status code if the SAE ID of the requestor was not an SAE ID supplied to the 'Get key' method each time it was called resulting in the return of any of the Key IDs being requested."
+            operationId: "getKeyWithKeyIDs"
+            produces:
+                - "application/json"
+            parameters:
+                - name: "master_SAE_ID"
+                  in: "path"
+                  description: "URL-encoded SAE ID of master SAE."
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Success."
+                    schema:
+                        $ref: "#/definitions/KeyContainer"
+                "400":
+                    description: "Bad request format."
+                    schema:
+                        $ref: "#/definitions/Error"
+                "401":
+                    description: "Unauthorized."
+                "503":
+                    description: "Server-side error."
+                    schema:
+                        $ref: "#/definitions/Error"
+        post:
+            summary: "Post key with key IDs"
+            description: "Returns Key container from the KME to the calling slave SAE. Key container contains keys matching those previously delivered to a remote master SAE based on the Key IDs supplied from the remote master SAE in response to its call to Get key. The KME shall reject the request with a 401 HTTP status code if the SAE ID of the requestor was not an SAE ID supplied to the 'Get key' method each time it was called resulting in the return of any of the Key IDs being requested."
+            operationId: "postKeyWithKeyIDs"
+            consumes:
+                - "application/json"
+            produces:
+                - "application/json"
+            parameters:
+                - name: "master_SAE_ID"
+                  in: "path"
+                  description: "URL-encoded SAE ID of master SAE."
+                  required: true
+                  type: "string"
+                - name: "Key request"
+                  in: "body"
+                  required: true
+                  schema:
+                      $ref: "#/definitions/KeyIDs"
+            responses:
+                "200":
+                    description: "Success."
+                    schema:
+                        $ref: "#/definitions/KeyContainer"
+                "400":
+                    description: "Bad request format."
+                    schema:
+                        $ref: "#/definitions/Error"
+                "401":
+                    description: "Unauthorized."
+                "503":
+                    description: "Server-side error."
+                    schema:
+                        $ref: "#/definitions/Error"
+definitions:
+    Status:
+        type: "object"
+        required:
+            [
+                "source_KME_ID",
+                "target_KME_ID",
+                "master_SAE_ID",
+                "slave_SAE_ID",
+                "key_size",
+                "stored_key_count",
+                "max_key_count",
+                "max_key_per_request",
+                "max_key_size",
+                "min_key_size",
+                "max_SAE_ID_count",
+            ]
+        properties:
+            source_KME_ID:
+                description: "KME ID of the KME"
+                type: "string"
+            target_KME_ID:
+                description: "KME ID of the target KME"
+                type: "string"
+            master_SAE_ID:
+                description: "SAE ID of the calling master SAE"
+                type: "string"
+            slave_SAE_ID:
+                description: "SAE ID of the specified slave SAE"
+                type: "string"
+            key_size:
+                description: "Default size of key the KME can deliver to the SAE (in bit)"
+                type: "integer"
+            stored_key_count:
+                description: "Number of stored keys KME can deliver to the SAE"
+                type: "integer"
+            max_key_count:
+                description: "Maximum number of stored_key_count"
+                type: "integer"
+            max_key_per_request:
+                description: "Maximum number of keys per request"
+                type: "integer"
+            max_key_size:
+                description: "Maximum size of key the KME can deliver to the SAE (in bit)"
+                type: "integer"
+            min_key_size:
+                description: "Minimum size of key the KME can deliver to the SAE (in bit)"
+                type: "integer"
+            max_SAE_ID_count:
+                description: "Maximum number of additional_slave_SAE_IDs the KME allows. '0' when the KME does not support key multicast"
+                type: "integer"
+            status_extension:
+                description: "(Option) for future use"
+                type: "object"
+        example:
+            source_KME_ID: "AAAABBBBCCCCDDDD"
+            target_KME_ID: "EEEEFFFFGGGGHHHH"
+            master_SAE_ID: "IIIIJJJJKKKKLLLL"
+            slave_SAE_ID: "MMMMNNNNOOOOPPPP"
+            key_size: "352"
+            stored_key_count: "25000"
+            max_key_count: "100000"
+            max_key_per_request: "128"
+            max_key_size: "1024"
+            min_key_size: "64"
+            max_SAE_ID_count: "0"
+    KeyRequest:
+        type: "object"
+        # TODO
+    KeyIDs:
+        type: "object"
+        # TODO
+    KeyContainer:
+        type: "object"
+        required: ["keys"]
+        properties:
+            keys:
+                type: "array"
+                items:
+                    $ref: "#/definitions/Key"
+            key_container_extension:
+                description: "(Option) for future use"
+                type: "object"
+    Key:
+        type: "object"
+        required: ["key_ID", "key"]
+        properties:
+            key_ID:
+                description: "ID of the key"
+                type: "string"
+                format: "uuid"
+                example: "550e8400-e29b-41d4-a716-446655440000"
+            key_ID_extension:
+                description: "(Option) for future use"
+                type: "object"
+            key:
+                description: "Key data"
+                type: "string"
+                format: "byte" # base64 encoding
+            key_extension:
+                description: "(Option) for future use"
+                type: "object"
+    Error:
+        type: "object"
+        required: ["message"]
+        properties:
+            message:
+                description: "Error message"
+                type: "string"
+            details:
+                description: "(Option) Array to supply additional detailed error information specified as name/value pairs. Values may be of any type, including objects."
+                type: array
+                items:
+                    type: "object"
