@@ -52,6 +52,17 @@ paths:
                   description: "URL-encoded SAE ID of slave SAE."
                   required: true
                   type: "string"
+                ### Where "number" and/or "size" are the only items in the Key request data format, the SAE may submit the request using the GET access method by specifying "number" and/or "size" as request URI parameters as string data. ###
+                - name: "number"
+                  in: "query"
+                  description: "Number of keys requested, default value is 1"
+                  required: false
+                  type: "integer"
+                - name: "size"
+                  in: "query"
+                  description: "Size of each key in bits, default value is defined as key_size in Status data format"
+                  required: false
+                  type: "integer"
             responses:
                 "200":
                     description: "Success."
@@ -114,6 +125,13 @@ paths:
                   description: "URL-encoded SAE ID of master SAE."
                   required: true
                   type: "string"
+                ### In the case where a single key ID is specified and no extension is specified, SAE may make the request using a GET access method with no body message. ###
+                - name: "key_ID"
+                  in: "query"
+                  required: true
+                  description: "single key ID"
+                  type: "string"
+                  format: "uuid"
             responses:
                 "200":
                     description: "Success."
@@ -222,19 +240,61 @@ definitions:
             target_KME_ID: "EEEEFFFFGGGGHHHH"
             master_SAE_ID: "IIIIJJJJKKKKLLLL"
             slave_SAE_ID: "MMMMNNNNOOOOPPPP"
-            key_size: "352"
-            stored_key_count: "25000"
-            max_key_count: "100000"
-            max_key_per_request: "128"
-            max_key_size: "1024"
-            min_key_size: "64"
-            max_SAE_ID_count: "0"
+            key_size: 352
+            stored_key_count: 25000
+            max_key_count: 100000
+            max_key_per_request: 128
+            max_key_size: 1024
+            min_key_size: 64
+            max_SAE_ID_count: 0
     KeyRequest:
         type: "object"
-        # TODO
+        properties:
+            number:
+                description: "(Option) number of keys requested, default value is 1"
+                default: 1
+                type: "integer"
+            size:
+                description: "(Option) Size of each key in bits, default value is defined as key_size in Status data format"
+                default:
+                    $ref: "#/definitions/Status/properties/key_size"
+                type: "integer"
+            additional_slave_SAE_IDs:
+                description: "(Option) Array of IDs of slave SAEs. It is used for specifying two or more slave SAEs to share identical keys. The maximum number of IDs is defined as max_SAE_ID_count in Status data format."
+                type: "array"
+                items:
+                    type: "string"
+            extension_mandatory:
+                description: "(Option) Array of extension parameters specified as name/value pairs that KME shall handle or return an error. Parameter values may be of any type, including objects."
+                type: "array"
+                items:
+                    type: "object"
+            extension_optional:
+                description: "(Option) Array of extension parameters specified as name/value pairs that KME may ignore. Parameter values may be of any type, including objects."
+                type: "array"
+                items:
+                    type: "object"
     KeyIDs:
         type: "object"
-        # TODO
+        properties:
+            key_IDs:
+                description: "Array of key IDs"
+                type: "array"
+                items:
+                    type: "object"
+                    required:
+                        - "key_ID"
+                    properties:
+                        key_ID:
+                            description: "ID of the key in UUID format"
+                            type: "string"
+                            format: "uuid"
+                        key_ID_extension:
+                            description: "(Option) for future use"
+                            type: "object"
+            key_IDs_extension:
+                description: "(Option) for future use"
+                type: "object"
     KeyContainer:
         type: "object"
         required: ["keys"]
