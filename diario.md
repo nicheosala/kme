@@ -9,7 +9,7 @@ Penso che connexion sia in grado di gestire autonomamente:
 ## Domande
 
 ## TODO
-- uniformare gli errori restituiti dal server: fai in modo che COnnexion restituisca errori di tipo server.model.Error invece di connexion.problem
+- **DONE** uniformare gli errori restituiti dal server: fai in modo che Connexion restituisca errori di tipo server.model.Error invece di connexion.problem https://stackoverflow.com/questions/55053657/how-to-change-error-format-of-all-errors-using-connexion-tornado
 - fai in modo che Status rispetti gli standard delle API, quando restituito
 - scrivere i casi di test per le API
 - si può fare in modo che il server, una volta avviato, indichi il giusto link all'URL di base?
