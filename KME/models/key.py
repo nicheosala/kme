@@ -5,8 +5,8 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from server.models.base_model_ import Model
-from server import util
+from KME.models.base_model_ import Model
+from KME import util
 
 
 class Key(Model):
@@ -15,7 +15,7 @@ class Key(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, key_id: str = None, key_id_extension: object = None, key: bytearray = None,
+    def __init__(self, key_id: str = None, key_id_extension: object = None, key: str = None,
                  key_extension: object = None):  # noqa: E501
         """Key - a model defined in Swagger
 
@@ -24,14 +24,14 @@ class Key(Model):
         :param key_id_extension: The key_id_extension of this Key.  # noqa: E501
         :type key_id_extension: object
         :param key: The key of this Key.  # noqa: E501
-        :type key: bytearray
+        :type key: str
         :param key_extension: The key_extension of this Key.  # noqa: E501
         :type key_extension: object
         """
         self.swagger_types = {
             'key_id': str,
             'key_id_extension': object,
-            'key': bytearray,
+            'key': str,
             'key_extension': object
         }
 
@@ -106,24 +106,24 @@ class Key(Model):
         self._key_id_extension = key_id_extension
 
     @property
-    def key(self) -> bytearray:
+    def key(self) -> str:
         """Gets the key of this Key.
 
         Key data  # noqa: E501
 
         :return: The key of this Key.
-        :rtype: bytearray
+        :rtype: str
         """
         return self._key
 
     @key.setter
-    def key(self, key: bytearray):
+    def key(self, key: str):
         """Sets the key of this Key.
 
         Key data  # noqa: E501
 
         :param key: The key of this Key.
-        :type key: bytearray
+        :type key: str
         """
         if key is None:
             raise ValueError("Invalid value for `key`, must not be `None`")  # noqa: E501

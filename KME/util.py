@@ -2,7 +2,7 @@ import datetime
 
 import six
 
-from server import type_util
+from KME import type_util
 
 
 def _deserialize(data, klass):
@@ -104,12 +104,13 @@ def deserialize_model(data, klass):
     if not instance.swagger_types:
         return data
 
-    for attr, attr_type in six.iteritems(instance.swagger_types):
-        if data is not None \
-                and instance.attribute_map[attr] in data \
-                and isinstance(data, (list, dict)):
-            value = data[instance.attribute_map[attr]]
-            setattr(instance, attr, _deserialize(value, attr_type))
+    if data is not None and isinstance(data, (list, dict)):
+        for attr, attr_type in six.iteritems(instance.swagger_types):
+            if instance.attribute_map[attr] in data:
+                value = data[instance.attribute_map[attr]]
+                setattr(instance, attr, _deserialize(value, attr_type))
+            else:
+                setattr(instance, attr, None)
 
     return instance
 

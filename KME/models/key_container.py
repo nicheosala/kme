@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from server.models.base_model_ import Model
-from server.models.key import Key  # noqa: F401,E501
-from server import util
+from KME.models.base_model_ import Model
+from KME.models.key import Key  # noqa: F401,E501
+from KME import util
 
 
 class KeyContainer(Model):
