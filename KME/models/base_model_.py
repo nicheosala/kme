@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pprint import pformat
-from typing import TypeVar, Type
+from typing import TypeVar
 
 from jsons import load, dump
 
@@ -10,7 +10,7 @@ T = TypeVar('T')
 @dataclass(frozen=True)
 class Model(object):
     @classmethod
-    def from_dict(cls: Type[T], dikt) -> T:
+    def from_dict(cls: T, dikt) -> T:
         return load(dikt, cls)
 
     def to_dict(self) -> object:

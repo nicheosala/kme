@@ -4,12 +4,12 @@ from uuid import uuid4 as get_id
 
 from connexion import request
 
-from KME.models.error import Error
-from KME.models.key import Key
-from KME.models.key_container import KeyContainer
-from KME.models.key_i_ds import KeyIDs
-from KME.models.key_request import KeyRequest
-from KME.models.status import Status
+from ..models.error import Error
+from ..models.key import Key
+from ..models.key_container import KeyContainer
+from ..models.key_i_ds import KeyIDs
+from ..models.key_request import KeyRequest
+from ..models.status import Status
 
 DEFAULT_NUMBER: Final[int] = 1
 
@@ -42,7 +42,7 @@ key_size: Final[int] = 64  # TODO
 kme_id: Final[str] = id_gen()
 
 
-def get_key(slave_sae_id: str, number: int = DEFAULT_NUMBER, size: int = None) -> KeyContainer:
+def get_key(slave_sae_id: str, number: int = DEFAULT_NUMBER, size: int | None = None) -> KeyContainer:
     """Get key
 
     Returns Key container data from the KME to the calling master SAE. Key container data contains one or more keys.
