@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -12,7 +11,7 @@ class EmptyValueError(Exception):
 @dataclass(frozen=True)
 class Error:
     message: str
-    details: Optional[list[object]] = None
+    details: list[object] | None = None
 
     def __post_init__(self) -> None:
         if self.message is None:

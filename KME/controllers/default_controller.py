@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
-import connexion
+from connexion import request
 
-from KME.models import Error
+from KME.models.error import Error
 from KME.models.key import Key
 from KME.models.key_container import KeyContainer
 from KME.models.key_i_ds import KeyIDs
@@ -127,8 +125,8 @@ def post_key(body, slave_sae_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    if connexion.request.is_json:
-        body = KeyRequest.from_dict(connexion.request.get_json())
+    if request.is_json:
+        body = KeyRequest.from_dict(request.get_json())
 
     # TODO handle body specified parameters
 
@@ -151,8 +149,8 @@ def post_key_with_key_i_ds(body, master_sae_id):
 
     :rtype: KeyContainer
     """
-    if connexion.request.is_json:
-        body = KeyIDs.from_dict(connexion.request.get_json())
+    if request.is_json:
+        body = KeyIDs.from_dict(request.get_json())
 
     try:
         return KeyContainer([get(k.key_ID) for k in body.key_IDs]), 200
