@@ -8,10 +8,10 @@ import connexion
 
 from KME.models import Error
 from KME.models.key import Key
-from KME.models.key_container import KeyContainer  # noqa: E501
-from KME.models.key_i_ds import KeyIDs  # noqa: E501
-from KME.models.key_request import KeyRequest  # noqa: E501
-from KME.models.status import Status  # noqa: E501
+from KME.models.key_container import KeyContainer
+from KME.models.key_i_ds import KeyIDs
+from KME.models.key_request import KeyRequest
+from KME.models.status import Status
 
 DEFAULT_NUMBER: Final[int] = 1
 
@@ -97,19 +97,19 @@ def get_status(slave_sae_id: str) -> Status:
 
     :rtype: Status
     """
-    # TODO Why doesn't it throw an error when required fields are None?
-    return Status(source_kme_id=kme_id,
-                  target_kme_id=None,  # TODO
-                  master_sae_id=None,  # TODO
-                  slave_sae_id=url_decode(slave_sae_id),
-                  key_size=key_size,
-                  stored_key_count=None,  # TODO
-                  max_key_count=None,  # TODO
-                  max_key_per_request=None,  # TODO
-                  max_key_size=None,  # TODO
-                  min_key_size=None,  # TODO
-                  max_sae_id_count=None  # TODO
-                  )
+    return Status(
+        source_KME_ID=kme_id,
+        target_KME_ID="TODO",
+        master_SAE_ID="TODO",
+        slave_SAE_ID=url_decode(slave_sae_id),
+        key_size=key_size,
+        stored_key_count=-1,
+        max_key_count=-1,
+        max_key_per_request=-1,
+        max_key_size=-1,
+        min_key_size=-1,
+        max_SAE_ID_count=-1
+    )
 
 
 def post_key(body, slave_sae_id) -> KeyContainer:
@@ -155,6 +155,6 @@ def post_key_with_key_i_ds(body, master_sae_id):
         body = KeyIDs.from_dict(connexion.request.get_json())
 
     try:
-        return KeyContainer([get(k.key_id) for k in body.key_i_ds]), 200
+        return KeyContainer([get(k.key_ID) for k in body.key_IDs]), 200
     except KeyNotFoundError:
         return Error("One or more keys specified are not found on KME"), 400
