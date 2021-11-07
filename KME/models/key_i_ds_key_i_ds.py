@@ -18,19 +18,19 @@ class KeyIDsKeyIDs(Model):
     def __init__(self, key_id: str = None, key_id_extension: object = None):  # noqa: E501
         """KeyIDsKeyIDs - a model defined in Swagger
 
-        :param key_id: The key_id of this KeyIDsKeyIDs.  # noqa: E501
+        :param key_id: The key_ID of this KeyIDsKeyIDs.  # noqa: E501
         :type key_id: str
-        :param key_id_extension: The key_id_extension of this KeyIDsKeyIDs.  # noqa: E501
+        :param key_id_extension: The key_ID_extension of this KeyIDsKeyIDs.  # noqa: E501
         :type key_id_extension: object
         """
         self.swagger_types = {
-            'key_id': str,
-            'key_id_extension': object
+            'key_ID': str,
+            'key_ID_extension': object
         }
 
         self.attribute_map = {
-            'key_id': 'key_ID',
-            'key_id_extension': 'key_ID_extension'
+            'key_ID': 'key_ID',
+            'key_ID_extension': 'key_ID_extension'
         }
         self._key_id = key_id
         self._key_id_extension = key_id_extension
@@ -48,47 +48,47 @@ class KeyIDsKeyIDs(Model):
 
     @property
     def key_id(self) -> str:
-        """Gets the key_id of this KeyIDsKeyIDs.
+        """Gets the key_ID of this KeyIDsKeyIDs.
 
         ID of the key in UUID format  # noqa: E501
 
-        :return: The key_id of this KeyIDsKeyIDs.
+        :return: The key_ID of this KeyIDsKeyIDs.
         :rtype: str
         """
         return self._key_id
 
     @key_id.setter
     def key_id(self, key_id: str):
-        """Sets the key_id of this KeyIDsKeyIDs.
+        """Sets the key_ID of this KeyIDsKeyIDs.
 
         ID of the key in UUID format  # noqa: E501
 
-        :param key_id: The key_id of this KeyIDsKeyIDs.
+        :param key_id: The key_ID of this KeyIDsKeyIDs.
         :type key_id: str
         """
         if key_id is None:
-            raise ValueError("Invalid value for `key_id`, must not be `None`")  # noqa: E501
+            raise ValueError("Invalid value for `key_ID`, must not be `None`")  # noqa: E501
 
         self._key_id = key_id
 
     @property
     def key_id_extension(self) -> object:
-        """Gets the key_id_extension of this KeyIDsKeyIDs.
+        """Gets the key_ID_extension of this KeyIDsKeyIDs.
 
         (Option) for future use  # noqa: E501
 
-        :return: The key_id_extension of this KeyIDsKeyIDs.
+        :return: The key_ID_extension of this KeyIDsKeyIDs.
         :rtype: object
         """
         return self._key_id_extension
 
     @key_id_extension.setter
     def key_id_extension(self, key_id_extension: object):
-        """Sets the key_id_extension of this KeyIDsKeyIDs.
+        """Sets the key_ID_extension of this KeyIDsKeyIDs.
 
         (Option) for future use  # noqa: E501
 
-        :param key_id_extension: The key_id_extension of this KeyIDsKeyIDs.
+        :param key_id_extension: The key_ID_extension of this KeyIDsKeyIDs.
         :type key_id_extension: object
         """
 

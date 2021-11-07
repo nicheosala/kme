@@ -23,7 +23,7 @@ def id_gen() -> str:
 def gen(size: int) -> Key:
     # TODO This in an example key!
     return Key(
-        key_id="3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        key_ID="3fa85f64-5717-4562-b3fc-2c963f66afa6",
         key="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
     )
 
@@ -31,7 +31,7 @@ def gen(size: int) -> Key:
 def get(key_id: str) -> Key:
     # TODO This in an example key!
     return Key(
-        key_id="3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        key_ID="3fa85f64-5717-4562-b3fc-2c963f66afa6",
         key="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
     )
 
