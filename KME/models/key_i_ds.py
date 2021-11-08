@@ -7,6 +7,7 @@ from .key_i_ds_key_i_ds import KeyIDsKeyIDs
 
 @dataclass(frozen=True, slots=True)
 class KeyIDs(Model):
+    """Key IDs data format is used for a request data model of API "Get key with key IDs" method."""
     key_IDs: list[KeyIDsKeyIDs]
     key_IDs_extension: object | None = None
 

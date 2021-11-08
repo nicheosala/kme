@@ -6,6 +6,7 @@ from .error import EmptyValueError
 
 @dataclass(frozen=True, slots=True)
 class Key(Model):
+    """Random digital data with an associated universally unique ID."""
     key_ID: str
     key: str
     key_ID_extension: object | None = None

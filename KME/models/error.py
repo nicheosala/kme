@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, slots=True)
 class EmptyValueError(Exception):
+    """Error thrown when attempting to set to None a value that cannot be null."""
 
     def __str__(self) -> str:
         return f"Non nullable field set to `None`"
@@ -10,6 +11,7 @@ class EmptyValueError(Exception):
 
 @dataclass(frozen=True, slots=True)
 class Error:
+    """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
     details: list[object] | None = None
 

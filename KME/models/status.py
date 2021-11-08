@@ -6,6 +6,7 @@ from .error import EmptyValueError
 
 @dataclass(frozen=True, slots=True)
 class Status(Model):
+    """Status contains information on keys available to be requested by a master SAE for a specified slave SAE."""
     source_KME_ID: str
     target_KME_ID: str
     master_SAE_ID: str
