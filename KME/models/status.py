@@ -4,7 +4,7 @@ from .base_model_ import Model
 from .error import EmptyValueError
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Status(Model):
     source_KME_ID: str
     target_KME_ID: str

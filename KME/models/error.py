@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EmptyValueError(Exception):
 
     def __str__(self) -> str:
         return f"Non nullable field set to `None`"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Error:
     message: str
     details: list[object] | None = None

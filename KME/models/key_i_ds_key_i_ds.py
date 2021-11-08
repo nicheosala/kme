@@ -4,7 +4,7 @@ from .base_model_ import Model
 from .error import EmptyValueError
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class KeyIDsKeyIDs(Model):
     key_ID: str
     key_ID_extension: object | None = None

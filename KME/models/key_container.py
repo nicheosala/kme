@@ -5,7 +5,7 @@ from .error import EmptyValueError
 from .key import Key
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class KeyContainer(Model):
     keys: list[Key]
     key_container_extension: object | None = None

@@ -13,7 +13,7 @@ def main():
     app = App(__name__, specification_dir='../api/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api(
-        specification='swagger.yaml',
+        specification='openapi.yaml',
         arguments={'title': 'Key Management Entity'},
         pythonic_params=True,
         strict_validation=True,

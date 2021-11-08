@@ -7,7 +7,7 @@ from jsons import load, dump
 T = TypeVar('T')
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Model(object):
     @classmethod
     def from_dict(cls: T, dikt) -> T:

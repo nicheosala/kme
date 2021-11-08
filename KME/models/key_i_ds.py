@@ -5,7 +5,7 @@ from .error import EmptyValueError
 from .key_i_ds_key_i_ds import KeyIDsKeyIDs
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class KeyIDs(Model):
     key_IDs: list[KeyIDsKeyIDs]
     key_IDs_extension: object | None = None

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from .base_model_ import Model
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class KeyRequest(Model):
     number: int | None = 1
     size: int | None = 1  # TODO "default value is defined as key_size in Status data format"
