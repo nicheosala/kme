@@ -2,8 +2,6 @@ from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
-from connexion import request
-
 from ..models.error import Error
 from ..models.key import Key
 from ..models.key_container import KeyContainer
@@ -125,12 +123,11 @@ def post_key(body, slave_sae_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    if request.is_json:
-        body = KeyRequest.from_dict(request.get_json())
+    key_request: Final[KeyRequest] = KeyRequest.from_dict(body)
 
     # TODO handle body specified parameters
 
-    return get_key(slave_sae_id, body.number or DEFAULT_NUMBER, body.size or key_size)
+    return get_key(slave_sae_id, key_request.number or DEFAULT_NUMBER, key_request.size or key_size)
 
 
 def post_key_with_key_i_ds(body, master_sae_id):
@@ -149,10 +146,9 @@ def post_key_with_key_i_ds(body, master_sae_id):
 
     :rtype: KeyContainer
     """
-    if request.is_json:
-        body = KeyIDs.from_dict(request.get_json())
+    key_ids: Final[KeyIDs] = KeyIDs.from_dict(body)
 
     try:
-        return KeyContainer([get(k.key_ID) for k in body.key_IDs]), 200
+        return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs]), 200
     except KeyNotFoundError:
         return Error("One or more keys specified are not found on KME"), 400
