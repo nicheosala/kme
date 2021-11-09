@@ -1,10 +1,9 @@
-from connexion.apps.flask_app import FlaskJSONEncoder
+from json import JSONEncoder
 
 from .models.base_model_ import Model
 
 
-class JSONEncoder(FlaskJSONEncoder):
-    def default(self, o):
-        if isinstance(o, Model):
-            return o.to_dict()
-        return FlaskJSONEncoder.default(self, o)
+class CustomEncoder(JSONEncoder):
+
+    def default(self, o: object) -> object:
+        return o.to_dict() if isinstance(o, Model) else JSONEncoder.default(self, o)
