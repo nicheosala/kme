@@ -227,6 +227,7 @@ components:
         - stored_key_count
         - target_KME_ID
       type: object
+      additionalProperties: false
       properties:
         source_KME_ID:
           type: string
@@ -284,6 +285,7 @@ components:
       description:
         Key request data format is used for a request data model of API "Get key" method.
       type: object
+      additionalProperties: false
       properties:
         number:
           type: integer
@@ -326,6 +328,7 @@ components:
       type: object
       required:
         - key_IDs
+      additionalProperties: false
       properties:
         key_IDs:
           type: array
@@ -343,6 +346,7 @@ components:
       required:
         - keys
       type: object
+      additionalProperties: false
       properties:
         keys:
           type: array
@@ -358,6 +362,7 @@ components:
         - key
         - key_ID
       type: object
+      additionalProperties: false
       properties:
         key_ID:
           $ref: "#/components/schemas/KeyID"
@@ -387,6 +392,7 @@ components:
       required:
         - message
       type: object
+      additionalProperties: false
       properties:
         message:
           type: string
@@ -404,6 +410,7 @@ components:
       required:
         - key_ID
       type: object
+      additionalProperties: false
       properties:
         key_ID:
           $ref: "#/components/schemas/KeyID"
