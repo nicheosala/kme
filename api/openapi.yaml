@@ -30,23 +30,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
         "400":
-          description: Bad request format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/Unauthorized"
         "503":
-          description: Server-side error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: KME.controllers.default_controller
   /{slave_SAE_ID}/enc_keys:
     get:
@@ -92,23 +80,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
         "400":
-          description: Bad request format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/Unauthorized"
         "503":
-          description: Server-side error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: KME.controllers.default_controller
     post:
       summary: Post key
@@ -142,23 +118,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
         "400":
-          description: Bad request format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/Unauthorized"
         "503":
-          description: Server-side error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
       x-openapi-router-controller: KME.controllers.default_controller
   /{master_SAE_ID}/dec_keys:
@@ -198,23 +162,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
         "400":
-          description: Bad request format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/Unauthorized"
         "503":
-          description: Server-side error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: KME.controllers.default_controller
     post:
       summary: Post key with key IDs
@@ -250,23 +202,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
         "400":
-          description: Bad request format
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/BadRequest"
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/Unauthorized"
         "503":
-          description: Server-side error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
       x-openapi-router-controller: KME.controllers.default_controller
 components:
@@ -451,6 +391,7 @@ components:
         message:
           type: string
           description: Error message
+          example: Error encountered
         details:
           type: array
           description:
