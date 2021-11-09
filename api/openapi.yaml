@@ -323,6 +323,12 @@ components:
           items:
             type: object
             properties: { }
+      example:
+        number: 1
+        size: 4096
+        additional_slave_SAE_IDs:
+          - ABCDEFG
+          - HIJKLMN
     KeyIDs:
       description: Key IDs data format is used for a request data model of API "Get key with key IDs" method.
       type: object
@@ -339,6 +345,12 @@ components:
           type: object
           properties: { }
           description: (Option) for future use
+      example:
+        key_IDs:
+          - key_ID: bc490419-7d60-487f-adc1-4ddcc177c139
+          - key_ID: 0a782fb5-3434-48fe-aa4d-14f41d46cf92
+          - key_ID: 64a7e9a2-269c-4b2c-832c-5351f3ac5adb
+          - key_ID: 550e8400-e29b-41d4-a716-446655440000
     KeyContainer:
       description:
         Key container data format is used for a response data model of API "Get key" method and
@@ -356,6 +368,16 @@ components:
           type: object
           properties: { }
           description: (Option) for future use
+      example:
+        keys:
+          - key: wHHVxRwDJs3/bXd38GHP3oe4svTuRpZS0yCC7x4Ly+s=
+            key_ID: bc490419-7d60-487f-adc1-4ddcc177c139
+          - key: OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA=
+            key_ID: 0a782fb5-3434-48fe-aa4d-14f41d46cf92
+          - key: 479G1Osfljpmfa5vn24tdzE5zqv5CafkGxYrLCk8384=
+            key_ID: 64a7e9a2-269c-4b2c-832c-5351f3ac5adb
+          - key: csEMV9KkmjgOPF90uc54+hykhg6iI5GTPHlP9PjgLVU=
+            key_ID: 550e8400-e29b-41d4-a716-446655440000
     Key:
       description: Random digital data with an associated universally unique ID.
       required:
@@ -380,6 +402,9 @@ components:
           type: object
           properties: { }
           description: (Option) for future use
+      example:
+        key: OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA=
+        key_ID: 550e8400-e29b-41d4-a716-446655440000
     KeyID:
       type: string
       description: ID of a key
@@ -397,7 +422,6 @@ components:
         message:
           type: string
           description: Error message
-          example: Error encountered
         details:
           type: array
           description:
@@ -406,6 +430,8 @@ components:
           items:
             type: object
             properties: { }
+      example:
+        message: Error encountered
     KeyIDs_key_IDs:
       required:
         - key_ID
@@ -418,6 +444,8 @@ components:
           type: object
           properties: { }
           description: (Option) for future use
+      example:
+        key_ID: 550e8400-e29b-41d4-a716-446655440000
   responses:
     BadRequest:
       description: Bad request format
