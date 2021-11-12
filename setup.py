@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='kme',
     version='1.0.0',
-    packages=['KME', 'KME.models', 'KME.controllers'],
+    packages=find_packages(),
     url='',
     license='',
     author='Nicolò Sala',
@@ -15,9 +15,8 @@ setup(
         "jsons~=1.6.0",
         "setuptools~=58.5.3"
     ],
-    tests_require=[],  # TODO
     entry_points={
         'console_scripts': ['qkd=KME.__main__:main']
     },
-    package_data={'': ['../api/openapi.yaml']}
+    package_data={'': ['api/openapi.yaml']}
 )
