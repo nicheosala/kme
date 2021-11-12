@@ -10,7 +10,7 @@ T = TypeVar('T')
 @dataclass(frozen=True, slots=True)
 class Model(object):
     @classmethod
-    def from_dict(cls: Type[T], dikt) -> T:
+    def from_dict(cls: Type[T], dikt: object) -> T:
         return load(dikt, cls)
 
     def to_dict(self) -> object:
