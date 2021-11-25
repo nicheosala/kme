@@ -16,7 +16,7 @@ setup(
         "setuptools~=58.5.3"
     ],
     entry_points={
-        'console_scripts': ['qkd=KME.__main__:main']
+        'console_scripts': ['qkd=kme.__main__:main']
     },
     package_data={'': ['api/openapi.yaml']}
 )

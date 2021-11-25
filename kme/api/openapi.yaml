@@ -11,7 +11,7 @@ paths:
   /{slave_SAE_ID}/status:
     get:
       summary: Get status
-      description: Returns Status from a KME to the calling SAE.
+      description: Returns Status from a kme to the calling SAE.
       operationId: get_status
       parameters:
         - name: slave_SAE_ID
@@ -35,15 +35,15 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "503":
           $ref: "#/components/responses/ServerSideError"
-      x-openapi-router-controller: KME.controllers.default_controller
+      x-openapi-router-controller: kme.controllers.default_controller
   /{slave_SAE_ID}/enc_keys:
     get:
       summary: Get key
       description:
-        Returns Key container data from the KME to the calling master SAE. The calling master SAE may supply
+        Returns Key container data from the kme to the calling master SAE. The calling master SAE may supply
         Key request data to specify the requirement on Key container data. The slave
         SAE specified by the slave_SAE_ID parameter may subsequently request matching
-        keys from a remote KME using key_ID identifiers from the returned Key container.
+        keys from a remote kme using key_ID identifiers from the returned Key container.
       operationId: get_key
       parameters:
         - name: slave_SAE_ID
@@ -85,15 +85,15 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "503":
           $ref: "#/components/responses/ServerSideError"
-      x-openapi-router-controller: KME.controllers.default_controller
+      x-openapi-router-controller: kme.controllers.default_controller
     post:
       summary: Post key
       description:
-        Returns Key container data from the KME to the calling master SAE.
+        Returns Key container data from the kme to the calling master SAE.
         Key container data contains one or more keys. The calling master SAE may supply
         Key request data to specify the requirement on Key container data. The slave
         SAE specified by the slave_SAE_ID parameter may subsequently request matching
-        keys from a remote KME using key_ID identifiers from the returned Key container.
+        keys from a remote kme using key_ID identifiers from the returned Key container.
       operationId: post_key
       parameters:
         - name: slave_SAE_ID
@@ -124,15 +124,15 @@ paths:
         "503":
           $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
-      x-openapi-router-controller: KME.controllers.default_controller
+      x-openapi-router-controller: kme.controllers.default_controller
   /{master_SAE_ID}/dec_keys:
     get:
       summary: Get key with key IDs
       description:
-        Returns Key container from the KME to the calling slave SAE. Key
+        Returns Key container from the kme to the calling slave SAE. Key
         container contains keys matching those previously delivered to a remote master
         SAE based on the Key IDs supplied from the remote master SAE in response to
-        its call to Get key. The KME shall reject the request with a 401 HTTP status
+        its call to Get key. The kme shall reject the request with a 401 HTTP status
         code if the SAE ID of the requester was not an SAE ID supplied to the 'Get
         key' method each time it was called resulting in the return of any of the
         Key IDs being requested.
@@ -167,14 +167,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "503":
           $ref: "#/components/responses/ServerSideError"
-      x-openapi-router-controller: KME.controllers.default_controller
+      x-openapi-router-controller: kme.controllers.default_controller
     post:
       summary: Post key with key IDs
       description:
-        Returns Key container from the KME to the calling slave SAE. Key
+        Returns Key container from the kme to the calling slave SAE. Key
         container contains keys matching those previously delivered to a remote master
         SAE based on the Key IDs supplied from the remote master SAE in response to
-        its call to Get key. The KME shall reject the request with a 401 HTTP status
+        its call to Get key. The kme shall reject the request with a 401 HTTP status
         code if the SAE ID of the requester was not an SAE ID supplied to the 'Get
         key' method each time it was called resulting in the return of any of the
         Key IDs being requested.
@@ -208,7 +208,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
-      x-openapi-router-controller: KME.controllers.default_controller
+      x-openapi-router-controller: kme.controllers.default_controller
 components:
   schemas:
     Status:
@@ -231,10 +231,10 @@ components:
       properties:
         source_KME_ID:
           type: string
-          description: KME ID of the KME
+          description: kme ID of the kme
         target_KME_ID:
           type: string
-          description: KME ID of the target KME
+          description: kme ID of the target kme
         master_SAE_ID:
           type: string
           description: SAE ID of the calling master SAE
@@ -243,10 +243,10 @@ components:
           description: SAE ID of the specified slave SAE
         key_size:
           type: integer
-          description: Default size of key the KME can deliver to the SAE (in bit)
+          description: Default size of key the kme can deliver to the SAE (in bit)
         stored_key_count:
           type: integer
-          description: Number of stored keys KME can deliver to the SAE
+          description: Number of stored keys kme can deliver to the SAE
         max_key_count:
           type: integer
           description: Maximum number of stored_key_count
@@ -255,15 +255,15 @@ components:
           description: Maximum number of keys per request
         max_key_size:
           type: integer
-          description: Maximum size of key the KME can deliver to the SAE (in bit)
+          description: Maximum size of key the kme can deliver to the SAE (in bit)
         min_key_size:
           type: integer
-          description: Minimum size of key the KME can deliver to the SAE (in bit)
+          description: Minimum size of key the kme can deliver to the SAE (in bit)
         max_SAE_ID_count:
           type: integer
           description:
-            Maximum number of additional_slave_SAE_IDs the KME allows.
-            '0' when the KME does not support key multicast
+            Maximum number of additional_slave_SAE_IDs the kme allows.
+            '0' when the kme does not support key multicast
           default: 0
         status_extension:
           type: object
@@ -310,7 +310,7 @@ components:
           type: array
           description:
             (Option) Array of extension parameters specified as name/value
-            pairs that KME shall handle or return an error. Parameter values may
+            pairs that kme shall handle or return an error. Parameter values may
             be of any type, including objects.
           items:
             type: object
@@ -319,7 +319,7 @@ components:
           type: array
           description:
             (Option) Array of extension parameters specified as name/value
-            pairs that KME may ignore. Parameter values may be of any type, including objects.
+            pairs that kme may ignore. Parameter values may be of any type, including objects.
           items:
             type: object
             properties: { }

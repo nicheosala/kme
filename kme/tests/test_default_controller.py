@@ -4,11 +4,11 @@ from typing import Final
 from webtest import TestApp
 from webtest import TestResponse as Response  # Renamed in order to avoid pytest warnings
 
-from KME.models.key_container import KeyContainer
-from KME.models.key_i_ds import KeyIDs
-from KME.models.key_i_ds_key_i_ds import KeyIDsKeyIDs
-from KME.models.key_request import KeyRequest
-from KME.models.status import Status
+from kme.models.key_container import KeyContainer
+from kme.models.key_i_ds import KeyIDs
+from kme.models.key_i_ds_key_i_ds import KeyIDsKeyIDs
+from kme.models.key_request import KeyRequest
+from kme.models.status import Status
 
 base_url: Final[str] = "/api/v1/keys"
 
