@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from kme.models.base_model_ import Model
+
 
 @dataclass(frozen=True, slots=True)
 class EmptyValueError(Exception):
@@ -10,7 +12,7 @@ class EmptyValueError(Exception):
 
 
 @dataclass(frozen=True, slots=True)
-class Error:
+class Error(Model):
     """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
     details: list[object] | None = None

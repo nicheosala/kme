@@ -9,11 +9,14 @@ from ..models.key_i_ds import KeyIDs
 from ..models.key_request import KeyRequest
 from ..models.status import Status
 
-DEFAULT_NUMBER: Final[int] = 1
-
 
 def id_gen() -> str:
     return str(get_id())
+
+
+default_number: Final[int] = 1
+default_key_size: Final[int] = 64  # TODO
+kme_id: Final[str] = id_gen()
 
 
 def gen(size: int) -> Key:
@@ -36,11 +39,7 @@ class KeyNotFoundError(Exception):
     pass
 
 
-key_size: Final[int] = 64  # TODO
-kme_id: Final[str] = id_gen()
-
-
-def get_key(slave_sae_id: str, number: int = DEFAULT_NUMBER, size: int | None = None) -> KeyContainer:
+def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
     """Get key
 
     Returns Key container data from the kme to the calling master SAE. Key container data contains one or more keys.
@@ -60,7 +59,7 @@ def get_key(slave_sae_id: str, number: int = DEFAULT_NUMBER, size: int | None = 
     return KeyContainer([gen(size) for _ in range(number)])
 
 
-def get_key_with_key_i_ds(master_sae_id, key_id) -> tuple[KeyContainer | Error, int]:
+def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer | tuple[Error, int]:
     """Get key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously
@@ -77,12 +76,12 @@ def get_key_with_key_i_ds(master_sae_id, key_id) -> tuple[KeyContainer | Error, 
     :rtype: KeyContainer
     """
     try:
-        return KeyContainer([get(key_id)]), 200
+        return KeyContainer([get(key_id)])
     except KeyNotFoundError:
         return Error("One or more keys specified are not found on kme"), 400
 
 
-def get_status(slave_sae_id: str) -> Status:
+def get_status(slave_sae_id: str) -> Status | tuple[Error | int]:
     """Get status
 
     Returns Status from a kme to the calling SAE.
@@ -98,7 +97,7 @@ def get_status(slave_sae_id: str) -> Status:
         target_KME_ID="TODO",
         master_SAE_ID="TODO",
         slave_SAE_ID=url_decode(slave_sae_id),
-        key_size=key_size,
+        key_size=default_key_size,
         stored_key_count=-1,
         max_key_count=-1,
         max_key_per_request=-1,
@@ -108,7 +107,7 @@ def get_status(slave_sae_id: str) -> Status:
     )
 
 
-def post_key(body, slave_sae_id) -> KeyContainer:
+def post_key(body, slave_sae_id) -> KeyContainer | tuple[Error, int]:
     """Post key
 
     Returns Key container data from the kme to the calling master SAE. Key container data contains one or more keys.
@@ -126,11 +125,14 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     key_request: Final[KeyRequest] = KeyRequest.from_dict(body)
 
     # TODO handle body specified parameters
+    if key_request.extension_mandatory:
+        return Error("Field 'extension_mandatory' is not empty and the server shall handle it, but it is not able to "
+                     "do it."), 503
 
-    return get_key(slave_sae_id, key_request.number or DEFAULT_NUMBER, key_request.size or key_size)
+    return get_key(slave_sae_id, key_request.number, key_request.size)
 
 
-def post_key_with_key_i_ds(body, master_sae_id):
+def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer | tuple[Error, int]:
     """Post key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously
@@ -149,6 +151,6 @@ def post_key_with_key_i_ds(body, master_sae_id):
     key_ids: Final[KeyIDs] = KeyIDs.from_dict(body)
 
     try:
-        return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs]), 200
+        return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs])
     except KeyNotFoundError:
         return Error("One or more keys specified are not found on kme"), 400

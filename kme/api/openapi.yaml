@@ -23,17 +23,17 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Status"
-        "400":
+        400:
           $ref: "#/components/responses/BadRequest"
-        "401":
+        401:
           $ref: "#/components/responses/Unauthorized"
-        "503":
+        503:
           $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: kme.controllers.default_controller
   /{slave_SAE_ID}/enc_keys:
@@ -73,17 +73,17 @@ paths:
             type: integer
             minimum: 1
       responses:
-        "200":
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
-        "400":
+        400:
           $ref: "#/components/responses/BadRequest"
-        "401":
+        401:
           $ref: "#/components/responses/Unauthorized"
-        "503":
+        503:
           $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: kme.controllers.default_controller
     post:
@@ -111,17 +111,17 @@ paths:
               $ref: "#/components/schemas/KeyRequest"
         required: true
       responses:
-        "200":
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
-        "400":
+        400:
           $ref: "#/components/responses/BadRequest"
-        "401":
+        401:
           $ref: "#/components/responses/Unauthorized"
-        "503":
+        503:
           $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
       x-openapi-router-controller: kme.controllers.default_controller
@@ -155,17 +155,17 @@ paths:
           schema:
             $ref: "#/components/schemas/KeyID"
       responses:
-        "200":
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
-        "400":
+        400:
           $ref: "#/components/responses/BadRequest"
-        "401":
+        401:
           $ref: "#/components/responses/Unauthorized"
-        "503":
+        503:
           $ref: "#/components/responses/ServerSideError"
       x-openapi-router-controller: kme.controllers.default_controller
     post:
@@ -195,17 +195,17 @@ paths:
               $ref: "#/components/schemas/KeyIDs"
         required: true
       responses:
-        "200":
+        200:
           description: Success
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/KeyContainer"
-        "400":
+        400:
           $ref: "#/components/responses/BadRequest"
-        "401":
+        401:
           $ref: "#/components/responses/Unauthorized"
-        "503":
+        503:
           $ref: "#/components/responses/ServerSideError"
       x-codegen-request-body-name: Key request
       x-openapi-router-controller: kme.controllers.default_controller
