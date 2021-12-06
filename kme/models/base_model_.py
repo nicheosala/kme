@@ -1,23 +1,19 @@
 from dataclasses import dataclass
-from pprint import pformat
-from typing import TypeVar, Type
 
-from jsons import load, dump
-
-T = TypeVar('T')
+from jsons import JsonSerializable, dumps
 
 
 @dataclass(frozen=True, slots=True)
-class Model(object):
-    @classmethod
-    def from_dict(cls: Type[T], dikt: object) -> T:
-        return load(dikt, cls)
+class Model(JsonSerializable):
 
-    def to_dict(self) -> object:
-        return dump(self, self.__class__, strip_nulls=True)
+    def to_json(self) -> object:
+        return self.dump(strip_nulls=True)
 
-    def __repr__(self):
-        return pformat(self.to_dict())
+    def __repr__(self) -> str:
+        return dumps(self.to_json())
 
-    def __eq__(self, other):
+    def __str__(self) -> str:
+        return dumps(self.to_json())
+
+    def __eq__(self, other) -> bool:
         return self.__dict__ == other.__dict__

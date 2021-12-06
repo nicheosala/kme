@@ -1,16 +1,11 @@
 import logging
-from json import dumps
 from typing import Final
 
-from connexion import App, ProblemException
+from connexion import App
 
 from kme.configs import Config, Production, Development
 from kme.encoder import CustomEncoder
-
-
-def render_problem_exception(error):
-    return dumps({'message': error.detail}, indent="\t"), \
-           error.status if error.status != 500 else 503
+from kme.error_handler import add_error_handlers
 
 
 def create_app(config: Config = Production) -> App:
@@ -24,11 +19,7 @@ def create_app(config: Config = Production) -> App:
         validate_responses=True,
     )
 
-    # noinspection PyTypeChecker
-    app.add_error_handler(
-        ProblemException,
-        render_problem_exception
-    )
+    add_error_handlers(app)
 
     return app
 

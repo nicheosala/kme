@@ -1,4 +1,3 @@
-from json import dumps
 from typing import Final
 
 from webtest import TestApp
@@ -28,7 +27,7 @@ class TestDefaultController:
         )
 
         key_container: Final[KeyContainer] = \
-            KeyContainer.from_dict(response.json_body)
+            KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
         assert len(key_container.keys) == number
@@ -46,7 +45,7 @@ class TestDefaultController:
         )
 
         key_container: Final[KeyContainer] = \
-            KeyContainer.from_dict(response.json_body)
+            KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
         assert len(key_container.keys) == 1
@@ -61,7 +60,7 @@ class TestDefaultController:
         )
 
         status: Final[Status] = \
-            Status.from_dict(response.json_body)
+            Status.from_json(response.json_body)
 
         assert response.status_int == 200
         # TODO
@@ -73,12 +72,12 @@ class TestDefaultController:
 
         response: Final[Response] = test_app.post(
             url=f'{base_url}/{slave_sae_id}/enc_keys',
-            params=dumps(key_request.to_dict()),
+            params=str(key_request),
             content_type='application/json'
         )
 
         key_container: Final[KeyContainer] = \
-            KeyContainer.from_dict(response.json_body)
+            KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
         # TODO
@@ -90,12 +89,12 @@ class TestDefaultController:
 
         response: Final[Response] = test_app.post(
             url=f'{base_url}/{master_sae_id}/dec_keys',
-            params=dumps(key_ids.to_dict()),
+            params=str(key_ids),
             content_type='application/json'
         )
 
         key_container: Final[KeyContainer] = \
-            KeyContainer.from_dict(response.json_body)
+            KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
         # TODO

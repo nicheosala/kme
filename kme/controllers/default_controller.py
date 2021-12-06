@@ -2,7 +2,7 @@ from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
-from ..models.error import Error
+from ..models.error import ExtensionMandatoryNotEmptyError
 from ..models.key import Key
 from ..models.key_container import KeyContainer
 from ..models.key_i_ds import KeyIDs
@@ -35,10 +35,6 @@ def get(key_id: str) -> Key:
     )
 
 
-class KeyNotFoundError(Exception):
-    pass
-
-
 def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
     """Get key
 
@@ -59,7 +55,7 @@ def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
     return KeyContainer([gen(size) for _ in range(number)])
 
 
-def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer | tuple[Error, int]:
+def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
     """Get key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously
@@ -75,13 +71,10 @@ def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer | tuple[Error, 
 
     :rtype: KeyContainer
     """
-    try:
-        return KeyContainer([get(key_id)])
-    except KeyNotFoundError:
-        return Error("One or more keys specified are not found on kme"), 400
+    return KeyContainer([get(key_id)])
 
 
-def get_status(slave_sae_id: str) -> Status | tuple[Error | int]:
+def get_status(slave_sae_id: str) -> Status:
     """Get status
 
     Returns Status from a kme to the calling SAE.
@@ -107,7 +100,7 @@ def get_status(slave_sae_id: str) -> Status | tuple[Error | int]:
     )
 
 
-def post_key(body, slave_sae_id) -> KeyContainer | tuple[Error, int]:
+def post_key(body, slave_sae_id) -> KeyContainer:
     """Post key
 
     Returns Key container data from the kme to the calling master SAE. Key container data contains one or more keys.
@@ -122,17 +115,16 @@ def post_key(body, slave_sae_id) -> KeyContainer | tuple[Error, int]:
 
     :rtype: KeyContainer
     """
-    key_request: Final[KeyRequest] = KeyRequest.from_dict(body)
+    key_request: Final[KeyRequest] = KeyRequest.from_json(body)
 
     # TODO handle body specified parameters
     if key_request.extension_mandatory:
-        return Error("Field 'extension_mandatory' is not empty and the server shall handle it, but it is not able to "
-                     "do it."), 503
+        raise ExtensionMandatoryNotEmptyError
 
     return get_key(slave_sae_id, key_request.number, key_request.size)
 
 
-def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer | tuple[Error, int]:
+def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
     """Post key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously
@@ -148,9 +140,6 @@ def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer | tuple[Error, i
 
     :rtype: KeyContainer
     """
-    key_ids: Final[KeyIDs] = KeyIDs.from_dict(body)
+    key_ids: Final[KeyIDs] = KeyIDs.from_json(body)
 
-    try:
-        return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs])
-    except KeyNotFoundError:
-        return Error("One or more keys specified are not found on kme"), 400
+    return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs])
