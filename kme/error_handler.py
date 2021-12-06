@@ -8,7 +8,7 @@ def render_connexion_exception(error: ProblemException) -> tuple[str, int]:
 
 
 def render_model_exception(error: Error) -> tuple[str, int]:
-    return str(error), error.status
+    return error.json_string, error.status
 
 
 def add_error_handlers(app) -> None:

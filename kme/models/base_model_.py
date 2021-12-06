@@ -28,9 +28,3 @@ class Model:
     @cache
     def json_string(self):
         return dumps(self.json, indent=4)
-
-    def __repr__(self) -> str:
-        return self.json_string
-
-    def __str__(self) -> str:
-        return self.json_string

@@ -72,7 +72,7 @@ class TestDefaultController:
 
         response: Final[Response] = test_app.post(
             url=f'{base_url}/{slave_sae_id}/enc_keys',
-            params=str(key_request),
+            params=key_request.json_string,
             content_type='application/json'
         )
 
@@ -89,7 +89,7 @@ class TestDefaultController:
 
         response: Final[Response] = test_app.post(
             url=f'{base_url}/{master_sae_id}/dec_keys',
-            params=str(key_ids),
+            params=key_ids.json_string,
             content_type='application/json'
         )
 

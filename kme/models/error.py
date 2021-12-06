@@ -23,12 +23,6 @@ class Error(Model, Exception):
             d.update({'details': self.details})
         return d
 
-    def __str__(self) -> str:
-        return Model.__str__(self)
-
-    def __repr__(self) -> str:
-        return Model.__repr__(self)
-
 
 @dataclass(frozen=True, slots=True)
 class EmptyValueError(Error):
