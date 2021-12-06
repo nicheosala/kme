@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import cache
 
 from kme.models.base_model_ import Model
 
@@ -7,14 +8,16 @@ from kme.models.base_model_ import Model
 class Error(Model, Exception):
     """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
-    details: list[object] | None = None
+    details: tuple[object, ...] | None = None
     status: int = 503
 
     def __post_init__(self) -> None:
         if self.message is None:
             raise EmptyValueError
 
-    def to_json(self) -> object:
+    @property
+    @cache
+    def json(self) -> object:
         d: dict = {'message': self.message}
         if self.details:
             d.update({'details': self.details})

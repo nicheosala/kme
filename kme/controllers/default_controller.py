@@ -52,7 +52,7 @@ def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    return KeyContainer([gen(size) for _ in range(number)])
+    return KeyContainer(tuple([gen(size) for _ in range(number)]))
 
 
 def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
@@ -71,7 +71,7 @@ def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    return KeyContainer([get(key_id)])
+    return KeyContainer(tuple([get(key_id)]))
 
 
 def get_status(slave_sae_id: str) -> Status:
@@ -142,4 +142,4 @@ def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
     """
     key_ids: Final[KeyIDs] = KeyIDs.from_json(body)
 
-    return KeyContainer([get(k.key_ID) for k in key_ids.key_IDs])
+    return KeyContainer(tuple([get(k.key_ID) for k in key_ids.key_IDs]))

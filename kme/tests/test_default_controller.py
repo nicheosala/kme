@@ -84,7 +84,7 @@ class TestDefaultController:
 
     def test_post_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for post_key_with_key_i_ds"""
-        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=[KeyIDsKeyIDs(key_ID="todo")])  # TODO
+        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="todo")]))  # TODO
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(
