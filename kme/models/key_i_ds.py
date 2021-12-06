@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from .base_model_ import Model
 from .error import EmptyValueError
 from .key_i_ds_key_i_ds import KeyIDsKeyIDs
+from .model import Model
 
 
 @dataclass(frozen=True, slots=True)

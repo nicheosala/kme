@@ -2,7 +2,7 @@ from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
-from ..models.error import ExtensionMandatoryNotEmptyError
+from ..models.error import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
 from ..models.key import Key
 from ..models.key_container import KeyContainer
 from ..models.key_i_ds import KeyIDs
@@ -119,7 +119,12 @@ def post_key(body, slave_sae_id) -> KeyContainer:
 
     # TODO handle body specified parameters
     if key_request.extension_mandatory:
-        raise ExtensionMandatoryNotEmptyError
+        for ext in key_request.extension_mandatory:
+            if ext not in key_request.supported_extension_parameters:
+                raise UnsupportedMandatoryExtensionParameterError
+
+    if key_request.size % 8 != 0:
+        raise SizeNotMultipleOfEightError
 
     return get_key(slave_sae_id, key_request.number, key_request.size)
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from .base_model_ import Model
 from .error import EmptyValueError
+from .model import Model
 
 
 @dataclass(frozen=True, slots=True)

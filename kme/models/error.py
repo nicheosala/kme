@@ -1,14 +1,17 @@
 from dataclasses import dataclass
 from functools import cache
+from typing import Any
 
-from kme.models.base_model_ import Model
+from immutabledict import immutabledict
+
+from kme.models.model import Model
 
 
 @dataclass(frozen=True, slots=True)
 class Error(Model, Exception):
     """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
-    details: tuple[object, ...] | None = None
+    details: tuple[immutabledict[str, Any], ...] | None = None
     status: int = 503
 
     def __post_init__(self) -> None:
@@ -31,15 +34,22 @@ class EmptyValueError(Error):
 
 @dataclass(frozen=True, slots=True)
 class KeyNotFoundError(Error):
-    message: str = "One or more keys specified are not found on kme"
-    status: int = 404
+    message: str = "One or more keys specified are not found on KME"
+    status: int = 400
 
 
 @dataclass(frozen=True, slots=True)
-class ExtensionMandatoryNotEmptyError(Error):
-    """
-    Standard ETSI 014 force to manage the content of parameter 'extension_mandatory'.
-    So far, this implementation is not able to manage 'extension_mandatory', so it throws the following error.
-    """
-    message: str = "Field 'extension_mandatory' is not empty and the server shall handle it, but it is not able to " \
-                   "do it. "
+class UnsupportedMandatoryExtensionParameterError(Error):
+    message: str = "Not all 'extension_mandatory' parameters are supported"
+    status: int = 400
+
+
+@dataclass(frozen=True, slots=True)
+class UnmetMandatoryExtensionParameterError(Error):
+    message: str = "Not all 'extension_mandatory' request options could be met"
+
+
+@dataclass(frozen=True, slots=True)
+class SizeNotMultipleOfEightError(Error):
+    message: str = "Requested key size shall be a multiple of 8"
+    status: int = 400

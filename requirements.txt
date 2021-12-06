@@ -4,3 +4,4 @@ setuptools~=58.5.3
 pytest~=6.2.5
 WebTest~=3.0.0
 tornado
+immutabledict~=2.2.1

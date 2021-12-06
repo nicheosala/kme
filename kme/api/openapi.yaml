@@ -314,7 +314,7 @@ components:
             be of any type, including objects.
           items:
             type: object
-            properties: { }
+            properties: { } # TODO force {"string": "Any"} structure
         extension_optional:
           type: array
           description:
@@ -322,7 +322,7 @@ components:
             pairs that kme may ignore. Parameter values may be of any type, including objects.
           items:
             type: object
-            properties: { }
+            properties: { } # TODO force {"string": "Any"} structure
       example:
         number: 1
         size: 4096
@@ -429,7 +429,7 @@ components:
             specified as name/value pairs. Values may be of any type, including objects.
           items:
             type: object
-            properties: { }
+            properties: { } # TODO force {"string": "Any"} structure
       example:
         message: Error encountered
     KeyIDs_key_IDs:

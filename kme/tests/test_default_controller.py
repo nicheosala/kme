@@ -1,13 +1,14 @@
 from typing import Final
 
+from immutabledict import immutabledict
 from webtest import TestApp
 from webtest import TestResponse as Response  # Renamed in order to avoid pytest warnings
 
+from kme.models.error import Error, UnsupportedMandatoryExtensionParameterError
 from kme.models.key_container import KeyContainer
 from kme.models.key_i_ds import KeyIDs
 from kme.models.key_i_ds_key_i_ds import KeyIDsKeyIDs
 from kme.models.key_request import KeyRequest
-from kme.models.status import Status
 
 base_url: Final[str] = "/api/v1/keys"
 
@@ -59,15 +60,13 @@ class TestDefaultController:
             url=f'{base_url}/{slave_sae_id}/status',
         )
 
-        status: Final[Status] = \
-            Status.from_json(response.json_body)
-
         assert response.status_int == 200
-        # TODO
 
     def test_post_key(self, test_app: TestApp) -> None:
         """Test case for post_key"""
-        key_request: Final[KeyRequest] = KeyRequest()  # TODO
+        number: Final[int] = 5
+        size: Final[int] = 8
+        key_request: Final[KeyRequest] = KeyRequest(number=number, size=size)
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(
@@ -80,11 +79,11 @@ class TestDefaultController:
             KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
-        # TODO
+        assert len(key_container.keys) == number
 
     def test_post_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for post_key_with_key_i_ds"""
-        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="todo")]))  # TODO
+        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="key_id_example")]))
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(
@@ -97,4 +96,22 @@ class TestDefaultController:
             KeyContainer.from_json(response.json_body)
 
         assert response.status_int == 200
-        # TODO
+        assert len(key_container.keys) == len(key_ids.key_IDs)
+
+    def test_post_key_non_empty_extension_mandatory(self, test_app: TestApp) -> None:
+        """Test case for post_key with non-empty 'extension_mandatory' parameter."""
+        key_request: Final[KeyRequest] = KeyRequest(extension_mandatory=(immutabledict({"ciao": "mamma"}),))
+        slave_sae_id: Final[str] = 'slave_sae_id_example'
+
+        response: Final[Response] = test_app.post(
+            url=f'{base_url}/{slave_sae_id}/enc_keys',
+            params=key_request.json_string,
+            content_type='application/json',
+            expect_errors=True
+        )
+
+        error: Final[Error] = \
+            Error.from_json(response.json_body)
+
+        assert response.status_int == 400
+        assert error.message == UnsupportedMandatoryExtensionParameterError().message

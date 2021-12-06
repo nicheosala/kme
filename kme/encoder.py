@@ -1,6 +1,6 @@
 from json import JSONEncoder
 
-from .models.base_model_ import Model
+from .models.model import Model
 
 
 class CustomEncoder(JSONEncoder):
