@@ -118,10 +118,9 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     key_request: Final[KeyRequest] = KeyRequest.from_json(body)
 
     # TODO handle body specified parameters
-    if key_request.extension_mandatory:
-        for ext in key_request.extension_mandatory:
-            if ext not in key_request.supported_extension_parameters:
-                raise UnsupportedMandatoryExtensionParameterError
+    if (key_request.extension_mandatory and
+            any(ext not in key_request.supported_extension_parameters for ext in key_request.extension_mandatory)):
+        raise UnsupportedMandatoryExtensionParameterError
 
     if key_request.size % 8 != 0:
         raise SizeNotMultipleOfEightError

@@ -47,6 +47,7 @@ class UnsupportedMandatoryExtensionParameterError(Error):
 @dataclass(frozen=True, slots=True)
 class UnmetMandatoryExtensionParameterError(Error):
     message: str = "Not all 'extension_mandatory' request options could be met"
+    status: int = 400
 
 
 @dataclass(frozen=True, slots=True)
