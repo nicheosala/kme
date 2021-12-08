@@ -2,37 +2,19 @@ from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
+from key_manager.models.key_manager import KeyManager
 from ..models.error import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
 from ..models.key import Key
 from ..models.key_container import KeyContainer
 from ..models.key_i_ds import KeyIDs
+from ..models.key_i_ds_key_i_ds import KeyIDsKeyIDs
 from ..models.key_request import KeyRequest
 from ..models.status import Status
 
-
-def id_gen() -> str:
-    return str(get_id())
-
-
 default_number: Final[int] = 1
 default_key_size: Final[int] = 64  # TODO
-kme_id: Final[str] = id_gen()
-
-
-def gen(size: int) -> Key:
-    # TODO This in an example key!
-    return Key(
-        key_ID="3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        key="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
-    )
-
-
-def get(key_id: str) -> Key:
-    # TODO This in an example key!
-    return Key(
-        key_ID="3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        key="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
-    )
+kme_id: Final[str] = str(get_id())
+km: Final[KeyManager] = KeyManager()
 
 
 def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
@@ -52,7 +34,12 @@ def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    return KeyContainer(tuple([gen(size) for _ in range(number)]))
+    new_keys: Final[tuple[Key, ...]] = tuple(km.generate(
+        size,
+        frozenset((url_decode(slave_sae_id)))
+    ) for _ in range(number))
+
+    return KeyContainer(new_keys)
 
 
 def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
@@ -71,7 +58,8 @@ def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    return KeyContainer(tuple([get(key_id)]))
+    keys: Final[tuple[Key, ...]] = km.get(key_id, url_decode(master_sae_id)),
+    return KeyContainer(keys)
 
 
 def get_status(slave_sae_id: str) -> Status:
@@ -125,7 +113,14 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     if key_request.size % 8 != 0:
         raise SizeNotMultipleOfEightError
 
-    return get_key(slave_sae_id, key_request.number, key_request.size)
+    new_keys: Final[tuple[Key, ...]] = tuple(km.generate(
+        key_request.size,
+        frozenset((url_decode(slave_sae_id), *key_request.additional_slave_SAE_IDs)),
+        *key_request.extension_mandatory,
+        *key_request.extension_optional
+    ) for _ in range(key_request.number))
+
+    return KeyContainer(new_keys)
 
 
 def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
@@ -144,6 +139,7 @@ def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    key_ids: Final[KeyIDs] = KeyIDs.from_json(body)
+    key_ids: Final[tuple[KeyIDsKeyIDs]] = KeyIDs.from_json(body).key_IDs
+    keys: Final[tuple[Key, ...]] = tuple(km.get(k.key_ID, url_decode(master_sae_id)) for k in key_ids)
 
-    return KeyContainer(tuple([get(k.key_ID) for k in key_ids.key_IDs]))
+    return KeyContainer(keys)
