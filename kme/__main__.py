@@ -4,6 +4,7 @@ from typing import Final
 from connexion import App
 
 from kme.configs import Config, Production, Development
+from kme.database import add_database
 from kme.encoder import CustomEncoder
 from kme.error_handler import add_error_handlers
 
@@ -20,6 +21,7 @@ def create_app(config: Config = Production) -> App:
     )
 
     add_error_handlers(app)
+    add_database(app)
 
     return app
 

@@ -5,3 +5,5 @@ pytest~=6.2.5
 WebTest~=3.0.0
 tornado
 immutabledict~=2.2.1
+SQLAlchemy~=1.4.28
+sqlathanor~=0.7.0

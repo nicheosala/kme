@@ -6,6 +6,9 @@ class Config:
     DEBUG = False
     TESTING = False
     APP_PORT = 5000
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    PROPAGATE_EXCEPTIONS = False
 
 
 @dataclass(frozen=True, slots=True, init=False)
