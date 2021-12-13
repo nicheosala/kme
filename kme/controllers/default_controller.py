@@ -2,7 +2,6 @@ from typing import Final
 from urllib.parse import unquote as url_decode
 from uuid import uuid4 as get_id
 
-from key_manager.models.key_manager import KeyManager
 from ..models.error import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
 from ..models.key import Key
 from ..models.key_container import KeyContainer
@@ -14,7 +13,6 @@ from ..models.status import Status
 default_number: Final[int] = 1
 default_key_size: Final[int] = 64  # TODO
 kme_id: Final[str] = str(get_id())
-km: Final[KeyManager] = KeyManager()
 
 
 def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
@@ -34,7 +32,7 @@ def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    new_keys: Final[tuple[Key, ...]] = tuple(km.generate(
+    new_keys: Final[tuple[Key, ...]] = tuple(Key.generate(
         size,
         frozenset((url_decode(slave_sae_id)))
     ) for _ in range(number))
@@ -58,7 +56,7 @@ def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    keys: Final[tuple[Key, ...]] = km.get(key_id, url_decode(master_sae_id)),
+    keys: Final[tuple[Key, ...]] = Key.get(key_id, url_decode(master_sae_id)),
     return KeyContainer(keys)
 
 
@@ -113,7 +111,7 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     if key_request.size % 8 != 0:
         raise SizeNotMultipleOfEightError
 
-    new_keys: Final[tuple[Key, ...]] = tuple(km.generate(
+    new_keys: Final[tuple[Key, ...]] = tuple(Key.generate(
         key_request.size,
         frozenset((url_decode(slave_sae_id), *key_request.additional_slave_SAE_IDs)),
         *key_request.extension_mandatory,
@@ -140,6 +138,6 @@ def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
     :rtype: KeyContainer
     """
     key_ids: Final[tuple[KeyIDsKeyIDs]] = KeyIDs.from_json(body).key_IDs
-    keys: Final[tuple[Key, ...]] = tuple(km.get(k.key_ID, url_decode(master_sae_id)) for k in key_ids)
+    keys: Final[tuple[Key, ...]] = tuple(Key.get(k.key_ID, url_decode(master_sae_id)) for k in key_ids)
 
     return KeyContainer(keys)
