@@ -4,8 +4,10 @@ from uuid import uuid4
 
 from immutabledict import immutabledict
 
-from .error import EmptyValueError
+from .error import EmptyValueError, KeyNotFoundError
 from .model import Model
+from .. import orm
+from ..database import db
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,24 +25,37 @@ class Key(Model):
     @staticmethod
     def get(key_id: str, master_sae_id: str) -> 'Key':
         """Get the keys associated to the given SAE ID"""
-        # TODO Get key from database
-        return Key("3fa85f64-5717-4562-b3fc-2c963f66afa6", "OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA=")
+        key = Key.__fetch(key_id)
+        return Key(key.key_id, key.key_material)
 
     @staticmethod
-    def remove(key_id: str) -> None:
-        # TODO delete key from database
-        pass
+    def delete(key_id: str) -> None:
+        if key := Key.__fetch(key_id):
+            db.session.delete(key)
+            db.session.commit()
 
     @staticmethod
     def generate(size: int, slave_sae_ids: frozenset[str], *params: immutabledict[str, Any]) -> 'Key':
         """Generate one new random key."""
         key_id: Final[str] = str(uuid4())
-        new_key: Final[str] = Key.__keygen(size)
-        # TODO Add key to database
-        return Key(key_id, new_key)
+        key_material: Final[str] = Key.__keygen(size)
+
+        new_key = orm.Key(key_id=key_id, key_material=key_material)
+
+        db.session.add(new_key)
+        db.session.commit()
+
+        return Key(key_id, key_material)
 
     @staticmethod
     def __keygen(size: int) -> str:
         """Retrieve key material from underlying hardware."""
         return "OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
         # TODO this is example key material! You have to ask the quantum channel for a new key.
+
+    @staticmethod
+    def __fetch(key_id: str) -> orm.Key:
+        if key := orm.Key.query.filter_by(key_id=key_id).one_or_none():
+            return key
+
+        raise KeyNotFoundError

@@ -38,7 +38,7 @@ class TestDefaultController:
     def test_get_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for get_key_with_key_i_ds"""
         master_sae_id: Final[str] = "master_sae_id_example"
-        key_id: Final[str] = "example_uuid_key_id"
+        key_id: Final[str] = "bc490419-7d60-487f-adc1-4ddcc177c139"
 
         response: Final[Response] = test_app.get(
             url=f'{base_url}/{master_sae_id}/dec_keys',
@@ -83,7 +83,7 @@ class TestDefaultController:
 
     def test_post_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for post_key_with_key_i_ds"""
-        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="key_id_example")]))
+        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="bc490419-7d60-487f-adc1-4ddcc177c139")]))
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(
