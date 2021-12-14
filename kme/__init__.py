@@ -1,1 +1,1 @@
-from kme.__main__ import create_app
+from kme.app import create_app
