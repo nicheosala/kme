@@ -1,7 +1,7 @@
 import logging
 from typing import Final
 
-from connexion import App
+from connexion import App as ConnexionApp
 from flask import Flask
 
 from kme.configs import Config, Production, Development
@@ -10,8 +10,11 @@ from kme.encoder import CustomEncoder
 from kme.error_handler import add_error_handlers
 
 
-def create_app(config: Config = Production) -> App:
-    connexion_app: Final[App] = App(__name__, specification_dir='api/')
+def create_app(config: Config = Production) -> ConnexionApp:
+    # Connexion does not provide good type hints (yet). We have to consider two apps:
+    # - connexion_app of type App (alias for FlaskApp), that is the actual Connexion application, managing the APIs
+    # - flask_app of type Flask, that is the Flask application, embedded into the Connexion app, managing HTTP requests
+    connexion_app: Final[ConnexionApp] = ConnexionApp(__name__, specification_dir='api/')
 
     connexion_app.add_api(
         specification='openapi.yaml',
@@ -32,7 +35,7 @@ def create_app(config: Config = Production) -> App:
 
 def main():
     config: Final[Config] = Development()  # TODO find a way to distinguish development and production start
-    app: Final[App] = create_app(config)
+    connexion_app: Final[ConnexionApp] = create_app(config)
 
     logging.basicConfig(
         level=logging.DEBUG if config.DEBUG else logging.INFO,
@@ -40,7 +43,7 @@ def main():
         datefmt='%m/%d/%Y %I:%M:%S %p'
     )
 
-    app.run(
+    connexion_app.run(
         port=config.APP_PORT,
         debug=config.DEBUG
     )
