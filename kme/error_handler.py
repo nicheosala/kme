@@ -1,7 +1,7 @@
 from connexion import ProblemException
 from flask import Flask
 
-from kme.models.error import Error
+from kme.errors import Error
 
 
 def render_connexion_exception(error: ProblemException) -> tuple[str, int]:

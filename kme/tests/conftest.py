@@ -7,10 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
 from webtest import TestApp
 
-from .. import orm
-from ..__main__ import create_app
-from ..configs import Test
-from ..database import db as _db
+from kme import orm, create_app
+from kme.configs import Test
+from kme.database import db as _db
 
 
 @fixture

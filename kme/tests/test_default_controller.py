@@ -4,11 +4,8 @@ from immutabledict import immutabledict
 from webtest import TestApp
 from webtest import TestResponse as Response  # Renamed in order to avoid pytest warnings
 
-from kme.models.error import Error, UnsupportedMandatoryExtensionParameterError
-from kme.models.key_container import KeyContainer
-from kme.models.key_i_ds import KeyIDs
-from kme.models.key_i_ds_key_i_ds import KeyIDsKeyIDs
-from kme.models.key_request import KeyRequest
+from kme.errors import Error, UnsupportedMandatoryExtensionParameterError
+from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
 
 base_url: Final[str] = "/api/v1/keys"
 

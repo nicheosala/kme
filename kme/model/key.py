@@ -4,10 +4,10 @@ from uuid import uuid4
 
 from immutabledict import immutabledict
 
-from .error import EmptyValueError, KeyNotFoundError
-from .model import Model
-from .. import orm
-from ..database import db
+from kme import orm
+from kme.database import db
+from kme.errors import EmptyValueError, KeyNotFoundError
+from kme.model import Model
 
 
 @dataclass(frozen=True, slots=True)

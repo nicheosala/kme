@@ -4,7 +4,7 @@ from typing import Any
 
 from immutabledict import immutabledict
 
-from kme.models.model import Model
+from kme.model import Model
 
 
 @dataclass(frozen=True, slots=True)

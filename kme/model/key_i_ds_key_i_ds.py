@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from .error import EmptyValueError
-from .model import Model
+from kme.errors import EmptyValueError
+from kme.model import Model
 
 
 @dataclass(frozen=True, slots=True)

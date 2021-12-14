@@ -1,13 +1,8 @@
 from typing import Final
 from urllib.parse import unquote as url_decode
 
-from ..models.error import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
-from ..models.key import Key
-from ..models.key_container import KeyContainer
-from ..models.key_i_ds import KeyIDs
-from ..models.key_i_ds_key_i_ds import KeyIDsKeyIDs
-from ..models.key_request import KeyRequest
-from ..models.status import Status
+from kme.errors import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
+from kme.model import Key, KeyContainer, KeyIDs, KeyIDsKeyIDs, KeyRequest, Status
 
 
 # TODO for default value of size: "default value is defined as key_size in Status data format". See also KeyRequest.

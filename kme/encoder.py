@@ -1,6 +1,6 @@
 from json import JSONEncoder
 
-from .models.model import Model
+from kme.model import Model
 
 
 class CustomEncoder(JSONEncoder):
