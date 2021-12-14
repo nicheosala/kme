@@ -3,15 +3,11 @@
 This project is about Quantum Key Distribution (QKD).\
 It is divided into the following packages:
 
-- a [Quantum Channel Simulator (QCS)](qcs/README.md)
 - a [Key Management Entity (KME)](kme/README.md)
-- a [Key Manager](key_manager/README.md)
+- a [Quantum Channel Simulator (QCS)](qcs/README.md)
 
-In summary, QCS receives requests from applications that want to use quantum-generated secret keys. QCS is a simulator
-of a quantum channel that produces quantum secret keys. The key manager stays between the two previous entities.
-
-**Attention**: this is only a draft of the entire project. The definition, the division and also the name chosen for
-each package may change in the future.
+In summary, KME receives requests from applications that want to use quantum-generated secret keys. QCS is a simulator
+of a quantum channel that produces quantum secret keys.
 
 ## Sources
 

@@ -1,6 +1,5 @@
 from typing import Final
 from urllib.parse import unquote as url_decode
-from uuid import uuid4 as get_id
 
 from ..models.error import UnsupportedMandatoryExtensionParameterError, SizeNotMultipleOfEightError
 from ..models.key import Key
@@ -10,12 +9,9 @@ from ..models.key_i_ds_key_i_ds import KeyIDsKeyIDs
 from ..models.key_request import KeyRequest
 from ..models.status import Status
 
-default_number: Final[int] = 1
-default_key_size: Final[int] = 64  # TODO
-kme_id: Final[str] = str(get_id())
 
-
-def get_key(slave_sae_id: str, number: int, size: int) -> KeyContainer:
+# TODO for default value of size: "default value is defined as key_size in Status data format". See also KeyRequest.
+def get_key(slave_sae_id: str, number: int = 1, size: int = 64) -> KeyContainer:
     """Get key
 
     Returns Key container data from the kme to the calling master SAE. Key container data contains one or more keys.
@@ -72,11 +68,11 @@ def get_status(slave_sae_id: str) -> Status:
     :rtype: Status
     """
     return Status(
-        source_KME_ID=kme_id,
+        source_KME_ID="TODO",
         target_KME_ID="TODO",
         master_SAE_ID="TODO",
         slave_SAE_ID=url_decode(slave_sae_id),
-        key_size=default_key_size,
+        key_size=64,
         stored_key_count=-1,
         max_key_count=-1,
         max_key_per_request=-1,

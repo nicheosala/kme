@@ -11,7 +11,7 @@ from .model import Model
 class KeyRequest(Model):
     """Key request data format is used for a request data model of API "Get key" method."""
     number: int = 1
-    size: int = 8  # TODO "default value is defined as key_size in Status data format"
+    size: int = 64  # TODO "default value is defined as key_size in Status data format"
     additional_slave_SAE_IDs: tuple[str, ...] = tuple()
     extension_mandatory: tuple[immutabledict[str, Any], ...] = tuple()
     extension_optional: tuple[immutabledict[str, Any], ...] = tuple()

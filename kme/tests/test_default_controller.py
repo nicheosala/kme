@@ -20,11 +20,10 @@ class TestDefaultController:
         """Test case for get_key"""
         slave_sae_id: Final[str] = 'slave_sae_id_example'
         number: Final[int] = 2
-        size: Final[int] = 2
 
         response: Final[Response] = test_app.get(
             url=f'{base_url}/{slave_sae_id}/enc_keys',
-            params={'number': number, 'size': size}
+            params={'number': number}
         )
 
         key_container: Final[KeyContainer] = \
@@ -32,8 +31,6 @@ class TestDefaultController:
 
         assert response.status_int == 200
         assert len(key_container.keys) == number
-        # assert all(len(k.key) == size for k in key_container.keys)
-        # TODO
 
     def test_get_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for get_key_with_key_i_ds"""
@@ -65,8 +62,7 @@ class TestDefaultController:
     def test_post_key(self, test_app: TestApp) -> None:
         """Test case for post_key"""
         number: Final[int] = 5
-        size: Final[int] = 8
-        key_request: Final[KeyRequest] = KeyRequest(number=number, size=size)
+        key_request: Final[KeyRequest] = KeyRequest(number=number)
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(
