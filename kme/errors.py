@@ -19,7 +19,7 @@ class Error(Model, Exception):
 
     @property
     def json(self) -> object:
-        d: dict = {'message': self.message}
+        d: dict[str, Any] = {'message': self.message}
         if self.details:
             d.update({'details': self.details})
         return d

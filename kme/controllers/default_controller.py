@@ -31,7 +31,7 @@ def get_key(slave_sae_id: str, number: int = 1, size: int = 64) -> KeyContainer:
     return KeyContainer(new_keys)
 
 
-def get_key_with_key_i_ds(master_sae_id, key_id) -> KeyContainer:
+def get_key_with_key_i_ds(master_sae_id: str, key_id: str) -> KeyContainer:
     """Get key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously
@@ -77,7 +77,7 @@ def get_status(slave_sae_id: str) -> Status:
     )
 
 
-def post_key(body, slave_sae_id) -> KeyContainer:
+def post_key(body: object, slave_sae_id: str) -> KeyContainer:
     """Post key
 
     Returns Key container data from the kme to the calling master SAE. Key container data contains one or more keys.
@@ -97,6 +97,7 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     # TODO handle body specified parameters
     if (key_request.extension_mandatory and
             any(ext not in key_request.supported_extension_parameters for ext in key_request.extension_mandatory)):
+        # TODO the above line of code is not correct: ext is of type immutabledict[str, Any], not str.
         raise UnsupportedMandatoryExtensionParameterError
 
     if key_request.size % 8 != 0:
@@ -112,7 +113,7 @@ def post_key(body, slave_sae_id) -> KeyContainer:
     return KeyContainer(new_keys)
 
 
-def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
+def post_key_with_key_i_ds(body: object, master_sae_id: str) -> KeyContainer:
     """Post key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key container contains keys matching those previously

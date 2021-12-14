@@ -4,3 +4,4 @@ WebTest~=3.0.0
 immutabledict~=2.2.1
 jsons~=1.6.0
 Flask~=1.1.4
+Flask-SQLAlchemy~=2.5.1

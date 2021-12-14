@@ -23,5 +23,5 @@ class Model:
         )
 
     @property
-    def json_string(self):
+    def json_string(self) -> str:
         return dumps(self.json, indent=4)
