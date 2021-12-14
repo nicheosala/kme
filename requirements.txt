@@ -1,9 +1,6 @@
 connexion[swagger-ui]~=2.9.0
-jsons~=1.6.0
-setuptools~=58.5.3
 pytest~=6.2.5
 WebTest~=3.0.0
-tornado
 immutabledict~=2.2.1
-SQLAlchemy~=1.4.28
-sqlathanor~=0.7.0
+jsons~=1.6.0
+Flask-SQLAlchemy~=2.5.1

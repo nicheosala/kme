@@ -12,7 +12,7 @@ class Model:
 
     @classmethod
     def from_json(cls: Type[T], json_obj: object) -> T:
-        return load(json_obj, cls)
+        return load(json_obj, cls, strict=True)
 
     @property
     @cache

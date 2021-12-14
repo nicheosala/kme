@@ -1,6 +1,7 @@
 from typing import Final
 
 from connexion import App
+from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
 from webtest import TestApp
 
@@ -27,7 +28,7 @@ def test_app(app: App) -> TestApp:
 
 
 @fixture(autouse=True)
-def db(app):
+def db(app: App) -> SQLAlchemy:
     """A database for the tests."""
     _db.app = app
     with app.app_context():
@@ -37,12 +38,11 @@ def db(app):
 
     yield _db
 
-    # Explicitly close DB connection
     _db.session.close()
     _db.drop_all()
 
 
-def setup_initial_data(db):
+def setup_initial_data(db: SQLAlchemy) -> None:
     k1 = orm.Key(
         key_id="bc490419-7d60-487f-adc1-4ddcc177c139",
         key_material="wHHVxRwDJs3/bXd38GHP3oe4svTuRpZS0yCC7x4Ly+s="

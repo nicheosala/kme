@@ -10,7 +10,7 @@ from kme.error_handler import add_error_handlers
 
 
 def create_app(config: Config = Production) -> App:
-    app = App(__name__, server='tornado', specification_dir='api/')
+    app = App(__name__, specification_dir='api/')
     app.app.json_encoder = CustomEncoder
     app.app.config.from_object(config)
     app.add_api(
