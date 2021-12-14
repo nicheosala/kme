@@ -2,6 +2,7 @@ import logging
 from typing import Final
 
 from connexion import App
+from flask import Flask
 
 from kme.configs import Config, Production, Development
 from kme.database import add_database
@@ -10,20 +11,23 @@ from kme.error_handler import add_error_handlers
 
 
 def create_app(config: Config = Production) -> App:
-    app = App(__name__, specification_dir='api/')
-    app.app.json_encoder = CustomEncoder
-    app.app.config.from_object(config)
-    app.add_api(
+    connexion_app: Final[App] = App(__name__, specification_dir='api/')
+
+    connexion_app.add_api(
         specification='openapi.yaml',
         pythonic_params=True,
         strict_validation=True,
         validate_responses=True,
     )
 
-    add_error_handlers(app)
-    add_database(app)
+    add_error_handlers(connexion_app)
 
-    return app
+    flask_app: Final[Flask] = connexion_app.app
+    flask_app.json_encoder = CustomEncoder
+    flask_app.config.from_object(config)
+    add_database(flask_app)
+
+    return connexion_app
 
 
 def main():
