@@ -128,7 +128,7 @@ def post_key_with_key_i_ds(body, master_sae_id) -> KeyContainer:
 
     :rtype: KeyContainer
     """
-    key_ids: Final[tuple[KeyIDsKeyIDs]] = KeyIDs.from_json(body).key_IDs
+    key_ids: Final[tuple[KeyIDsKeyIDs, ...]] = KeyIDs.from_json(body).key_IDs
     keys: Final[tuple[Key, ...]] = tuple(Key.get(k.key_ID, url_decode(master_sae_id)) for k in key_ids)
 
     return KeyContainer(keys)

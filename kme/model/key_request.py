@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from functools import cache
 from typing import Any
 
 from immutabledict import immutabledict
@@ -17,7 +16,6 @@ class KeyRequest(Model):
     extension_optional: tuple[immutabledict[str, Any], ...] = tuple()
 
     @property
-    @cache
     def supported_extension_parameters(self) -> frozenset[str]:
         """Add supported extension parameters here."""
         return frozenset()

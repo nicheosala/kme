@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from functools import cache
 from typing import Any
 
 from immutabledict import immutabledict
@@ -19,7 +18,6 @@ class Error(Model, Exception):
             raise EmptyValueError
 
     @property
-    @cache
     def json(self) -> object:
         d: dict = {'message': self.message}
         if self.details:

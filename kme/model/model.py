@@ -1,21 +1,19 @@
 from dataclasses import dataclass
-from functools import cache
-from typing import Type, Final, TypeVar
+from typing import Type, TypeVar
 
 from jsons import dumps, load, dump
 
-T: Final[TypeVar] = TypeVar('T')
+M = TypeVar('M', bound='Model')
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Model:
 
     @classmethod
-    def from_json(cls: Type[T], json_obj: object) -> T:
+    def from_json(cls: Type[M], json_obj: object) -> M:
         return load(json_obj, cls, strict=True)
 
     @property
-    @cache
     def json(self) -> object:
         return dump(
             self,
@@ -25,6 +23,5 @@ class Model:
         )
 
     @property
-    @cache
     def json_string(self):
         return dumps(self.json, indent=4)
