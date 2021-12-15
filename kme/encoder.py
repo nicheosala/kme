@@ -1,9 +1,9 @@
-from json import JSONEncoder
+from flask.json import JSONEncoder
 
 from kme.model import Model
 
 
-class CustomEncoder(JSONEncoder):
+class CustomEncoder(JSONEncoder):  # type: ignore
 
     def default(self, o: object) -> object:
         if isinstance(o, Model):
