@@ -1,6 +1,5 @@
-from typing import Final
+from typing import Final, Any
 
-from immutabledict import immutabledict
 from webtest import TestApp
 from webtest import TestResponse as Response  # Renamed in order to avoid pytest warnings
 
@@ -93,7 +92,8 @@ class TestDefaultController:
 
     def test_post_key_non_empty_extension_mandatory(self, test_app: TestApp) -> None:
         """Test case for post_key with non-empty 'extension_mandatory' parameter."""
-        key_request: Final[KeyRequest] = KeyRequest(extension_mandatory=(immutabledict({"ciao": "mamma"}),))
+        extension_mandatory: Final[tuple[dict[str, Any], ...]] = ({"ciao": "mamma"},)
+        key_request: Final[KeyRequest] = KeyRequest(extension_mandatory=extension_mandatory)
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(

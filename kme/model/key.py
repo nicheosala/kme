@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from typing import Any, Final
 from uuid import uuid4
 
-from immutabledict import immutabledict
-
 from kme import orm
 from kme.database import db
 from kme.errors import EmptyValueError, KeyNotFoundError
@@ -35,7 +33,7 @@ class Key(Model):
             db.session.commit()
 
     @staticmethod
-    def generate(size: int, slave_sae_ids: frozenset[str], *params: immutabledict[str, Any]) -> 'Key':
+    def generate(size: int, slave_sae_ids: frozenset[str], *extensions: dict[str, Any]) -> 'Key':
         """Generate one new random key."""
         key_id: Final[str] = str(uuid4())
         key_material: Final[str] = Key.__keygen(size)

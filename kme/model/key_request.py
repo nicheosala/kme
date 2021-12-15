@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
 
-from immutabledict import immutabledict
-
 from kme.model import Model
 
 
@@ -12,8 +10,8 @@ class KeyRequest(Model):
     number: int = 1
     size: int = 64  # TODO "default value is defined as key_size in Status data format"
     additional_slave_SAE_IDs: tuple[str, ...] = tuple()
-    extension_mandatory: tuple[immutabledict[str, Any], ...] = tuple()
-    extension_optional: tuple[immutabledict[str, Any], ...] = tuple()
+    extension_mandatory: tuple[dict[str, Any], ...] = tuple()
+    extension_optional: tuple[dict[str, Any], ...] = tuple()
 
     @property
     def supported_extension_parameters(self) -> frozenset[str]:

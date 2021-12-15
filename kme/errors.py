@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
 
-from immutabledict import immutabledict
-
 from kme.model import Model
 
 
@@ -10,7 +8,7 @@ from kme.model import Model
 class Error(Model, Exception):
     """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
-    details: tuple[immutabledict[str, Any], ...] | None = None
+    details: tuple[dict[str, Any], ...] | None = None
     status: int = 503
 
     def __post_init__(self) -> None:

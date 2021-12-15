@@ -95,10 +95,10 @@ def post_key(body: object, slave_sae_id: str) -> KeyContainer:
     key_request: Final[KeyRequest] = KeyRequest.from_json(body)
 
     # TODO handle body specified parameters
-    if (key_request.extension_mandatory and
-            any(ext not in key_request.supported_extension_parameters for ext in key_request.extension_mandatory)):
-        # TODO the above line of code is not correct: ext is of type immutabledict[str, Any], not str.
-        raise UnsupportedMandatoryExtensionParameterError
+    for ext in key_request.extension_mandatory:
+        for ext_name in ext.keys():
+            if ext_name not in key_request.supported_extension_parameters:
+                raise UnsupportedMandatoryExtensionParameterError
 
     if key_request.size % 8 != 0:
         raise SizeNotMultipleOfEightError
