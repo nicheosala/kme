@@ -3,6 +3,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, slots=True, init=False)
 class Config:
+    API_PATH = 'api/openapi.yaml'
+    BASE_URL = '/api/v1/keys'
+    HOST = 'localhost'
     DEBUG = False
     TESTING = False
     APP_PORT = 5000
