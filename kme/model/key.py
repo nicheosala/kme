@@ -55,7 +55,8 @@ class Key(Model):
 
     @staticmethod
     def __fetch(key_id: str) -> orm.Key:
-        if key := orm.Key.query.filter_by(key_id=key_id).one_or_none():
+        key: Final[orm.Key] = orm.Key.query.filter_by(key_id=key_id).one_or_none()
+        if key is not None:
             return key
 
         raise KeyNotFoundError

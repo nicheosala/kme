@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Final
 
 from jsons import dumps, load, dump
 
@@ -11,17 +11,20 @@ class Model:
 
     @classmethod
     def from_json(cls: Type[M], json_obj: object) -> M:
-        return load(json_obj, cls, strict=True)
+        from_json: Final[M] = load(json_obj, cls, strict=True)
+        return from_json
 
     @property
     def json(self) -> object:
-        return dump(
+        json: Final[object] = dump(
             self,
             strip_nulls=True,
             strict=True,
             strip_properties=True
         )
+        return json
 
     @property
     def json_string(self) -> str:
-        return dumps(self.json, indent=4)
+        json_string: Final[str] = dumps(self.json, indent=4)
+        return json_string

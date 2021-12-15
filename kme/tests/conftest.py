@@ -1,8 +1,7 @@
-from typing import Final
+from typing import Final, Iterator
 
 from connexion import App
 from flask import Flask
-from flask.ctx import RequestContext
 from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
 from webtest import TestApp
@@ -13,15 +12,11 @@ from kme.database import db as _db
 
 
 @fixture
-def app() -> Flask:
+def app() -> Iterator[Flask]:
     connexion_app: Final[App] = create_app(Test())
     flask_app: Final[Flask] = connexion_app.app
-    context: Final[RequestContext] = flask_app.test_request_context()
-    context.push()
-
-    yield flask_app
-
-    context.pop()
+    with flask_app.test_request_context():
+        yield flask_app
 
 
 @fixture
@@ -30,7 +25,7 @@ def test_app(app: Flask) -> TestApp:
 
 
 @fixture(autouse=True)
-def db(app: Flask) -> SQLAlchemy:
+def db(app: Flask) -> Iterator[SQLAlchemy]:
     """A database for the tests."""
     _db.app = app
     with app.app_context():
