@@ -10,9 +10,12 @@ from kme.error_handler import add_error_handlers
 
 
 def create_app(config: Config = Production()) -> ConnexionApp:
-    # Connexion does not provide good type hints (yet). We have to consider two apps:
-    # - connexion_app of type App (alias for FlaskApp), that is the actual Connexion application, managing the APIs
-    # - flask_app of type Flask, that is the Flask application, embedded into the Connexion app, managing HTTP requests
+    # Connexion does not provide good type hints (yet). We have to consider
+    # two apps:
+    # - connexion_app of type App (alias for FlaskApp), that is
+    # the actual Connexion application, managing the APIs
+    # - flask_app of type Flask, that is the Flask application, embedded
+    # into the Connexion app, managing HTTP requests
     connexion_app: Final[ConnexionApp] = ConnexionApp(__name__)
 
     connexion_app.add_api(

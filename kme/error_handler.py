@@ -5,7 +5,8 @@ from kme.errors import Error
 
 
 def render_connexion_exception(error: ProblemException) -> tuple[str, int]:
-    return str({'message': error.detail}), error.status if error.status < 500 else 503
+    return str({'message': error.detail}), \
+           error.status if error.status < 500 else 503
 
 
 def render_model_exception(error: Error) -> tuple[str, int]:

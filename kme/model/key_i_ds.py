@@ -16,7 +16,8 @@ class KeyIDsKeyIDs(Model):
 
 @dataclass(frozen=True, slots=True)
 class KeyIDs(Model):
-    """Key IDs data format is used for a request data model of API "Get key with key IDs" method."""
+    """Key IDs data format is used for a request data model of API "Get key
+    with key IDs" method. """
     key_IDs: tuple[KeyIDsKeyIDs, ...]
     key_IDs_extension: object | None = None
 

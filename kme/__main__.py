@@ -8,7 +8,8 @@ from kme.configs import Config, Development
 
 
 def main() -> None:
-    config: Final[Config] = Development()  # TODO find a way to distinguish development and production start
+    # TODO find a way to distinguish development and production start
+    config: Final[Config] = Development()
     connexion_app: Final[ConnexionApp] = create_app(config)
 
     logging.basicConfig(

@@ -33,7 +33,8 @@ class Key(Model):
             db.session.commit()
 
     @staticmethod
-    def generate(size: int, slave_sae_ids: frozenset[str], *extensions: dict[str, Any]) -> 'Key':
+    def generate(size: int, slave_sae_ids: frozenset[str],
+                 *extensions: dict[str, Any]) -> 'Key':
         """Generate one new random key."""
         key_id: Final[str] = str(uuid4())
         key_material: Final[str] = Key.__keygen(size)
@@ -49,11 +50,13 @@ class Key(Model):
     def __keygen(size: int) -> str:
         """Retrieve key material from underlying hardware."""
         return "OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
-        # TODO this is example key material! You have to ask the quantum channel for a new key.
+        # TODO this is example key material! You have to ask the quantum
+        #  channel for a new key.
 
     @staticmethod
     def __fetch(key_id: str) -> orm.Key:
-        key: Final[orm.Key] = orm.Key.query.filter_by(key_id=key_id).one_or_none()
+        key: Final[orm.Key] = orm.Key.query \
+            .filter_by(key_id=key_id).one_or_none()
         if key is not None:
             return key
 

@@ -1,7 +1,8 @@
 from typing import Final, Any
 
 from webtest import TestApp
-from webtest import TestResponse as Response  # Renamed in order to avoid pytest warnings
+from webtest import \
+    TestResponse as Response  # Renamed in order to avoid pytest warnings
 
 from kme.errors import Error, UnsupportedMandatoryExtensionParameterError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
@@ -75,7 +76,9 @@ class TestDefaultController:
 
     def test_post_key_with_key_i_ds(self, test_app: TestApp) -> None:
         """Test case for post_key_with_key_i_ds"""
-        key_ids: Final[KeyIDs] = KeyIDs(key_IDs=tuple([KeyIDsKeyIDs(key_ID="bc490419-7d60-487f-adc1-4ddcc177c139")]))
+        key_ids: Final[KeyIDs] = KeyIDs(
+            key_IDs=tuple([KeyIDsKeyIDs(
+                key_ID="bc490419-7d60-487f-adc1-4ddcc177c139")]))
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(
@@ -90,10 +93,15 @@ class TestDefaultController:
         assert response.status_int == 200
         assert len(key_container.keys) == len(key_ids.key_IDs)
 
-    def test_post_key_non_empty_extension_mandatory(self, test_app: TestApp) -> None:
-        """Test case for post_key with non-empty 'extension_mandatory' parameter."""
-        extension_mandatory: Final[tuple[dict[str, Any], ...]] = ({"ciao": "mamma"},)
-        key_request: Final[KeyRequest] = KeyRequest(extension_mandatory=extension_mandatory)
+    def test_post_key_non_empty_extension_mandatory(self, test_app: TestApp) \
+            -> None:
+        """Test case for post_key with non-empty 'extension_mandatory'
+        parameter. """
+        extension_mandatory: Final[tuple[dict[str, Any], ...]] = \
+            ({"ciao": "mamma"},)
+        key_request: Final[KeyRequest] = KeyRequest(
+            extension_mandatory=extension_mandatory
+        )
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(
@@ -107,4 +115,5 @@ class TestDefaultController:
             Error.from_json(response.json_body)
 
         assert response.status_int == 400
-        assert error.message == UnsupportedMandatoryExtensionParameterError().message
+        assert error.message == \
+               UnsupportedMandatoryExtensionParameterError().message
