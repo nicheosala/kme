@@ -16,3 +16,5 @@ jobs:
           pip install -r requirements.txt
       - name: Test with pytest
         run: pytest -vv
+      - name: Test kme with mypy
+        run: mypy kme

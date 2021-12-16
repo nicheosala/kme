@@ -29,7 +29,7 @@ def create_app(config: Config = Production()) -> ConnexionApp:
     flask_app.json_encoder = CustomEncoder
     flask_app.config.from_object(config)
 
-    @flask_app.route('/')  # type: ignore
+    @flask_app.route('/')
     def home() -> Response:
         """Redirect to Swagger UI."""
         return redirect(f'{config.BASE_URL}/ui/')

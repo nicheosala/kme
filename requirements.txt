@@ -1,7 +1,8 @@
-connexion[swagger-ui]~=2.9.0
+./deps/connexion.zip[swagger-ui]
 pytest~=6.2.5
 WebTest~=3.0.0
 jsons~=1.6.0
-Flask~=1.1.4
+Flask~=2.0.2
 Flask-SQLAlchemy~=2.5.1
 tornado~=6.1
+mypy~=0.920
