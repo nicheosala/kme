@@ -2,10 +2,10 @@ import logging
 from dataclasses import dataclass
 from uuid import UUID
 
-from jsons import loads
+from jsons import loads, DeserializationError
 
 from qcs.orm import Block
-from qcs.model import Response, EmptyResponse
+from qcs.model import Response, EmptyResponse, GetResponse
 from qcs.commands import Command
 
 
@@ -22,8 +22,8 @@ class GetBlockById(Command):
                     logging.info(
                         f"Block with ID {block_id} not present inside the "
                         f"database, so not found")
-            return Response(tuple(blocks))
-        except ValueError:
+            return GetResponse(tuple(blocks))
+        except DeserializationError:
             logging.error(
                 "request.value cannot be interpreted as tuple[UUID, ...]")
             return EmptyResponse()  # TODO

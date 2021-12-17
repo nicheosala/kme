@@ -15,6 +15,8 @@ produces quantum secret keys.
 All the following commands must be executed in a terminal positioned inside
 folder 'qkd'.
 
+**Required: Python 3.10 or higher.**
+
 1. (Optional) create and start a Python virtual environment:
 
 ```bash

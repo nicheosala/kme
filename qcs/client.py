@@ -3,7 +3,7 @@ from typing import Final
 
 from jsons import dumps, loads
 
-from model import Request, Response
+from qcs.model import Request, Response, GetResponse
 
 
 def send(request: Request, sock: socket) -> Response:
@@ -14,34 +14,35 @@ def send(request: Request, sock: socket) -> Response:
 
     # Receive data from the server and shut down
     received: Final[str] = str(sock.recv(1024), "utf-8")
+    response: Final[Response] = loads(received, GetResponse, strict=True)
 
     # TODO logging instead of printing
     print(f"Raw request: {data}")
     print(f"Raw response: {received}")
 
-    return loads(received, Response, strict=True)
+    return response
 
 
-def connect() -> socket:
-    host: Final[str] = "localhost"
-    port: Final[int] = 9998
-    sock: Final[socket] = socket(AF_INET, SOCK_STREAM)
-    sock.connect((host, port))
-    return sock
+def get_socket() -> socket:
+    return socket(AF_INET, SOCK_STREAM)
 
 
 def main() -> None:
-    sock: Final[socket] = connect()
+    host: Final[str] = "localhost"
+    port: Final[int] = 9998
 
-    req: Final[Request] = Request(
-        command="Get key by ID",
-        attribute="",
-        value='["18bbcdf8-189e-47e1-8119-bd5b659473f8"]'
-    )
+    with get_socket() as sock:
+        sock.connect((host, port))
 
-    res: Final[Response] = send(req, sock)
+        req: Final[Request] = Request(
+            command="Get keys",
+            attribute="",
+            value=''
+        )
 
-    sock.close()
+        res: Final[Response] = send(req, sock)
+
+        print(f"Response type: {type(res)}")
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ from typing import Final
 from uuid import uuid4
 
 from qcs.orm import Block
-from qcs.model import Response, EmptyResponse
+from qcs.model import Response, EmptyResponse, GetResponse
 from qcs.commands import Command
 
 
@@ -36,14 +36,14 @@ class GetBlocks(Command):
         try:
             if self.value == "":  # i.e. request.value is empty
                 logging.info(f"request.value is empty: default to 1.")
-                return self._get_blocks(1)
+                return self._gen_blocks(1)
             elif (n := int(self.value)) <= 0:
                 logging.error(
                     f"request.value must be a positive integer. "
                     f"Given: {self.value}")
                 return EmptyResponse()  # TODO
             else:
-                return self._get_blocks(n)
+                return self._gen_blocks(n)
         except ValueError:
             logging.error(
                 f"request.value cannot be interpreted as an integer. "
@@ -63,10 +63,10 @@ class GetBlocks(Command):
 
         return new_block
 
-    def _get_blocks(self, n: int) -> Response:
+    def _gen_blocks(self, n: int) -> Response:
         """
         :param n: number of blocks requested by the key manager. Default value
          is 1.
         :return: Response object containing up to n blocks.
         """
-        return Response(tuple(self._generate_block() for _ in range(n)))
+        return GetResponse(tuple(self._generate_block() for _ in range(n)))

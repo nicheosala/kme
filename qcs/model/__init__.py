@@ -1,8 +1,9 @@
 from qcs.model.request import Request
-from qcs.model.response import Response, EmptyResponse
+from qcs.model.response import GetResponse, EmptyResponse, Response
 
 __all__ = [
-    'Response',
+    'GetResponse',
     'EmptyResponse',
+    'Response',
     'Request'
 ]
