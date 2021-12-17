@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .block import Block
+from qcs.orm import Block
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,2 +1,7 @@
-from kme.orm.block import Block as Block
-from kme.orm.key import Key as Key
+from kme.orm.block import Block
+from kme.orm.key import Key
+
+__all__ = [
+    'Block',
+    'Key'
+]

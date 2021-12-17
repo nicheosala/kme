@@ -1,8 +1,8 @@
 import logging
 from dataclasses import dataclass
 
-from ..commands.command import Command
-from ..response import Response, EmptyResponse
+from qcs.model import Response, EmptyResponse
+from qcs.commands import Command
 
 
 @dataclass(frozen=True, slots=True)

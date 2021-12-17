@@ -3,16 +3,17 @@ from datetime import datetime
 from typing import Final
 from uuid import uuid4
 
-from .command import Command
-from ..block import Block
-from ..response import Response, EmptyResponse
+from qcs.orm import Block
+from qcs.model import Response, EmptyResponse
+from qcs.commands import Command
 
 
 def _get_random_bits() -> tuple[int, ...]:
     """Simulate the generation of a random number of bits.
 
-    More precisely, a random number of bytes, each constituted by 8 random bits, is returned.
-    The randomness is simulated exploiting Python's "random" library.
+    More precisely, a random number of bytes, each constituted by 8 random
+    bits, is returned. The randomness is simulated exploiting Python's
+    "random" library.
 
     :return: a tuple, containing a random number of random bytes.
     """
@@ -37,12 +38,16 @@ class GetBlocks(Command):
                 logging.info(f"request.value is empty: default to 1.")
                 return self._get_blocks(1)
             elif (n := int(self.value)) <= 0:
-                logging.error(f"request.value must be a positive integer. Given: {self.value}")
+                logging.error(
+                    f"request.value must be a positive integer. "
+                    f"Given: {self.value}")
                 return EmptyResponse()  # TODO
             else:
                 return self._get_blocks(n)
         except ValueError:
-            logging.error(f"request.value cannot be interpreted as an integer. Given: {self.value}")
+            logging.error(
+                f"request.value cannot be interpreted as an integer. "
+                f"Given: {self.value}")
             return EmptyResponse()  # TODO
 
     def _generate_block(self) -> Block:
@@ -50,7 +55,8 @@ class GetBlocks(Command):
 
         :return: a Block object containing (simulated) random bits.
         """
-        new_block: Final[Block] = Block(_timestamp(), uuid4(), _get_random_bits())
+        new_block: Final[Block] = Block(_timestamp(), uuid4(),
+                                        _get_random_bits())
         self.database.blocks[new_block.ID] = new_block
 
         logging.debug(f"New block generated with ID {new_block.ID}")
@@ -59,7 +65,8 @@ class GetBlocks(Command):
 
     def _get_blocks(self, n: int) -> Response:
         """
-        :param n: number of blocks requested by the key manager. Default value is 1.
+        :param n: number of blocks requested by the key manager. Default value
+         is 1.
         :return: Response object containing up to n blocks.
         """
         return Response(tuple(self._generate_block() for _ in range(n)))

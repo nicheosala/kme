@@ -1,8 +1,8 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 from dataclasses import dataclass
 
-from ..database import Database
-from ..response import Response
+from qcs.database import Database
+from qcs.model import Response
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,6 +12,5 @@ class Command(ABC):
     attribute: str
     database: Database
 
-    @abstractmethod
     def execute(self) -> Response:
         raise NotImplementedError

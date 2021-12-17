@@ -3,8 +3,7 @@ from typing import Final
 
 from jsons import dumps, loads
 
-from model.request import Request
-from model.response import Response
+from model import Request, Response
 
 
 def send(request: Request, sock: socket) -> Response:

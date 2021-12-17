@@ -5,9 +5,8 @@ from typing import Final
 
 from jsons import loads, dumps
 
-from .model.request import Request
-from .model.resolver import resolve
-from .model.response import Response
+from qcs.model import Request, Response
+from qcs.resolver import resolve
 
 
 class MyTCPHandler(StreamRequestHandler):

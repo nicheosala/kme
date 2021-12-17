@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from uuid import UUID
 
-from .block import Block
+from qcs.orm import Block
 
 
 @dataclass(frozen=True, slots=True)

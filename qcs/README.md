@@ -4,13 +4,13 @@ This package contains a simulator of a quantum channel.
 
 ## Specifications
 
-**TODO** the following lines of the paragraph are only a draft. They will be corrected and completed after focusing on
-other parts of the project.
+**TODO** the following lines of the paragraph are only a draft. They will be
+corrected and completed after focusing on other parts of the project.
 
 ### Requests
 
-The quantum channel simulator only accepts socket connections on port 9998. The request data must be a json-formatted
-sting that follows the pattern:
+The quantum channel simulator only accepts socket connections on port 9998. The
+request data must be a json-formatted sting that follows the pattern:
 
 ```json
 {
@@ -49,7 +49,8 @@ The only possible values for `"command"` field are:
 
 ## Execution
 
-If you want to start the quantum channel simulator, open a terminal inside `qkd` folder and then type:
+If you want to start the quantum channel simulator, open a terminal
+inside `qkd` folder and then type:
 
 ```bash
 python -m qcs
