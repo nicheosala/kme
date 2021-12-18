@@ -4,6 +4,7 @@ from qcs import QCSimulator
 from qcs.configs import Test
 
 
-@fixture
-def qc_simulator() -> QCSimulator:
-    return QCSimulator(Test())
+@fixture(scope='module', autouse=True)
+def run_qcsimulator() -> None:
+    qc: QCSimulator = QCSimulator(Test())
+    qc.run()
