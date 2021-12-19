@@ -3,15 +3,15 @@ from typing import Type, TypeVar, Final
 
 from jsons import dumps, load, dump
 
-M = TypeVar('M', bound='Model')
+Self = TypeVar('Self', bound='Model')
 
 
 @dataclass(frozen=True)
 class Model:
 
     @classmethod
-    def from_json(cls: Type[M], json_obj: object) -> M:
-        from_json: Final[M] = load(json_obj, cls, strict=True)
+    def from_json(cls: Type[Self], json_obj: object) -> Self:
+        from_json: Final[Self] = load(json_obj, cls, strict=True)
         return from_json
 
     @property

@@ -6,15 +6,15 @@ from jsons import dump, dumps, loads, load
 from qcs.configs import Config
 from qcs.orm import Block
 
-R = TypeVar('R', bound='Response')
+Self = TypeVar('Self', bound='Response')
 
 
 @dataclass(frozen=True, slots=True)
 class Response:
 
     @classmethod
-    def from_json(cls: Type[R], json_str: str) -> R:
-        from_json: Final[R] = loads(json_str, cls, strict=True)
+    def from_json(cls: Type[Self], json_str: str) -> Self:
+        from_json: Final[Self] = loads(json_str, cls, strict=True)
         return from_json
 
     @property
@@ -38,12 +38,12 @@ class GetResponse(Response):
     blocks: tuple[Block, ...] = tuple()
 
     @classmethod
-    def from_json(cls: Type[R], json_str: str) -> R:
+    def from_json(cls: Type[Self], json_str: str) -> Self:
         if Config.COMPATIBILITY_MODE:
             # The received string is not a valid json string. Convert it to
             # valid json.
             json_str = '{ "blocks":' + json_str[1:-1] + '}'
-        from_json: Final[R] = loads(json_str, cls, strict=True)
+        from_json: Final[Self] = loads(json_str, cls, strict=True)
         return from_json
 
     @property
