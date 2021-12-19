@@ -18,20 +18,20 @@ class ThreadedTCPServer(ThreadingMixIn, TCPServer):
 class QCSimulator:
     host: str
     port: int
-    server: ThreadedTCPServer
 
     def __init__(self, config: Config):
         self.host = config.SERVER_HOST
         self.port = config.SERVER_PORT
-        self.server = ThreadedTCPServer(
+
+    def run(self) -> None:
+        server = ThreadedTCPServer(
             (self.host, self.port),
             ThreadedTCPRequestHandler
         )
-
-    def run(self) -> None:
         server_thread = Thread(
-            target=self.server.serve_forever,
-            daemon=True)
+            target=server.serve_forever,
+            daemon=True
+        )
         server_thread.start()
         logging.info(f"Server listening on {self.host}:{self.port}")
 
