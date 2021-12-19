@@ -1,7 +1,5 @@
 from typing import Final
 
-from jsons import loads
-
 from qcs.client import Client
 from qcs.configs import Config
 from qcs.model import Request, GetResponse
@@ -25,11 +23,7 @@ class QCInterface:
 
         received: Final[str] = self.client.send(req)
 
-        res: Final[GetResponse] = loads(
-            received,
-            GetResponse,
-            strict=True
-        )
+        res: Final[GetResponse] = GetResponse.from_json(received)
 
         return res
 

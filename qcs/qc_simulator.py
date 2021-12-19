@@ -1,7 +1,7 @@
 from threading import Thread
 from typing import Final
 
-from jsons import loads, dumps
+from jsons import loads
 
 from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
 import logging
@@ -43,7 +43,7 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
         request: Final[Request] = loads(data, Request, strict=True)
 
         response: Final[Response] = resolve(request)
-        self.wfile.write(bytes(dumps(response), "utf-8"))
+        self.wfile.write(bytes(response.json_string, "utf-8"))
 
         logging.debug(f"""
         Client: {self.client_address}
