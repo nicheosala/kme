@@ -7,6 +7,7 @@ class Config:
     SERVER_PORT = 9998
     DEBUG = False
     TESTING = False
+    COMPATIBILITY_MODE = False
 
 
 @dataclass(frozen=True, slots=True, init=False)

@@ -10,7 +10,7 @@ from qcs.commands import Command
 
 
 @dataclass(frozen=True, slots=True)
-class GetBlockById(Command):
+class GetBlocksByIds(Command):
 
     def execute(self) -> Response:
         try:
