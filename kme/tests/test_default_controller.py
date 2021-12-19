@@ -1,4 +1,5 @@
 from typing import Final, Any
+from uuid import UUID
 
 from webtest import TestApp
 from webtest import \
@@ -77,7 +78,7 @@ class TestDefaultController:
         """Test case for post_key_with_key_i_ds"""
         key_ids: Final[KeyIDs] = KeyIDs(
             key_IDs=tuple([KeyIDsKeyIDs(
-                key_ID="bc490419-7d60-487f-adc1-4ddcc177c139")]))
+                key_ID=UUID("bc490419-7d60-487f-adc1-4ddcc177c139"))]))
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(

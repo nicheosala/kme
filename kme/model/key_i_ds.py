@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from kme.errors import EmptyValueError
 from kme.model import Model
@@ -6,7 +7,7 @@ from kme.model import Model
 
 @dataclass(frozen=True, slots=True)
 class KeyIDsKeyIDs(Model):
-    key_ID: str
+    key_ID: UUID
     key_ID_extension: object | None = None
 
     def __post_init__(self) -> None:

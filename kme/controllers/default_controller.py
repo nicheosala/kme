@@ -1,5 +1,6 @@
 from typing import Final
 from urllib.parse import unquote as url_decode
+from uuid import UUID
 
 from kme.errors import UnsupportedMandatoryExtensionParameterError, \
     SizeNotMultipleOfEightError
@@ -38,7 +39,7 @@ def get_key(slave_sae_id: str, number: int = 1,
     return KeyContainer(new_keys)
 
 
-def get_key_with_key_i_ds(master_sae_id: str, key_id: str) -> KeyContainer:
+def get_key_with_key_i_ds(master_sae_id: str, key_id: UUID) -> KeyContainer:
     """Get key with key IDs
 
     Returns Key container from the kme to the calling slave SAE. Key
