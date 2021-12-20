@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Final
 
 
-@dataclass(slots=True, init=False)
+@dataclass(frozen=True, slots=True, init=False)
 class BaseConfig:
     ENV = 'development'
     API_PATH = 'api/openapi.yaml'
@@ -18,21 +18,21 @@ class BaseConfig:
     PROPAGATE_EXCEPTIONS = False
 
 
-@dataclass(slots=True, init=False)
+@dataclass(frozen=True, slots=True, init=False)
 class Production(BaseConfig):
     ENV = 'production'
     DEBUG = False
     TESTING = False
 
 
-@dataclass(slots=True, init=False)
+@dataclass(frozen=True, slots=True, init=False)
 class Development(BaseConfig):
     ENV = 'development'
     DEBUG = True
     TESTING = False
 
 
-@dataclass(slots=True, init=False)
+@dataclass(frozen=True, slots=True, init=False)
 class Test(BaseConfig):
     ENV = 'test'
     DEBUG = True
@@ -57,4 +57,4 @@ def __set_config() -> BaseConfig:
         return Development()
 
 
-Config: BaseConfig = __set_config()
+Config: Final[BaseConfig] = __set_config()
