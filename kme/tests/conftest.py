@@ -7,14 +7,13 @@ from sqlalchemy.orm import Session
 from webtest import TestApp
 
 from kme import orm, create_app
-from kme.configs import Test
 from kme.database import session as _session, engine
 from kme.database import mapper_registry
 
 
 @fixture
 def app() -> Iterator[Flask]:
-    connexion_app: Final[App] = create_app(Test())
+    connexion_app: Final[App] = create_app()
     flask_app: Final[Flask] = connexion_app.app
     with flask_app.test_request_context():
         yield flask_app

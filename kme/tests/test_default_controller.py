@@ -7,7 +7,7 @@ from webtest import \
 
 from kme.errors import Error, UnsupportedMandatoryExtensionParameterError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
-from kme.configs import Config
+from kme.config import Config
 
 
 class TestDefaultController:
