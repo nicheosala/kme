@@ -2,13 +2,14 @@ from typing import Final, Iterator
 
 from connexion import App
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from pytest import fixture
+from sqlalchemy.orm import Session
 from webtest import TestApp
 
 from kme import orm, create_app
 from kme.configs import Test
-from kme.database import db as _db
+from kme.database import session as _session, engine
+from kme.database import mapper_registry
 
 
 @fixture
@@ -25,21 +26,18 @@ def test_app(app: Flask) -> TestApp:
 
 
 @fixture(autouse=True)
-def db(app: Flask) -> Iterator[SQLAlchemy]:
+def session() -> Iterator[Session]:
     """A database for the tests."""
-    _db.app = app
-    with app.app_context():
-        _db.create_all()
+    mapper_registry.metadata.create_all(engine)
+    setup_initial_data(_session)
 
-    setup_initial_data(_db)
+    yield _session
 
-    yield _db
-
-    _db.session.close()
-    _db.drop_all()
+    _session.close()
+    mapper_registry.metadata.drop_all(engine)
 
 
-def setup_initial_data(db: SQLAlchemy) -> None:
+def setup_initial_data(session: Session) -> None:
     k1: Final[orm.Key] = orm.Key(
         key_id="bc490419-7d60-487f-adc1-4ddcc177c139",
         key_material="wHHVxRwDJs3/bXd38GHP3oe4svTuRpZS0yCC7x4Ly+s="
@@ -50,5 +48,5 @@ def setup_initial_data(db: SQLAlchemy) -> None:
         key_material="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
     )
 
-    db.session.add_all([k1, k2])
-    db.session.commit()
+    session.add_all([k1, k2])
+    session.commit()

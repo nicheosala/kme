@@ -35,6 +35,6 @@ def create_app(config: Config = Production()) -> ConnexionApp:
         return redirect(f'{config.BASE_URL}/ui/')
 
     add_error_handlers(flask_app)
-    add_database(flask_app)
+    add_database()
 
     return connexion_app

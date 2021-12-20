@@ -3,7 +3,7 @@ from typing import Any, Final
 from uuid import uuid4, UUID
 
 from kme import orm
-from kme.database import db
+from kme.database import session
 from kme.errors import EmptyValueError, KeyNotFoundError
 from kme.model import Model
 
@@ -29,8 +29,8 @@ class Key(Model):
     @staticmethod
     def delete(key_id: UUID) -> None:
         if key := Key.__fetch(key_id):
-            db.session.delete(key)
-            db.session.commit()
+            session.delete(key)
+            session.commit()
 
     @staticmethod
     def generate(size: int, slave_sae_ids: frozenset[str],
@@ -41,8 +41,8 @@ class Key(Model):
 
         new_key = orm.Key(key_id=str(key_id), key_material=key_material)
 
-        db.session.add(new_key)
-        db.session.commit()
+        session.add(new_key)
+        session.commit()
 
         return Key(key_id, key_material)
 
@@ -55,7 +55,7 @@ class Key(Model):
 
     @staticmethod
     def __fetch(key_id: UUID) -> orm.Key:
-        key: Final[orm.Key] = orm.Key.query \
+        key: Final[orm.Key] = session.query(orm.Key) \
             .filter_by(key_id=str(key_id)).one_or_none()
         if key is not None:
             return key

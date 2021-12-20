@@ -1,13 +1,20 @@
-from kme.database import db
+from dataclasses import dataclass
+
+from sqlalchemy import Column, String
+
+from kme.database import Base
 
 
-class Key(db.Model):  # type: ignore
+@dataclass
+class Key(Base):  # type: ignore
     __tablename__ = "keys"
-    key_id = db.Column(
-        db.String,
+
+    key_id: str = Column(
+        String,
         primary_key=True,
     )
-    key_material = db.Column(
-        db.String,
+
+    key_material: str = Column(
+        String,
         nullable=False,
     )
