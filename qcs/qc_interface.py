@@ -34,7 +34,7 @@ class QCInterface:
         req: Final[Request] = Request(
             command="Delete by IDs",
             attribute="",
-            value=dumps(ids)
+            value=dumps(ids, indent=4)
         )
 
         received: Final[str] = self.client.send(req)

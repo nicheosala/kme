@@ -7,8 +7,7 @@ from sqlalchemy.orm import Session
 from webtest import TestApp
 
 from kme import orm, create_app
-from kme.database import session as _session, engine
-from kme.database import mapper_registry
+from kme.database import session as _session, engine, mapper_registry
 
 
 @fixture
@@ -26,7 +25,6 @@ def test_app(app: Flask) -> TestApp:
 
 @fixture(autouse=True)
 def session() -> Iterator[Session]:
-    """A database for the tests."""
     mapper_registry.metadata.create_all(engine)
     setup_initial_data(_session)
 

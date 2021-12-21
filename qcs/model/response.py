@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Final, Type, TypeVar
+from typing import Final, Type, TypeVar, Any
 
 from jsons import dump, dumps, loads, load
 
@@ -14,23 +14,20 @@ class Response:
 
     @classmethod
     def from_json(cls: Type[Self], json_str: str) -> Self:
-        from_json: Final[Self] = loads(json_str, cls, strict=True)
-        return from_json
+        return loads(json_str, cls, strict=True)
 
     @property
     def json(self) -> object:
-        json: Final[object] = dump(
+        return dump(
             self,
             strip_nulls=True,
             strict=True,
             strip_properties=True
         )
-        return json
 
     @property
     def json_string(self) -> str:
-        json_string: str = dumps(self.json, indent=4)
-        return json_string
+        return dumps(self.json, indent=4)
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,19 +39,18 @@ class GetResponse(Response):
         if Config.COMPATIBILITY_MODE:
             # The received string is not a valid json string. Convert it to
             # valid json.
-            json_str = '{ "blocks":' + json_str[1:-1] + '}'
-        from_json: Final[Self] = loads(json_str, cls, strict=True)
-        return from_json
+            return loads('{ "blocks":' + json_str[1:-1] + '}',
+                         cls, strict=True)
+        return loads(json_str, cls, strict=True)
 
     @property
     def json_string(self) -> str:
-        json_string: str = dumps(self.json, indent=4)
         if Config.COMPATIBILITY_MODE:
             # The produced object is a valid json string. Convert it to an
             # invalid json string.
-            blocks = load(self.json)['blocks']
-            json_string = '{' + dumps(blocks) + '}'
-        return json_string
+            blocks = load(self.json, dict[str, Any], strict=True)['blocks']
+            return '{' + dumps(blocks, indent=4) + '}'
+        return dumps(self.json, indent=4)
 
 
 @dataclass(frozen=True, slots=True)

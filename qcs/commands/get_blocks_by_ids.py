@@ -15,7 +15,7 @@ class GetBlocksByIds(Command):
     def execute(self) -> Response:
         try:
             blocks: list[Block] = []
-            for block_id in loads(self.value, tuple[UUID, ...]):
+            for block_id in loads(self.value, tuple[UUID, ...], strict=True):
                 if block := self.database.blocks.get(block_id):
                     blocks.append(block)
                 else:

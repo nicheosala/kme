@@ -4,7 +4,7 @@ from typing import Final
 from connexion import App as ConnexionApp
 
 from kme import create_app
-from kme.config import Config
+from kme.configs import Config
 from kme.database import init_database
 
 

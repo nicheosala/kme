@@ -18,7 +18,7 @@ class Client:
     def send(self, request: Request) -> str:
         with socket(AF_INET, SOCK_STREAM) as sock:
             sock.connect((self.host, self.port))
-            data: Final[str] = dumps(request)
+            data: Final[str] = dumps(request, indent=4)
 
             # Connect to server and send data
             sock.sendall(bytes(data + "\n", "utf-8"))

@@ -3,7 +3,7 @@ from typing import Final
 from connexion import App as ConnexionApp
 from flask import Flask, redirect, Response
 
-from kme.config import Config
+from kme.configs import Config
 from kme.encoder import CustomEncoder
 from kme.error_handler import add_error_handlers
 

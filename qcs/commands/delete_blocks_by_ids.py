@@ -13,7 +13,7 @@ class DeleteBlocksByIDs(Command):
 
     def execute(self) -> Response:
         try:
-            for block_id in loads(self.value, tuple[UUID, ...]):
+            for block_id in loads(self.value, tuple[UUID, ...], strict=True):
                 if self.database.blocks.pop(block_id, None):
                     logging.info(f"Block with ID {block_id} deleted")
                 else:

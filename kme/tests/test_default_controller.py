@@ -7,7 +7,7 @@ from webtest import \
 
 from kme.errors import Error, UnsupportedMandatoryExtensionParameterError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
-from kme.config import Config
+from kme.configs import TestConfig
 
 
 class TestDefaultController:
@@ -19,7 +19,7 @@ class TestDefaultController:
         number: Final[int] = 2
 
         response: Final[Response] = test_app.get(
-            url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
+            url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
             params={'number': number}
         )
 
@@ -35,7 +35,7 @@ class TestDefaultController:
         key_id: Final[str] = "bc490419-7d60-487f-adc1-4ddcc177c139"
 
         response: Final[Response] = test_app.get(
-            url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
+            url=f'{TestConfig.BASE_URL}/{master_sae_id}/dec_keys',
             params={"key_ID": key_id}
         )
 
@@ -51,7 +51,7 @@ class TestDefaultController:
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.get(
-            url=f'{Config.BASE_URL}/{slave_sae_id}/status',
+            url=f'{TestConfig.BASE_URL}/{slave_sae_id}/status',
         )
 
         assert response.status_int == 200
@@ -63,9 +63,10 @@ class TestDefaultController:
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(
-            url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
+            url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
             params=key_request.json_string,
-            content_type='application/json'
+            content_type='application/json',
+            expect_errors=False
         )
 
         key_container: Final[KeyContainer] = \
@@ -82,9 +83,10 @@ class TestDefaultController:
         master_sae_id: Final[str] = 'master_sae_id_example'
 
         response: Final[Response] = test_app.post(
-            url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
+            url=f'{TestConfig.BASE_URL}/{master_sae_id}/dec_keys',
             params=key_ids.json_string,
-            content_type='application/json'
+            content_type='application/json',
+            expect_errors=False
         )
 
         key_container: Final[KeyContainer] = \
@@ -105,7 +107,7 @@ class TestDefaultController:
         slave_sae_id: Final[str] = 'slave_sae_id_example'
 
         response: Final[Response] = test_app.post(
-            url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
+            url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
             params=key_request.json_string,
             content_type='application/json',
             expect_errors=True

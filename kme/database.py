@@ -3,7 +3,7 @@ from typing import Final
 from sqlalchemy.future import Engine, create_engine
 from sqlalchemy.orm import Session, registry, DeclarativeMeta
 
-from kme.config import Config
+from kme.configs import Config
 
 engine: Final[Engine] = create_engine(
     Config.SQLALCHEMY_DATABASE_URI,

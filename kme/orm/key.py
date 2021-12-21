@@ -9,12 +9,12 @@ from kme.database import Base
 class Key(Base):  # type: ignore
     __tablename__ = "keys"
 
-    key_id: str = Column(
+    key_id = Column(
         String,
         primary_key=True,
     )
 
-    key_material: str = Column(
+    key_material = Column(
         String,
         nullable=False,
     )

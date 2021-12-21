@@ -11,20 +11,17 @@ class Model:
 
     @classmethod
     def from_json(cls: Type[Self], json_obj: object) -> Self:
-        from_json: Final[Self] = load(json_obj, cls, strict=True)
-        return from_json
+        return load(json_obj, cls, strict=True)
 
     @property
     def json(self) -> object:
-        json: Final[object] = dump(
+        return dump(
             self,
             strip_nulls=True,
             strict=True,
             strip_properties=True
         )
-        return json
 
     @property
     def json_string(self) -> str:
-        json_string: Final[str] = dumps(self.json, indent=4)
-        return json_string
+        return dumps(self.json, indent=4)
