@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+addopts = "-vv --strict-markers -p no:chaceprovider"
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+mypy_path = "stubs"
+
+[[tool.mypy.overrides]]
+module = "sqlalchemy.*"
+ignore_missing_imports = true
