@@ -1,5 +1,5 @@
-from kme.main import create_app
+from kme.main import app
 
 __all__ = [
-    'create_app'
+    'app'
 ]

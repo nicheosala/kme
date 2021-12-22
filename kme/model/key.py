@@ -1,11 +1,12 @@
 from typing import Any, Final, Optional
 from uuid import uuid4, UUID
 
-from sqlalchemy.orm import Session
-
-from kme import orm, crud
+from kme import orm
 
 from pydantic import BaseModel
+from orm.exceptions import NoMatch
+
+from kme.errors import KeyNotFoundError
 
 
 class Key(BaseModel):
@@ -16,26 +17,32 @@ class Key(BaseModel):
     key_extension: Optional[Any] = None
 
     @staticmethod
-    def get(session: Session, key_id: UUID, master_sae_id: str) -> 'Key':
+    async def get(key_id: UUID, master_sae_id: str) -> 'Key':
         """Get the keys associated to the given SAE ID"""
-        key: orm.Key = crud.fetch_key(session, key_id)
-        return Key(
-            key_ID=UUID(key.key_id),
-            key=key.key_material
-        )
+        try:
+            key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
+            return Key(
+                key_ID=key.key_id,
+                key=key.key_material
+            )
+        except NoMatch:
+            raise KeyNotFoundError
 
     @staticmethod
-    def delete(session: Session, key_id: UUID) -> None:
-        crud.delete_key(session, key_id)
+    async def delete(key_id: UUID) -> None:
+        await orm.Key.objects.delete(key_id=key_id)
 
     @staticmethod
-    def generate(session: Session, size: int, slave_sae_ids: frozenset[str],
-                 *extensions: dict[str, Any]) -> 'Key':
+    async def generate(size: int, slave_sae_ids: frozenset[str],
+                       *extensions: dict[str, Any]) -> 'Key':
         """Generate one new random key."""
         key_id: Final[UUID] = uuid4()
         key_material: Final[str] = Key.__keygen(size)
 
-        crud.add_key(session, key_id, key_material)
+        await orm.Key.objects.create(
+            key_id=key_id,
+            key_material=key_material
+        )
 
         return Key(
             key_ID=key_id,

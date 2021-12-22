@@ -8,5 +8,5 @@ mypy_path = "stubs"
 cache_dir = "/dev/null"
 
 [[tool.mypy.overrides]]
-module = "sqlalchemy.*"
+module = "orm.*"
 ignore_missing_imports = true
