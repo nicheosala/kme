@@ -4,7 +4,7 @@ from uuid import UUID
 
 from fastapi import FastAPI, Query, Path, Depends, Request
 from fastapi.exceptions import HTTPException, RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
@@ -55,10 +55,15 @@ def create_app() -> FastAPI:
                 ))
         )
 
+    @app.get('/')
+    async def redirect() -> RedirectResponse:
+        return RedirectResponse('/docs', 302)
+
     @app.get(
         path="/api/v1/keys/{slave_SAE_ID}/enc_keys",
         summary="Get key",
-        response_model=KeyContainer
+        response_model=KeyContainer,
+        response_model_exclude_unset=True
     )
     async def get_key(
             slave_SAE_ID: str,
@@ -92,7 +97,8 @@ def create_app() -> FastAPI:
     @app.get(
         path="/api/v1/keys/{master_SAE_ID}/dec_keys",
         summary="Get key with key IDs",
-        response_model=KeyContainer
+        response_model=KeyContainer,
+        response_model_exclude_unset=True
     )
     async def get_key_with_key_i_ds(
             master_SAE_ID: str = Path(
@@ -126,7 +132,8 @@ def create_app() -> FastAPI:
     @app.get(
         path="/api/v1/keys/{slave_SAE_ID}/status",
         summary="Get status",
-        response_model=Status
+        response_model=Status,
+        response_model_exclude_unset=True
     )
     async def get_status(
             slave_SAE_ID: str = Path(
@@ -154,7 +161,8 @@ def create_app() -> FastAPI:
     @app.post(
         path="/api/v1/keys/{slave_SAE_ID}/enc_keys",
         summary="Post key",
-        response_model=KeyContainer
+        response_model=KeyContainer,
+        response_model_exclude_unset=True
     )
     async def post_key(
             key_request: KeyRequest,
@@ -194,7 +202,8 @@ def create_app() -> FastAPI:
     @app.post(
         path="/api/v1/keys/{master_SAE_ID}/dec_keys",
         summary="Post key with key IDs",
-        response_model=KeyContainer
+        response_model=KeyContainer,
+        response_model_exclude_unset=True
     )
     async def post_key_with_key_i_ds(
             key_ids: KeyIDs,

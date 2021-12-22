@@ -2,7 +2,6 @@ from typing import Optional, Any
 
 from pydantic import BaseModel
 
-from kme.errors import EmptyValueError
 from kme.model import Key
 
 
@@ -13,7 +12,3 @@ class KeyContainer(BaseModel):
     """
     keys: tuple[Key, ...]
     key_container_extension: Optional[Any] = None
-
-    def __post_init__(self) -> None:
-        if self.keys is None:
-            raise EmptyValueError

@@ -4,7 +4,6 @@ from uuid import uuid4, UUID
 from sqlalchemy.orm import Session
 
 from kme import orm, crud
-from kme.errors import EmptyValueError, KeyNotFoundError
 
 from pydantic import BaseModel
 
@@ -16,14 +15,10 @@ class Key(BaseModel):
     key_ID_extension: Optional[Any] = None
     key_extension: Optional[Any] = None
 
-    def __post_init__(self) -> None:
-        if self.key_ID is None or self.key is None:
-            raise EmptyValueError
-
     @staticmethod
     def get(session: Session, key_id: UUID, master_sae_id: str) -> 'Key':
         """Get the keys associated to the given SAE ID"""
-        key = Key.__fetch(session, key_id)
+        key: orm.Key = crud.fetch_key(session, key_id)
         return Key(
             key_ID=UUID(key.key_id),
             key=key.key_material
@@ -53,12 +48,3 @@ class Key(BaseModel):
         return "OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
         # TODO this is example key material! You have to ask the quantum
         #  channel for a new key.
-
-    @staticmethod
-    def __fetch(session: Session, key_id: UUID) -> orm.Key:
-        key: Final[orm.Key] = session.query(orm.Key) \
-            .filter_by(key_id=str(key_id)).one_or_none()
-        if key is not None:
-            return key
-
-        raise KeyNotFoundError
