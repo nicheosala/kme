@@ -9,7 +9,7 @@ from qcs.orm import Block
 Self = TypeVar('Self', bound='Response')
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Response:
 
     @classmethod
@@ -30,7 +30,7 @@ class Response:
         return dumps(self.json, indent=4)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class GetResponse(Response):
     blocks: tuple[Block, ...] = tuple()
 
@@ -53,12 +53,12 @@ class GetResponse(Response):
         return dumps(self.json, indent=4)
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class EmptyResponse(Response):
     pass
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class DeleteResponse(Response):
     command: str = "Keys deleted"
     parameter: str = ""
