@@ -4,10 +4,9 @@ from uuid import UUID
 from fastapi.testclient import TestClient as Client
 from requests import Response
 
-from kme.model import Error
-from kme.errors import UnsupportedMandatoryExtensionParameterError
-from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
 from kme.configs import TestConfig
+from kme.errors import UnsupportedExtensionError
+from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs, Error
 
 
 def test_get_key(client: Client) -> None:
@@ -105,4 +104,4 @@ def test_post_key_non_empty_extension_mandatory(client: Client) \
 
     assert response.status_code == 400
     assert error.message == \
-           UnsupportedMandatoryExtensionParameterError.detail
+           UnsupportedExtensionError.detail

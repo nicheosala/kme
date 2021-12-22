@@ -2,6 +2,7 @@ from typing import Iterator
 
 from fastapi.testclient import TestClient as Client
 from pytest import fixture
+
 from kme import app
 
 

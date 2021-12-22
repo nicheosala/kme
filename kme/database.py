@@ -10,4 +10,6 @@ database: Final[Database] = Database(
     check_same_thread=False,
 )
 
-models: Final[ModelRegistry] = ModelRegistry(database=database)
+models: Final[ModelRegistry] = ModelRegistry(
+    database=database
+)

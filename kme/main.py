@@ -3,17 +3,16 @@ from urllib.parse import unquote as url_decode
 from uuid import UUID
 
 from fastapi import FastAPI, Query, Path, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi.encoders import jsonable_encoder
 
+from kme import orm
 from kme.configs import Config
-from kme.errors import UnsupportedMandatoryExtensionParameterError, \
-    SizeNotMultipleOfEightError
+from kme.database import models
+from kme.errors import UnsupportedExtensionError, SizeNotMultipleOfEightError
 from kme.model import Error
 from kme.model import KeyContainer, Key, Status, KeyRequest, KeyIDs
-from kme.database import models
-from kme import orm
 
 app: Final[FastAPI] = FastAPI(
     debug=Config.DEBUG,
@@ -195,7 +194,7 @@ async def post_key(
     for ext in key_request.extension_mandatory:
         for ext_name in ext.keys():
             if ext_name not in key_request.supported_extension_parameters:
-                raise UnsupportedMandatoryExtensionParameterError
+                raise UnsupportedExtensionError
 
     if key_request.size % 8 != 0:
         raise SizeNotMultipleOfEightError

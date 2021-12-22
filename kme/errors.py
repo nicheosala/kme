@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from fastapi import HTTPException
 
 
@@ -15,7 +16,7 @@ class KeyNotFoundError(HTTPException):
 
 
 @dataclass
-class UnsupportedMandatoryExtensionParameterError(HTTPException):
+class UnsupportedExtensionError(HTTPException):
     detail: str = "Not all 'extension_mandatory' parameters are supported"
     status_code: int = 400
 

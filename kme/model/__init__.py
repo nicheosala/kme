@@ -1,5 +1,3 @@
-"""Pay attention: the order of the following imports is not random: it has
-to be preserved in order to avoid circual import errors. """
 from kme.model.key import Key
 from kme.model.error import Error
 from kme.model.key_container import KeyContainer
