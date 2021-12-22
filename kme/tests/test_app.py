@@ -4,7 +4,8 @@ from uuid import UUID
 from fastapi.testclient import TestClient as Client
 from requests import Response
 
-from kme.errors import Error, UnsupportedMandatoryExtensionParameterError
+from kme.model import Error
+from kme.errors import UnsupportedMandatoryExtensionParameterError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
 from kme.configs import TestConfig
 
@@ -83,24 +84,24 @@ class TestApp:
         assert response.status_code == 200
         assert len(key_container.keys) == len(key_ids.key_IDs)
 
-    # def test_post_key_non_empty_extension_mandatory(self, client: Client) \
-    #         -> None:
-    #     """Test case for post_key with non-empty 'extension_mandatory'
-    #     parameter. """
-    #     extension_mandatory: Final[tuple[dict[str, Any], ...]] = \
-    #         ({"ciao": "mamma"},)
-    #     key_request: Final[KeyRequest] = KeyRequest(
-    #         extension_mandatory=extension_mandatory
-    #     )
-    #     slave_sae_id: Final[str] = 'slave_sae_id_example'
-    #
-    #     response: Final[Response] = client.post(
-    #         url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
-    #         json=key_request.json(),
-    #     )
-    #
-    #     error: Final[Error] = Error(**response.json())
-    #
-    #     assert response.status_code == 400
-    #     assert error.message == \
-    #            UnsupportedMandatoryExtensionParameterError().message
+    def test_post_key_non_empty_extension_mandatory(self, client: Client) \
+            -> None:
+        """Test case for post_key with non-empty 'extension_mandatory'
+        parameter. """
+        extension_mandatory: Final[tuple[dict[str, Any], ...]] = \
+            ({"ciao": "mamma"},)
+        key_request: Final[KeyRequest] = KeyRequest(
+            extension_mandatory=extension_mandatory
+        )
+        slave_sae_id: Final[str] = 'slave_sae_id_example'
+
+        response: Final[Response] = client.post(
+            url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
+            data=key_request.json(),
+        )
+
+        error: Final[Error] = Error(**response.json())
+
+        assert response.status_code == 400
+        assert error.message == \
+               UnsupportedMandatoryExtensionParameterError.detail

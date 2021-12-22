@@ -2,12 +2,16 @@ from typing import Final, Iterator
 from urllib.parse import unquote as url_decode
 from uuid import UUID
 
-from fastapi import FastAPI, Query, Path, Depends
+from fastapi import FastAPI, Query, Path, Depends, Request
+from fastapi.exceptions import HTTPException, RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from kme.configs import Config
 from kme.errors import UnsupportedMandatoryExtensionParameterError, \
     SizeNotMultipleOfEightError
+from kme.model import Error
 from kme.model import KeyContainer, Key, Status, KeyRequest, KeyIDs, \
     KeyIDsKeyIDs
 from kme.database import Base, engine, SessionLocal
@@ -27,6 +31,29 @@ def create_app() -> FastAPI:
         debug=Config.DEBUG,
         title="Key Management Entity"
     )
+
+    @app.exception_handler(RequestValidationError)
+    async def request_validation_error_handler(
+            _: Request,
+            error: RequestValidationError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=400,
+            content=error.body
+        )
+
+    @app.exception_handler(HTTPException)
+    async def error_handler(
+            _: Request,
+            exception: HTTPException
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exception.status_code,
+            content=jsonable_encoder(
+                Error(
+                    message=exception.detail
+                ))
+        )
 
     @app.get(
         path="/api/v1/keys/{slave_SAE_ID}/enc_keys",

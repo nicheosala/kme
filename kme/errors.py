@@ -1,50 +1,32 @@
 from dataclasses import dataclass
-from typing import Any
+from fastapi import HTTPException
 
 
-@dataclass(frozen=True, slots=True)
-class Error(Exception):
-    """Generic Error defined respecting standard ETSI GS QKD 014."""
-    message: str
-    details: tuple[dict[str, Any], ...] | None = None
-    status: int = 503
-
-    def __post_init__(self) -> None:
-        if self.message is None:
-            raise EmptyValueError
-
-    @property
-    def json(self) -> object:
-        d: dict[str, Any] = {'message': self.message}
-        if self.details:
-            d.update({'details': self.details})
-        return d
+@dataclass
+class EmptyValueError(HTTPException):
+    detail: str = "Non nullable field set to `None`"
+    status_code: int = 400
 
 
-@dataclass(frozen=True, slots=True)
-class EmptyValueError(Error):
-    message: str = "Non nullable field set to `None`"
+@dataclass
+class KeyNotFoundError(HTTPException):
+    detail: str = "One or more keys specified are not found on KME"
+    status_code: int = 400
 
 
-@dataclass(frozen=True, slots=True)
-class KeyNotFoundError(Error):
-    message: str = "One or more keys specified are not found on KME"
-    status: int = 400
+@dataclass
+class UnsupportedMandatoryExtensionParameterError(HTTPException):
+    detail: str = "Not all 'extension_mandatory' parameters are supported"
+    status_code: int = 400
 
 
-@dataclass(frozen=True, slots=True)
-class UnsupportedMandatoryExtensionParameterError(Error):
-    message: str = "Not all 'extension_mandatory' parameters are supported"
-    status: int = 400
+@dataclass
+class UnmetMandatoryExtensionParameterError(HTTPException):
+    detail: str = "Not all 'extension_mandatory' request options could be met"
+    status_code: int = 400
 
 
-@dataclass(frozen=True, slots=True)
-class UnmetMandatoryExtensionParameterError(Error):
-    message: str = "Not all 'extension_mandatory' request options could be met"
-    status: int = 400
-
-
-@dataclass(frozen=True, slots=True)
-class SizeNotMultipleOfEightError(Error):
-    message: str = "Requested key size shall be a multiple of 8"
-    status: int = 400
+@dataclass
+class SizeNotMultipleOfEightError(HTTPException):
+    detail: str = "Requested key size shall be a multiple of 8"
+    status_code: int = 400
