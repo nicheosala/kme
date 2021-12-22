@@ -1,21 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Final
 
 
-class BaseConfig(ABC):
-    API_PATH = 'api/openapi.yaml'
+class Base(ABC):
     BASE_URL = '/api/v1/keys'
     HOST = 'localhost'
-    APP_PORT = 5000
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_WARN_20 = True
-    PROPAGATE_EXCEPTIONS = False
-
-    @property
-    @abstractmethod
-    def ENV(self) -> str:
-        pass
+    PORT = 5000
 
     @property
     @abstractmethod
@@ -34,27 +24,21 @@ class BaseConfig(ABC):
 
 
 @dataclass(frozen=True, slots=True, init=False)
-class ProductionConfig(BaseConfig):
-    ENV = 'production'
+class Prod(Base):
     DEBUG = False
     TESTING = False
     DATABASE_URL = 'sqlite:///db'
 
 
 @dataclass(frozen=True, slots=True, init=False)
-class DevelopmentConfig(BaseConfig):
-    ENV = 'development'
+class Dev(Base):
     DEBUG = True
     TESTING = False
     DATABASE_URL = 'sqlite:///devdb'
 
 
 @dataclass(frozen=True, slots=True, init=False)
-class TestConfig(BaseConfig):
-    ENV = 'test'
-    DEBUG = True
+class Test(Base):
+    DEBUG = False
     TESTING = True
     DATABASE_URL = 'sqlite:///testdb'
-
-
-Config: Final[BaseConfig] = DevelopmentConfig()

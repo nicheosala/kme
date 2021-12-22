@@ -4,7 +4,7 @@ from uuid import UUID
 from fastapi.testclient import TestClient as Client
 from requests import Response
 
-from kme.configs import TestConfig
+from kme.configs import Config
 from kme.errors import UnsupportedExtensionError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs, Error
 
@@ -14,7 +14,7 @@ def test_get_key(client: Client) -> None:
     slave_sae_id: Final[str] = 'slave_sae_id_example'
 
     response: Final[Response] = client.get(
-        url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys')
+        url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys')
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
 
@@ -28,7 +28,7 @@ def test_get_key_with_key_i_ds(client: Client) -> None:
     key_id: Final[str] = "bc490419-7d60-487f-adc1-4ddcc177c139"
 
     response: Final[Response] = client.get(
-        url=f'{TestConfig.BASE_URL}/{master_sae_id}/dec_keys',
+        url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
         params={"key_ID": key_id}
     )
 
@@ -43,7 +43,7 @@ def test_get_status(client: Client) -> None:
     slave_sae_id: Final[str] = 'slave_sae_id_example'
 
     response: Final[Response] = client.get(
-        url=f'{TestConfig.BASE_URL}/{slave_sae_id}/status',
+        url=f'{Config.BASE_URL}/{slave_sae_id}/status',
     )
 
     assert response.status_code == 200
@@ -56,7 +56,7 @@ def test_post_key(client: Client) -> None:
     slave_sae_id: Final[str] = 'slave_sae_id_example'
 
     response: Final[Response] = client.post(
-        url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
+        url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
         data=key_request.json(exclude_none=True),
     )
 
@@ -74,7 +74,7 @@ def test_post_key_with_key_i_ds(client: Client) -> None:
     master_sae_id: Final[str] = 'master_sae_id_example'
 
     response: Final[Response] = client.post(
-        url=f'{TestConfig.BASE_URL}/{master_sae_id}/dec_keys',
+        url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
         data=key_ids.json(),
     )
 
@@ -96,7 +96,7 @@ def test_post_key_non_empty_extension_mandatory(client: Client) \
     slave_sae_id: Final[str] = 'slave_sae_id_example'
 
     response: Final[Response] = client.post(
-        url=f'{TestConfig.BASE_URL}/{slave_sae_id}/enc_keys',
+        url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
         data=key_request.json(),
     )
 
