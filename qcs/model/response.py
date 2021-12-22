@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Final, Type, TypeVar, Any
+from typing import Type, TypeVar, Any
 
 from jsons import dump, dumps, loads, load
 

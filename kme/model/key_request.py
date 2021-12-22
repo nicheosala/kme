@@ -1,11 +1,9 @@
-from dataclasses import dataclass
 from typing import Any
 
-from kme.model import Model
+from pydantic import BaseModel
 
 
-@dataclass(frozen=True, slots=True)
-class KeyRequest(Model):
+class KeyRequest(BaseModel):
     """Key request data format is used for a request data model of API "Get
     key" method. """
     number: int = 1

@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+from typing import Optional, Any
+
+from pydantic import BaseModel
 
 from kme.errors import EmptyValueError
-from kme.model import Model
 
 
-@dataclass(frozen=True, slots=True)
-class Status(Model):
+class Status(BaseModel):
     """Status contains information on keys available to be requested by a
     master SAE for a specified slave SAE. """
     source_KME_ID: str
@@ -19,7 +19,7 @@ class Status(Model):
     max_key_size: int
     min_key_size: int
     max_SAE_ID_count: int
-    status_extension: object | None = None
+    status_extension: Optional[Any] = None
 
     def __post_init__(self) -> None:
         if (

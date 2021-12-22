@@ -1,37 +1,34 @@
-from typing import Final, Iterator
+from typing import Iterator, Final
 
-from connexion import App
-from flask import Flask
+from fastapi import FastAPI
+from fastapi.testclient import TestClient as Client
 from pytest import fixture
 from sqlalchemy.orm import Session
-from webtest import TestApp
 
-from kme import orm, create_app
-from kme.database import session as _session, engine, mapper_registry
-
-
-@fixture
-def app() -> Iterator[Flask]:
-    connexion_app: Final[App] = create_app()
-    flask_app: Final[Flask] = connexion_app.app
-    with flask_app.test_request_context():
-        yield flask_app
+from kme import create_app, orm
+from kme.database import engine, SessionLocal, Base
 
 
 @fixture
-def test_app(app: Flask) -> TestApp:
-    return TestApp(app)
+def app() -> Iterator[FastAPI]:
+    yield create_app()
+
+
+@fixture
+def client(app: FastAPI) -> Client:
+    return Client(app)
 
 
 @fixture(autouse=True)
 def session() -> Iterator[Session]:
-    mapper_registry.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
+    _session = SessionLocal()
     setup_initial_data(_session)
 
     yield _session
 
     _session.close()
-    mapper_registry.metadata.drop_all(engine)
+    Base.metadata.drop_all(engine)
 
 
 def setup_initial_data(session: Session) -> None:

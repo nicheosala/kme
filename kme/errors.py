@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
 
-from kme.model import Model
-
 
 @dataclass(frozen=True, slots=True)
-class Error(Model, Exception):
+class Error(Exception):
     """Generic Error defined respecting standard ETSI GS QKD 014."""
     message: str
     details: tuple[dict[str, Any], ...] | None = None

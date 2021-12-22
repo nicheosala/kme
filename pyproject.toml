@@ -1,5 +1,5 @@
 [tool.pytest.ini_options]
-addopts = "-vv --strict-markers -p no:chaceprovider"
+addopts = "--strict-markers -p no:chaceprovider"
 
 [tool.mypy]
 strict = true

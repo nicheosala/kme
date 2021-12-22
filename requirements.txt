@@ -1,8 +1,7 @@
-./deps/connexion.zip[swagger-ui]
 pytest~=6.2.5
-WebTest~=3.0.0
-jsons~=1.6.0
-Flask~=2.0.2
-tornado~=6.1
-mypy~=0.920
 SQLAlchemy~=1.4.28
+fastapi~=0.70.1
+pydantic~=1.8.2
+uvicorn~=0.16.0
+requests~=2.26.0
+jsons~=1.6.0
