@@ -12,28 +12,13 @@ produces quantum secret keys.
 
 ## Installation
 
-All the following commands must be executed in a terminal positioned inside
-folder 'qkd'.
+**Requires Python 3.10 or higher.**
 
-**Required: Python 3.10 or higher.**
-
-1. (Optional) create and start a Python virtual environment:
+1. [Install Poetry](https://python-poetry.org/docs/master/#installation)
+2. In a terminal inside folder 'qkd', install project dependencies:
 
 ```bash
-python -m venv VIRTUAL_ENV_NAME
-source VIRTUAL_ENV_NAME/bin/activate
-```
-
-2. Upgrade pip to the latest version:
-
-```bash
-python -m pip install --upgrade pip
-```
-
-3. Install project requirements:
-
-```bash
-pip install -r requirements.txt
+poetry install
 ```
 
 ## Execution
@@ -44,7 +29,7 @@ folder 'qkd'.
 If you want to start a key management entity:
 
 ```bash
-python -m kme
+poetry run python -m kme
 ```
 
 ## Testing
@@ -54,18 +39,31 @@ and [MyPy](https://mypy.readthedocs.io).\
 Pytest executes the tests written by the programmers.\
 MyPy statically checks type hints in the code.
 
-If you want to test 'kme':
+### Manual testing
+
+If you want to test with pytest:
 
 ```bash
-pytest kme
-mypy kme
+env=test poetry run pytest
 ```
 
-If you want to test 'qcs':
+If you want to test with mypy:
 
 ```bash
-pytest qcs
-mypy kme
+env=test poetry run mypy kme qcs
+```
+
+### Automated testing
+
+If you want to perform all the tests that are also performed when pushing new
+modifications to GitHub:
+
+1. [Install Act](https://github.com/nektos/act)
+2. Run 'act' (**Please note**: When you run 'act' for the first time, you have
+   to select 'medium' as default image):
+
+```bash
+act
 ```
 
 ## Sources

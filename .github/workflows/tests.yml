@@ -10,11 +10,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Test using pytest
-        run: env=test pytest
-      - name: Test using mypy
-        run: mypy kme qcs
+      - name: "Set up Poetry"
+        uses: Gr1N/setup-poetry@v7
+      - name: "Install dependencies"
+        run: poetry install
+      - name: "Test using pytest"
+        run: env=test poetry run pytest
+      - name: "Test using mypy"
+        run: env=test poetry run mypy kme qcs
