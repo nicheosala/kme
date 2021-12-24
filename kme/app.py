@@ -8,11 +8,17 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from kme.configs import Config
 from kme.database import models
 from kme.model import Error
+from kme.model.error import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
 app: Final[FastAPI] = FastAPI(
     debug=Config.DEBUG,
-    title="Key Management Entity"
+    title="Key Management Entity",
+    responses={
+        400: {"model": BadRequest},
+        401: {"model": Unauthorized},
+        503: {"model": ServiceUnavailable}
+    }
 )
 
 app.include_router(enc_keys.router)
@@ -55,7 +61,10 @@ async def request_validation_error_handler(
 ) -> JSONResponse:
     return JSONResponse(
         status_code=400,
-        content=error.body
+        content=jsonable_encoder(
+            Error(
+                message=str(error.errors()[0])
+            ))
     )
 
 
