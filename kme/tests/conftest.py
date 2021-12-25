@@ -1,12 +1,14 @@
-from typing import Iterator
+from typing import AsyncIterator
 
-from fastapi.testclient import TestClient as Client
+from asgi_lifespan import LifespanManager
+from httpx import AsyncClient
 from pytest import fixture
 
 from kme import app
 
 
 @fixture
-def client() -> Iterator[Client]:
-    with Client(app) as client:
-        yield client
+async def client() -> AsyncIterator[AsyncClient]:
+    async with LifespanManager(app):
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            yield client

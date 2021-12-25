@@ -17,7 +17,8 @@ def load(
 
 
 def dump(
-        obj: object,
+        obj: Self,
+        cls: Type[Self],
         strip_nulls: bool,
         strict: bool,
         strip_properties: bool
@@ -25,7 +26,7 @@ def dump(
 
 
 def loads(
-        str_: str,
+        string: str,
         cls: Type[Self],
         strict: bool
 ) -> Self: ...

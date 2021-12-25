@@ -1,11 +1,13 @@
 from typing import Any, Final, Optional
 from uuid import uuid4, UUID
 
+from jsons import dump, load
 from orm.exceptions import NoMatch
 from pydantic import BaseModel
 
 from kme import orm
 from kme.errors import KeyNotFoundError
+from kme.utils import generate_key_material, Instruction, retrieve_key_material
 
 
 class Key(BaseModel):
@@ -19,13 +21,23 @@ class Key(BaseModel):
     async def get(key_id: UUID, master_sae_id: str) -> 'Key':
         """Get the keys associated to the given SAE ID"""
         try:
-            key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
-            return Key(
-                key_ID=key.key_id,
-                key=key.key_material
-            )
+            orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
         except NoMatch:
             raise KeyNotFoundError
+
+        instructions: list[Instruction] = load(
+            orm_key.instructions,
+            list[Instruction],
+            strict=True
+        )
+
+        # TODO catch errors for block not found.
+        key_material: Final[str] = await retrieve_key_material(instructions)
+
+        return Key(
+            key_ID=orm_key.key_id,
+            key=key_material
+        )
 
     @staticmethod
     async def delete(key_id: UUID) -> None:
@@ -36,21 +48,22 @@ class Key(BaseModel):
                        *extensions: dict[str, Any]) -> 'Key':
         """Generate one new random key."""
         key_id: Final[UUID] = uuid4()
-        key_material: Final[str] = Key.__keygen(size)
+        key_material, instructions = await generate_key_material(size)
+
+        json_instructions: Final[object] = dump(
+            instructions,
+            list[Instruction],
+            strip_nulls=True,
+            strict=True,
+            strip_properties=True
+        )
 
         await orm.Key.objects.create(
             key_id=key_id,
-            key_material=key_material
+            instructions=json_instructions
         )
 
         return Key(
             key_ID=key_id,
             key=key_material
         )
-
-    @staticmethod
-    def __keygen(size: int) -> str:
-        """Retrieve key material from underlying hardware."""
-        return "OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
-        # TODO this is example key material! You have to ask the quantum
-        #  channel for a new key.

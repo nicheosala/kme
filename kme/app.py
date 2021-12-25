@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
 from kme.database import models
-from kme.model import Error
-from kme.model.error import BadRequest, ServiceUnavailable, Unauthorized
+from kme.model.errors import Error, BadRequest, \
+    ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
 app: Final[FastAPI] = FastAPI(
@@ -40,12 +40,14 @@ async def startup() -> None:
         from uuid import UUID
         await orm.Key.objects.create(
             key_id=UUID("bc490419-7d60-487f-adc1-4ddcc177c139"),
-            key_material="wHHVxRwDJs3/bXd38GHP3oe4svTuRpZS0yCC7x4Ly+s="
+            instructions=[{'block_id': 'dd6eadfc-23bc-49c0-b9d8-4fb87cb5c18a',
+                           'start': 0, 'end': 8}]
         )
 
         await orm.Key.objects.create(
             key_id=UUID("0a782fb5-3434-48fe-aa4d-14f41d46cf92"),
-            key_material="OeGMPxh1+2RpJpNCYixWHFLYRubpOKCw94FcCI7VdJA="
+            instructions=[{'block_id': 'dd6eadfc-23bc-49c0-b9d8-4fb87cb5c18a',
+                           'start': 0, 'end': 8}]
         )
 
 
