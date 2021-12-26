@@ -1,7 +1,7 @@
 import logging
 from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
 from threading import Thread
-from typing import Final
+from typing import Final, Any
 
 from jsons import loads
 
@@ -27,15 +27,21 @@ class QCSimulator:
             (Config.HOST, Config.PORT),
             ThreadedTCPRequestHandler
         )
+
+        def start_server() -> None:
+            self.server.serve_forever(
+                poll_interval=Config.POLL_INTERVAL
+            )
+
         self.server_thread = Thread(
-            target=self.server.serve_forever,
-            daemon=True
+            target=start_server,
+            daemon=True,
         )
 
     def __enter__(self) -> None:
         self.start()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self.stop()
 
     def start(self) -> None:
@@ -54,6 +60,7 @@ class QCSimulator:
         usage with the 'with' statement should be preferred.
         """
         self.server.shutdown()
+        self.server.server_close()
         self.server_thread.join()
         logging.info(f"Server shutdown completed.")
 

@@ -9,6 +9,11 @@ class Base(ABC):
 
     @property
     @abstractmethod
+    def POLL_INTERVAL(self) -> float:
+        pass
+
+    @property
+    @abstractmethod
     def DEBUG(self) -> bool:
         pass
 
@@ -22,15 +27,18 @@ class Base(ABC):
 class Prod(Base):
     DEBUG = False
     TESTING = False
+    POLL_INTERVAL = 0.5
 
 
 @dataclass(frozen=True, slots=True, init=False)
 class Dev(Base):
     DEBUG = True
     TESTING = False
+    POLL_INTERVAL = 0.001
 
 
 @dataclass(frozen=True, slots=True, init=False)
 class Test(Base):
     DEBUG = True
     TESTING = True
+    POLL_INTERVAL = 0.001

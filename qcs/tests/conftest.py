@@ -1,3 +1,4 @@
+from typing import Iterable
 from uuid import UUID
 
 from pytest import fixture
@@ -13,8 +14,10 @@ example_block: Block = Block(
          238, 128, 163, 129, 126, 193, 222, 2, 48))
 
 
-@fixture(scope='module', autouse=True)
-def run_qcsimulator() -> None:
+# scope='module' if you want to start qcs once in
+# the entire test session, instead of starting it once for each test.
+@fixture(autouse=True)
+def run_qcsimulator() -> Iterable[None]:
     with QCSimulator():
         db.blocks[example_block.ID] = example_block
-        yield
+        yield None
