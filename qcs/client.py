@@ -7,23 +7,15 @@ from qcs.configs import Config
 from qcs.model import Request
 
 
-class Client:
-    host: str
-    port: int
+async def send(request: Request) -> str:
+    reader, writer = await open_connection(Config.HOST, Config.PORT)
 
-    def __init__(self, config: Config):
-        self.host = config.SERVER_HOST
-        self.port = config.SERVER_PORT
+    writer.write(bytes(dumps(request, indent=4) + "\n", 'utf-8'))
+    await writer.drain()
 
-    async def send(self, request: Request) -> str:
-        reader, writer = await open_connection(self.host, self.port)
+    received: Final[str] = str(await reader.read(), 'utf-8')
 
-        writer.write(bytes(dumps(request, indent=4) + "\n", 'utf-8'))
-        await writer.drain()
+    writer.close()
+    await writer.wait_closed()
 
-        received: Final[str] = str(await reader.read(), 'utf-8')
-
-        writer.close()
-        await writer.wait_closed()
-
-        return received
+    return received

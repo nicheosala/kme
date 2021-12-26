@@ -1,10 +1,9 @@
 from pytest import fixture
 
-from qcs import QCSimulator
-from qcs.configs import Test
+from qcs.qc_simulator import QCSimulator
 
 
 @fixture(scope='module', autouse=True)
 def run_qcsimulator() -> None:
-    qc: QCSimulator = QCSimulator(Test())
-    qc.run()
+    with QCSimulator():
+        yield

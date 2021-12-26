@@ -1,28 +1,36 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True, slots=True, init=False)
-class Config:
-    SERVER_HOST = 'localhost'
-    SERVER_PORT = 9998
-    DEBUG = False
-    TESTING = False
+class Base(ABC):
+    HOST = 'localhost'
+    PORT = 9998
     COMPATIBILITY_MODE = True
 
+    @property
+    @abstractmethod
+    def DEBUG(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
+    def TESTING(self) -> bool:
+        pass
+
 
 @dataclass(frozen=True, slots=True, init=False)
-class Production(Config):
+class Prod(Base):
     DEBUG = False
     TESTING = False
 
 
 @dataclass(frozen=True, slots=True, init=False)
-class Development(Config):
+class Dev(Base):
     DEBUG = True
     TESTING = False
 
 
 @dataclass(frozen=True, slots=True, init=False)
-class Test(Config):
+class Test(Base):
     DEBUG = True
     TESTING = True
