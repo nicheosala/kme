@@ -7,7 +7,7 @@ from qcs.model import Request, Response
 db: Final[Database] = Database()
 
 commands: Final[dict[str, Callable[[str, str, Database], Command]]] = {
-    "Get key by ID": GetBlocksByIds,
+    "Get keys by IDs": GetBlocksByIds,
     "Get keys": GetBlocks,
     "Flush keys": FlushBlocks,
     "Delete by IDs": DeleteBlocksByIDs

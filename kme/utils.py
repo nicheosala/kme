@@ -53,7 +53,7 @@ async def generate_key_material(req_bitlength: int) \
     instructions: list[Instruction] = []
 
     while True:
-        b: Block = await generate_block()
+        b: __Block = await __gen_block()
         if bit_length(b.Key) >= req_bitlength - bit_length(key_material):
             block_id, start, end = b.ID, 0, (
                     req_bitlength - bit_length(key_material)) // 8
@@ -75,7 +75,7 @@ async def retrieve_key_material(instructions: list[Instruction]) -> str:
     key_material_ints: list[int] = []
 
     for instruction in instructions:
-        block: Block = await get_block_by_id(instruction.block_id)
+        block: __Block = await __get_block_by_id(instruction.block_id)
         start, end = instruction.start, instruction.end
 
         assert end <= len(block.Key)
@@ -89,7 +89,7 @@ async def retrieve_key_material(instructions: list[Instruction]) -> str:
 
 
 @dataclass
-class Block:
+class __Block:
     time: int
     ID: UUID
     Key: tuple[int, ...]
@@ -99,20 +99,20 @@ class BlockNotFound(Exception):
     pass
 
 
-async def generate_block() -> Block:
+async def __gen_block() -> __Block:
     # TODO This has to be retrieved from quantum channel.
-    return Block(_timestamp(), uuid4(), _get_random_bits())
+    return __Block(__timestamp(), uuid4(), __get_random_bits())
 
 
-async def get_block_by_id(block_id: UUID) -> Block:
+async def __get_block_by_id(block_id: UUID) -> __Block:
     # TODO This has to be retrieved from quantum channel.
-    return Block(_timestamp(), uuid4(), _get_random_bits())
+    return __Block(__timestamp(), uuid4(), __get_random_bits())
 
 
-def _timestamp() -> int:
+def __timestamp() -> int:
     return int(datetime.now().timestamp())
 
 
-def _get_random_bits() -> tuple[int, ...]:
+def __get_random_bits() -> tuple[int, ...]:
     from random import getrandbits, randint
     return tuple(getrandbits(8) for _ in range(randint(10, 50)))

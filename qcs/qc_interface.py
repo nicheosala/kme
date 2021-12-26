@@ -21,27 +21,52 @@ async def gen_blocks(number: int = 1) -> tuple[Block, ...]:
 
     res: Final[GetResponse] = GetResponse.from_json(received)
 
+    # TODO Check for errors
+
     return res.blocks
 
 
 async def gen_block() -> Block:
     """Ask the quantum channel for the generation of a single block."""
-    return (await gen_blocks())[0]
+    blocks = await gen_blocks()
+    assert len(blocks) == 1
+    return blocks[0]
 
 
-async def get_blocks_by_ids(self, ids: tuple[UUID, ...]) \
+async def get_block_by_id(block_id: UUID) -> Block:
+    """
+    Ask the quantum channel for the blocks associated to the given ids.
+    """
+    blocks = await get_blocks_by_ids((block_id,))
+    assert len(blocks) == 1
+    return blocks[0]
+
+
+async def get_blocks_by_ids(block_ids: tuple[UUID, ...]) \
         -> tuple[Block, ...]:
     """
     Ask the quantum channel for the blocks associated to the given ids.
     """
-    pass
+    req: Final[Request] = Request(
+        command="Get keys by IDs",
+        attribute="",
+        value=dumps(block_ids, indent=4)
+    )
+
+    received: Final[str] = await client.send(req)
+
+    res: Final[GetResponse] = GetResponse.from_json(received)
+
+    # TODO Check for errors
+
+    return res.blocks
 
 
-async def delete_blocks(ids: tuple[UUID, ...]) -> DeleteResponse:
+async def delete_blocks(block_ids: tuple[UUID, ...]) -> DeleteResponse:
     req: Final[Request] = Request(
         command="Delete by IDs",
         attribute="",
-        value=dumps(ids, indent=4)
+        value=dumps(block_ids, indent=4)
     )
 
     received: Final[str] = await client.send(req)
