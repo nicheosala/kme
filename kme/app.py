@@ -26,7 +26,7 @@ app.include_router(dec_keys.router)
 app.include_router(status.router)
 
 
-@app.get('/')
+@app.get('/', include_in_schema=False)
 async def redirect() -> RedirectResponse:
     return RedirectResponse('/docs', 302)
 
