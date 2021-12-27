@@ -27,17 +27,6 @@ test = ["coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "pytest (>=6.0)", "pytes
 trio = ["trio (>=0.16)"]
 
 [[package]]
-name = "asgi-lifespan"
-version = "1.0.1"
-description = "Programmatic startup/shutdown of ASGI apps."
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-sniffio = "*"
-
-[[package]]
 name = "asgiref"
 version = "3.4.1"
 description = "ASGI specs, helper code, and adapters"
@@ -509,7 +498,7 @@ standard = ["httptools (>=0.2.0,<0.4.0)", "watchgod (>=0.6)", "python-dotenv (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "c45facc245cef5215cc74802e5f51b73e8491cd8a1da767da1d6388f3ba5fc2e"
+content-hash = "1dbbfa0ef9232851591f92be7708771ab8207f8af43f1899523dcd9e2be53aca"
 
 [metadata.files]
 aiosqlite = [
@@ -519,10 +508,6 @@ aiosqlite = [
 anyio = [
     {file = "anyio-3.4.0-py3-none-any.whl", hash = "sha256:2855a9423524abcdd652d942f8932fda1735210f77a6b392eafd9ff34d3fe020"},
     {file = "anyio-3.4.0.tar.gz", hash = "sha256:24adc69309fb5779bc1e06158e143e0b6d2c56b302a3ac3de3083c705a6ed39d"},
-]
-asgi-lifespan = [
-    {file = "asgi-lifespan-1.0.1.tar.gz", hash = "sha256:9a33e7da2073c4764bc79bd6136501d6c42f60e3d2168ba71235e84122eadb7f"},
-    {file = "asgi_lifespan-1.0.1-py3-none-any.whl", hash = "sha256:9ea969dc5eb5cf08e52c08dce6f61afcadd28112e72d81c972b1d8eb8691ab53"},
 ]
 asgiref = [
     {file = "asgiref-3.4.1-py3-none-any.whl", hash = "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"},

@@ -35,21 +35,6 @@ async def redirect() -> RedirectResponse:
 async def startup() -> None:
     await models.create_all()
 
-    if Config.TESTING:
-        from kme import orm
-        from uuid import UUID
-        await orm.Key.objects.create(
-            key_id=UUID("bc490419-7d60-487f-adc1-4ddcc177c139"),
-            instructions=[{'block_id': 'dd6eadfc-23bc-49c0-b9d8-4fb87cb5c18a',
-                           'start': 0, 'end': 8}]
-        )
-
-        await orm.Key.objects.create(
-            key_id=UUID("0a782fb5-3434-48fe-aa4d-14f41d46cf92"),
-            instructions=[{'block_id': 'dd6eadfc-23bc-49c0-b9d8-4fb87cb5c18a',
-                           'start': 0, 'end': 8}]
-        )
-
 
 @app.on_event("shutdown")
 async def shutdown() -> None:

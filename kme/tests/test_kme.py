@@ -39,7 +39,7 @@ async def test_get_key_with_invalid_number(client: Client) -> None:
     assert response.status_code == 400
 
 
-async def test_get_key_with_key_i_ds(client: Client) -> None:
+async def test_get_key_with_key_i_ds(client: Client, init_db: None) -> None:
     """Test case for get_key_with_key_i_ds"""
     master_sae_id: Final[str] = "master_sae_id_example"
     key_id: Final[str] = "bc490419-7d60-487f-adc1-4ddcc177c139"
@@ -124,7 +124,7 @@ async def test_post_key_with_invalid_key_size(client: Client) -> None:
            SizeNotMultipleOfEightError.detail
 
 
-async def test_post_key_with_key_i_ds(client: Client) -> None:
+async def test_post_key_with_key_i_ds(client: Client, init_db: None) -> None:
     """Test case for post_key_with_key_i_ds"""
     key_ids: Final[KeyIDs] = KeyIDs(
         key_IDs=tuple([KeyIDsKeyIDs(
