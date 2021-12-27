@@ -3,7 +3,10 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
     steps:
       - uses: actions/checkout@v2
       - name: "Set up Python 3.10"
@@ -14,7 +17,15 @@ jobs:
         uses: Gr1N/setup-poetry@v7
       - name: "Install dependencies"
         run: poetry install
+      - name: "Set testing environment"
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+               set env=test
+          else
+               export env=test
+          fi
+        shell: bash
       - name: "Test using pytest"
-        run: env=test poetry run pytest
+        run: poetry run pytest
       - name: "Test using mypy"
-        run: env=test poetry run mypy kme qcs
+        run: poetry run mypy kme qcs
