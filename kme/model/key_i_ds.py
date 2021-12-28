@@ -2,9 +2,12 @@
 from typing import Optional, Any
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
+
+from kme.model import BaseModel
 
 
+@dataclass(frozen=True)
 class KeyIDsKeyIDs(BaseModel):
     """Object contained in a KeyIDs object."""
 
@@ -12,6 +15,7 @@ class KeyIDsKeyIDs(BaseModel):
     key_ID_extension: Optional[Any] = None
 
 
+@dataclass(frozen=True)
 class KeyIDs(BaseModel):
     """Key IDs is used for a request of API 'Get key with key IDs'."""
 

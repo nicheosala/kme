@@ -1,3 +1,4 @@
+"""Main app."""
 from typing import Final
 
 from fastapi import FastAPI, Request
@@ -28,6 +29,7 @@ app.include_router(status.router, prefix=Config.BASE_URL)
 
 @app.get('/', include_in_schema=False)
 async def redirect() -> RedirectResponse:
+    """Redirect to docs."""
     return RedirectResponse('/docs', 302)
 
 

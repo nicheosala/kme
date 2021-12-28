@@ -95,7 +95,7 @@ async def test_post_key(client: Client) -> None:
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        content=key_request.json(exclude_unset=True),
+        content=key_request.json_string,
     )
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
@@ -114,7 +114,7 @@ async def test_post_key_with_invalid_key_size(client: Client) -> None:
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        content=key_request.json(exclude_unset=True),
+        content=key_request.json_string,
     )
 
     error: Final[Error] = Error(**response.json())
@@ -136,7 +136,7 @@ async def test_post_key_with_key_i_ds(client: Client, init_db: None) -> None:
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
-        content=key_ids.json(),
+        content=key_ids.json_string,
     )
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
@@ -160,7 +160,7 @@ async def test_post_key_non_empty_extension_mandatory(client: Client) \
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        content=key_request.json(),
+        content=key_request.json_string,
     )
 
     error: Final[Error] = Error(**response.json())

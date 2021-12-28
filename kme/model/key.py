@@ -4,14 +4,16 @@ from uuid import uuid4, UUID
 
 from jsons import dump, load
 from orm.exceptions import NoMatch
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
 from kme import orm
 from kme.database import database
 from kme.errors import KeyNotFoundError
+from kme.model import BaseModel
 from kme.utils import generate_key_material, Instruction, retrieve_key_material
 
 
+@dataclass(frozen=True)
 class Key(BaseModel):
     """Random digital data with an associated universally unique ID."""
 

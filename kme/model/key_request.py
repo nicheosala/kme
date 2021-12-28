@@ -1,11 +1,13 @@
 """Contains the implementation of a Key Request object."""
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
 
 from kme.configs import Config
+from kme.model import BaseModel
 
 
+@dataclass(frozen=True)
 class KeyRequest(BaseModel):
     """Key request is used for a request data model of API 'Get key' method."""
 

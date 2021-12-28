@@ -1,9 +1,12 @@
 """Contains the implementation of a Status object."""
 from typing import Optional, Any
 
-from pydantic import BaseModel
+from pydantic.dataclasses import dataclass
+
+from kme.model import BaseModel
 
 
+@dataclass(frozen=True)
 class Status(BaseModel):
     """A status object.
 
