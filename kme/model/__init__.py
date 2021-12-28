@@ -1,3 +1,4 @@
+"""The implementation of the model of kme."""
 from kme.model.key import Key
 from kme.model.key_container import KeyContainer
 from kme.model.key_i_ds import KeyIDs

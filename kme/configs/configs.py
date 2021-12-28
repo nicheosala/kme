@@ -6,6 +6,10 @@ class Base(ABC):
     BASE_URL = '/api/v1/keys'
     HOST = 'localhost'
     PORT = 5000
+    MIN_KEY_SIZE = 8
+    MAX_KEY_SIZE = 8192
+    DEFAULT_KEY_SIZE = 256
+    MAX_KEY_PER_REQUEST = 10
 
     @property
     @abstractmethod

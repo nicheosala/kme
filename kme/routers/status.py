@@ -3,6 +3,7 @@ from urllib.parse import unquote as url_decode
 
 from fastapi import APIRouter, Path
 
+from kme.configs import Config
 from kme.model import Status
 
 router: Final[APIRouter] = APIRouter(
@@ -30,11 +31,11 @@ async def get_status(
         target_KME_ID="TODO",
         master_SAE_ID="TODO",
         slave_SAE_ID=url_decode(slave_SAE_ID),
-        key_size=64,
+        key_size=Config.DEFAULT_KEY_SIZE,  # TODO check
         stored_key_count=-1,
         max_key_count=-1,
-        max_key_per_request=-1,
-        max_key_size=-1,
-        min_key_size=-1,
+        max_key_per_request=Config.MAX_KEY_PER_REQUEST,
+        max_key_size=Config.MAX_KEY_SIZE,
+        min_key_size=Config.MIN_KEY_SIZE,
         max_SAE_ID_count=-1
     )

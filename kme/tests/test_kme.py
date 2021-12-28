@@ -95,7 +95,7 @@ async def test_post_key(client: Client) -> None:
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        content=key_request.json(exclude_none=True),
+        content=key_request.json(exclude_unset=True),
     )
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
@@ -114,7 +114,7 @@ async def test_post_key_with_invalid_key_size(client: Client) -> None:
 
     response: Final[Response] = await client.post(
         url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        content=key_request.json(exclude_none=True),
+        content=key_request.json(exclude_unset=True),
     )
 
     error: Final[Error] = Error(**response.json())

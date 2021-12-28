@@ -1,3 +1,4 @@
+"""Contains the implementation of a Key object."""
 from typing import Any, Final, Optional
 from uuid import uuid4, UUID
 
@@ -12,6 +13,7 @@ from kme.utils import generate_key_material, Instruction, retrieve_key_material
 
 class Key(BaseModel):
     """Random digital data with an associated universally unique ID."""
+
     key_ID: UUID
     key: str
     key_ID_extension: Optional[Any] = None
@@ -19,7 +21,7 @@ class Key(BaseModel):
 
     @staticmethod
     async def get(key_id: UUID, master_sae_id: str) -> 'Key':
-        """Get the keys associated to the given SAE ID"""
+        """Get the keys associated to the given SAE ID."""
         try:
             orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
         except NoMatch:
@@ -41,6 +43,7 @@ class Key(BaseModel):
 
     @staticmethod
     async def delete(key_id: UUID) -> None:
+        """Delete the key associated to the given key_id."""
         await orm.Key.objects.delete(key_id=key_id)
 
     @staticmethod
