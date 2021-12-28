@@ -33,12 +33,8 @@ async def redirect() -> RedirectResponse:
 
 @app.on_event("startup")
 async def startup() -> None:
+    """Create ORM tables inside the database, if not already present."""
     await models.create_all()
-
-
-@app.on_event("shutdown")
-async def shutdown() -> None:
-    await models.drop_all()
 
 
 @app.exception_handler(RequestValidationError)
@@ -46,6 +42,7 @@ async def request_validation_error_handler(
         _: Request,
         error: RequestValidationError
 ) -> JSONResponse:
+    """Always return 400 for a RequestValidationError."""
     return JSONResponse(
         status_code=400,
         content=jsonable_encoder(
@@ -60,6 +57,7 @@ async def error_handler(
         _: Request,
         exception: HTTPException
 ) -> JSONResponse:
+    """Always return a body of type kme.model.Error for an HTTPException."""
     return JSONResponse(
         status_code=exception.status_code,
         content=jsonable_encoder(

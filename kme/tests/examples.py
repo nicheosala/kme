@@ -1,3 +1,4 @@
+"""Examples exploited for testing purposes."""
 from typing import Final
 from uuid import UUID
 

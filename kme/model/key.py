@@ -7,6 +7,7 @@ from orm.exceptions import NoMatch
 from pydantic import BaseModel
 
 from kme import orm
+from kme.database import database
 from kme.errors import KeyNotFoundError
 from kme.utils import generate_key_material, Instruction, retrieve_key_material
 
@@ -22,10 +23,12 @@ class Key(BaseModel):
     @staticmethod
     async def get(key_id: UUID, master_sae_id: str) -> 'Key':
         """Get the keys associated to the given SAE ID."""
-        try:
-            orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
-        except NoMatch:
-            raise KeyNotFoundError
+        async with database:
+            try:
+                orm_key: Final[orm.Key] = \
+                    await orm.Key.objects.get(key_id=key_id)
+            except NoMatch:
+                raise KeyNotFoundError
 
         instructions: list[Instruction] = load(
             orm_key.instructions,
@@ -44,7 +47,8 @@ class Key(BaseModel):
     @staticmethod
     async def delete(key_id: UUID) -> None:
         """Delete the key associated to the given key_id."""
-        await orm.Key.objects.delete(key_id=key_id)
+        async with database:
+            await orm.Key.objects.delete(key_id=key_id)
 
     @staticmethod
     async def generate(size: int, slave_sae_ids: frozenset[str],
@@ -61,10 +65,11 @@ class Key(BaseModel):
             strip_properties=True
         )
 
-        await orm.Key.objects.create(
-            key_id=key_id,
-            instructions=json_instructions
-        )
+        async with database:
+            await orm.Key.objects.create(
+                key_id=key_id,
+                instructions=json_instructions
+            )
 
         return Key(
             key_ID=key_id,
