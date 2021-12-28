@@ -12,10 +12,11 @@ produces quantum secret keys.
 
 ## Installation
 
-**Requires Python 3.10 or higher.**
-
-1. [Install Poetry](https://python-poetry.org/docs/master/#installation)
-2. In a terminal inside folder 'qkd', install project dependencies:
+1. (Optional) This project **requires Python 3.10 or higher.** If you don't
+   have Python 3.10 installed system-wide, you may want to install it
+   through [pyenv](https://realpython.com/intro-to-pyenv/).
+2. [Install Poetry](https://python-poetry.org/docs/master/#installation)
+3. In a terminal inside folder 'qkd', install project dependencies:
 
 ```bash
 poetry install
@@ -41,16 +42,30 @@ MyPy statically checks type hints in the code.
 
 ### Manual testing
 
-If you want to test with pytest:
+First, set the testing environment.
+
+On Linux/MacOS:
 
 ```bash
-env=test poetry run pytest
+export env=test
+```
+
+On Windows:
+
+```shell
+set env=test
+```
+
+Then, if you want to test with pytest:
+
+```bash
+poetry run pytest
 ```
 
 If you want to test with mypy:
 
 ```bash
-env=test poetry run mypy kme qcs
+poetry run mypy kme qcs
 ```
 
 ### Automated testing
