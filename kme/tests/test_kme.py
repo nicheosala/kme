@@ -8,7 +8,7 @@ from kme.errors import UnsupportedExtensionError, KeyNotFoundError, \
     SizeNotMultipleOfEightError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
 from kme.model.errors import Error
-from kme.tests.conftest import example_key_1, example_key_2
+from kme.tests.examples import key_1, key_2
 
 pytestmark = pytest.mark.asyncio
 
@@ -45,14 +45,14 @@ async def test_get_key_with_key_i_ds(client: Client, init_db: None) -> None:
 
     response: Final[Response] = await client.get(
         url=f'{Config.BASE_URL}/{master_sae_id}/dec_keys',
-        params={"key_ID": str(example_key_1.key_id)}
+        params={"key_ID": str(key_1.key_id)}
     )
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
 
     assert response.status_code == 200
     assert len(key_container.keys) == 1
-    assert key_container.keys[0].key_ID == example_key_1.key_id
+    assert key_container.keys[0].key_ID == key_1.key_id
 
 
 async def test_get_key_with_key_i_ds_with_invalid_key_id(client: Client) \
@@ -128,8 +128,8 @@ async def test_post_key_with_key_i_ds(client: Client, init_db: None) -> None:
     """Test case for post_key_with_key_i_ds"""
     key_ids: Final[KeyIDs] = KeyIDs(
         key_IDs=(
-            KeyIDsKeyIDs(key_ID=example_key_1.key_id),
-            KeyIDsKeyIDs(key_ID=example_key_2.key_id)
+            KeyIDsKeyIDs(key_ID=key_1.key_id),
+            KeyIDsKeyIDs(key_ID=key_2.key_id)
         )
     )
     master_sae_id: Final[str] = 'master_sae_id_example'
@@ -143,8 +143,8 @@ async def test_post_key_with_key_i_ds(client: Client, init_db: None) -> None:
 
     assert response.status_code == 200
     assert len(key_container.keys) == len(key_ids.key_IDs)
-    assert example_key_1.key_id in (k.key_ID for k in key_container.keys)
-    assert example_key_2.key_id in (k.key_ID for k in key_container.keys)
+    assert key_1.key_id in (k.key_ID for k in key_container.keys)
+    assert key_2.key_id in (k.key_ID for k in key_container.keys)
 
 
 async def test_post_key_non_empty_extension_mandatory(client: Client) \

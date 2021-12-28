@@ -9,6 +9,14 @@ from qcs.model.response import DeleteResponse
 from qcs.orm import Block
 
 
+class BlockNotGenerated(Exception):
+    pass
+
+
+class BlockNotFound(Exception):
+    pass
+
+
 async def gen_blocks(number: int = 1) -> tuple[Block, ...]:
     """Ask the quantum channel for the generation of n blocks."""
     req: Final[Request] = Request(
@@ -21,7 +29,8 @@ async def gen_blocks(number: int = 1) -> tuple[Block, ...]:
 
     res: Final[GetResponse] = GetResponse.from_json(received)
 
-    # TODO Check for errors
+    if len(res.blocks) < number:
+        raise BlockNotGenerated
 
     return res.blocks
 
@@ -57,7 +66,8 @@ async def get_blocks_by_ids(block_ids: tuple[UUID, ...]) \
 
     res: Final[GetResponse] = GetResponse.from_json(received)
 
-    # TODO Check for errors
+    if len(res.blocks) < len(block_ids):
+        raise BlockNotFound
 
     return res.blocks
 

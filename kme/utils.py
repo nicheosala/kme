@@ -1,8 +1,10 @@
 from base64 import b64decode, b64encode
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Collection
-from uuid import UUID, uuid4
+from uuid import UUID
+
+from qcs import interface as qci
+from qcs.orm import Block as __Block
 
 
 @dataclass
@@ -53,7 +55,11 @@ async def generate_key_material(req_bitlength: int) \
     instructions: list[Instruction] = []
 
     while True:
-        b: __Block = await __gen_block()
+        try:
+            b: __Block = await qci.gen_block()
+        except qci.BlockNotGenerated:
+            raise  # TODO
+
         if bit_length(b.Key) >= req_bitlength - bit_length(key_material):
             block_id, start, end = b.ID, 0, (
                     req_bitlength - bit_length(key_material)) // 8
@@ -75,44 +81,15 @@ async def retrieve_key_material(instructions: list[Instruction]) -> str:
     key_material_ints: list[int] = []
 
     for instruction in instructions:
-        block: __Block = await __get_block_by_id(instruction.block_id)
+        try:
+            b: __Block = await qci.get_block_by_id(instruction.block_id)
+        except qci.BlockNotFound:
+            raise  # TODO
+
         start, end = instruction.start, instruction.end
 
-        assert end <= len(block.Key)
+        assert end <= len(b.Key)
 
-        key_material_ints.extend(block.Key[start:end])
+        key_material_ints.extend(b.Key[start:end])
 
     return collecitonint_to_b64(key_material_ints)
-
-
-# TODO Follows code to be removed #####
-
-
-@dataclass
-class __Block:
-    time: int
-    ID: UUID
-    Key: tuple[int, ...]
-
-
-class BlockNotFound(Exception):
-    pass
-
-
-async def __gen_block() -> __Block:
-    # TODO This has to be retrieved from quantum channel.
-    return __Block(__timestamp(), uuid4(), __get_random_bits())
-
-
-async def __get_block_by_id(block_id: UUID) -> __Block:
-    # TODO This has to be retrieved from quantum channel.
-    return __Block(__timestamp(), uuid4(), __get_random_bits())
-
-
-def __timestamp() -> int:
-    return int(datetime.now().timestamp())
-
-
-def __get_random_bits() -> tuple[int, ...]:
-    from random import getrandbits, randint
-    return tuple(getrandbits(8) for _ in range(randint(10, 50)))

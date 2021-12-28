@@ -10,10 +10,10 @@ from qcs.model import Request, Response
 from qcs.resolver import resolve
 
 
-class QCSimulator:
+class Simulator:
     """Start a Quantum Channel Simulator
     Usage:
-    with QCSImulator():
+    with SImulator():
         *do things*
 
     Otherwise. you can start it with .start(),
