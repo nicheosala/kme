@@ -21,9 +21,9 @@ app: Final[FastAPI] = FastAPI(
     }
 )
 
-app.include_router(enc_keys.router)
-app.include_router(dec_keys.router)
-app.include_router(status.router)
+app.include_router(enc_keys.router, prefix=Config.BASE_URL)
+app.include_router(dec_keys.router, prefix=Config.BASE_URL)
+app.include_router(status.router, prefix=Config.BASE_URL)
 
 
 @app.get('/', include_in_schema=False)

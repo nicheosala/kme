@@ -12,7 +12,7 @@ router: Final[APIRouter] = APIRouter(
 
 
 @router.get(
-    path="/api/v1/keys/{master_SAE_ID}/dec_keys",
+    path="/{master_SAE_ID}/dec_keys",
     summary="Get key with key IDs",
     response_model=KeyContainer,
     response_model_exclude_unset=True
@@ -46,7 +46,7 @@ async def get_key_with_key_i_ds(
 
 
 @router.post(
-    path="/api/v1/keys/{master_SAE_ID}/dec_keys",
+    path="/{master_SAE_ID}/dec_keys",
     summary="Post key with key IDs",
     response_model=KeyContainer,
     response_model_exclude_unset=True

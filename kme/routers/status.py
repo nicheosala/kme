@@ -12,7 +12,7 @@ router: Final[APIRouter] = APIRouter(
 
 
 @router.get(
-    path="/api/v1/keys/{slave_SAE_ID}/status",
+    path="/{slave_SAE_ID}/status",
     summary="Get status",
     response_model=Status,
     response_model_exclude_unset=True
