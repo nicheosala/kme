@@ -4,7 +4,6 @@ from urllib.parse import unquote as url_decode
 from fastapi import APIRouter, Query, Path
 
 from kme.database.db import generate
-from kme.errors import UnsupportedExtensionError, SizeNotMultipleOfEightError
 from kme.model import KeyContainer, Key, KeyRequest
 
 router: Final[APIRouter] = APIRouter(
@@ -70,14 +69,6 @@ async def post_key(
     subsequently request matching keys from a remote kme using key_ID
     identifiers from the returned Key container.
     """
-    for ext in key_request.extension_mandatory:
-        for ext_name in ext.keys():
-            if ext_name not in key_request.supported_extension_parameters:
-                raise UnsupportedExtensionError
-
-    if key_request.size % 8 != 0:
-        raise SizeNotMultipleOfEightError
-
     new_keys: Final[list[Key]] = []
     for _ in range(key_request.number):
         new_key: Key = await generate(

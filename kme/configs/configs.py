@@ -11,10 +11,18 @@ class Base(ABC):
     BASE_URL = '/api/v1/keys'
     HOST = 'localhost'
     PORT = 5000
+
+    # Status
     MIN_KEY_SIZE = 8
     MAX_KEY_SIZE = 8192
     DEFAULT_KEY_SIZE = 256
     MAX_KEY_PER_REQUEST = 10
+    STORED_KEY_COUNT = 10
+    MAX_KEY_COUNT = 10
+    MAX_SAE_ID_COUNT = 10
+
+    # Key request
+    SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
 
     @property
     @abstractmethod

@@ -8,8 +8,8 @@ from kme.channel.qc import retrieve_key_material, \
     generate_key_material
 from kme.database import orm
 from kme.database.database import database
-from kme.errors import KeyNotFoundError
 from kme.model import Key
+from kme.model.errors import KeyNotFound
 
 
 async def get(key_id: UUID, master_sae_id: str) -> 'Key':
@@ -19,7 +19,7 @@ async def get(key_id: UUID, master_sae_id: str) -> 'Key':
             orm_key: Final[orm.Key] = \
                 await orm.Key.objects.get(key_id=key_id)
         except NoMatch:
-            raise KeyNotFoundError
+            raise KeyNotFound
 
     # TODO catch errors for block not found.
     key_material: Final[str] = \

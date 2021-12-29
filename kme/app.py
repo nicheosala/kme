@@ -2,7 +2,6 @@
 from typing import Final
 
 from fastapi import FastAPI, Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
@@ -47,7 +46,9 @@ async def request_validation_error_handler(
     """Always return 400 for a RequestValidationError."""
     return JSONResponse(
         status_code=400,
-        content=jsonable_encoder({"message": str(error.errors()[0])})
+        content={
+            "message": str(error.errors()[0])
+        }
     )
 
 
@@ -59,5 +60,7 @@ async def error_handler(
     """Always return a body of type kme.model.Error for an HTTPException."""
     return JSONResponse(
         status_code=exception.status_code,
-        content=jsonable_encoder({"message": exception.detail})
+        content={
+            "message": exception.detail
+        }
     )

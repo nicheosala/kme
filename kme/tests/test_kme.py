@@ -1,14 +1,13 @@
-from typing import Final, Any
+from typing import Final
 
 import pytest
 from httpx import AsyncClient as Client, Response
+from pydantic import ValidationError
 
 from kme.configs import Config
 from kme.encoder import dump
-from kme.errors import UnsupportedExtensionError, KeyNotFoundError, \
-    SizeNotMultipleOfEightError
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
-from kme.model.errors import Error
+from kme.model.errors import Error, KeyNotFound
 from kme.tests.examples import key_1, key_2
 
 pytestmark = pytest.mark.asyncio
@@ -74,7 +73,7 @@ async def test_get_key_with_key_i_ds_with_invalid_key_id(client: Client) \
 
     assert response.status_code == 400
     assert error.message == \
-           KeyNotFoundError.detail
+           KeyNotFound.detail
 
 
 async def test_get_status(client: Client) -> None:
@@ -109,20 +108,8 @@ async def test_post_key_with_invalid_key_size(client: Client) -> None:
     """
     post_key should return 400 if the given key size is not a multiple of 8.
     """
-    invalid_size: Final[int] = 10
-    key_request: Final[KeyRequest] = KeyRequest(size=invalid_size)
-    slave_sae_id: Final[str] = 'slave_sae_id_example'
-
-    response: Final[Response] = await client.post(
-        url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        json=dump(key_request),
-    )
-
-    error: Final[Error] = Error(**response.json())
-
-    assert response.status_code == 400
-    assert error.message == \
-           SizeNotMultipleOfEightError.detail
+    with pytest.raises(ValidationError):
+        KeyRequest(size=10)
 
 
 async def test_post_key_with_key_i_ds(client: Client, init_db: None) -> None:
@@ -152,20 +139,5 @@ async def test_post_key_non_empty_extension_mandatory(client: Client) \
         -> None:
     """Test case for post_key with non-empty 'extension_mandatory'
     parameter. """
-    extension_mandatory: Final[tuple[dict[str, Any], ...]] = \
-        ({"ciao": "mamma"},)
-    key_request: Final[KeyRequest] = KeyRequest(
-        extension_mandatory=extension_mandatory
-    )
-    slave_sae_id: Final[str] = 'slave_sae_id_example'
-
-    response: Final[Response] = await client.post(
-        url=f'{Config.BASE_URL}/{slave_sae_id}/enc_keys',
-        json=dump(key_request),
-    )
-
-    error: Final[Error] = Error(**response.json())
-
-    assert response.status_code == 400
-    assert error.message == \
-           UnsupportedExtensionError.detail
+    with pytest.raises(ValidationError):
+        KeyRequest(extension_mandatory=({"ciao": "mamma"},))

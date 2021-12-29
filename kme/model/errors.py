@@ -1,6 +1,8 @@
-"""Contains the definition of errors that may be raised by kme."""
+"""Contains the implementation of an Error object."""
 from typing import Optional, Any
 
+from fastapi import HTTPException
+from pydantic import Field
 from pydantic.dataclasses import dataclass
 
 
@@ -9,25 +11,33 @@ class Error:
     """Generic Error defined respecting standard ETSI GS QKD 014."""
 
     message: str
-    details: Optional[tuple[dict[str, Any], ...]] = None
+
+    details: Optional[tuple[dict[str, Any], ...]] = Field(
+        default=None,
+        description="""(Option) Array to supply additional detailed error 
+        information specified as name/value pairs. Values may be of any 
+        type, including objects. """
+    )
 
 
 @dataclass(frozen=True)
 class ServiceUnavailable(Error):
-    """Exception with status code 503."""
-
-    pass
+    """Error with status code 503."""
 
 
 @dataclass(frozen=True)
 class BadRequest(Error):
-    """Exception with status code 400."""
-
-    pass
+    """Error with status code 400."""
 
 
 @dataclass(frozen=True)
 class Unauthorized(Error):
-    """Exception with status code 401."""
+    """Error with status code 401."""
 
-    pass
+
+@dataclass(frozen=True)
+class KeyNotFound(HTTPException):
+    """Error when a requested key is not found."""
+    
+    detail: str = "One or more keys specified are not found on KME"
+    status_code: int = 400
