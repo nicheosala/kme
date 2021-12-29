@@ -3,6 +3,7 @@ from urllib.parse import unquote as url_decode
 
 from fastapi import APIRouter, Query, Path
 
+from kme.database.db import generate
 from kme.errors import UnsupportedExtensionError, SizeNotMultipleOfEightError
 from kme.model import KeyContainer, Key, KeyRequest
 
@@ -39,7 +40,7 @@ async def get_key(
     """
     new_keys: Final[list[Key]] = []
     for _ in range(number):
-        new_key: Key = await Key.generate(
+        new_key: Key = await generate(
             size,
             frozenset([url_decode(slave_SAE_ID)])
         )
@@ -79,7 +80,7 @@ async def post_key(
 
     new_keys: Final[list[Key]] = []
     for _ in range(key_request.number):
-        new_key: Key = await Key.generate(
+        new_key: Key = await generate(
             key_request.size,
             frozenset((url_decode(slave_SAE_ID),
                        *key_request.additional_slave_SAE_IDs)),

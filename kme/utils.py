@@ -1,95 +1,36 @@
+"""Utility functions."""
 from base64 import b64decode, b64encode
-from dataclasses import dataclass
 from typing import Collection
-from uuid import UUID
-
-from qcs import interface as qci
-from qcs.orm import Block as __Block
 
 
-@dataclass
-class Instruction:
-    block_id: UUID
-    start: int
-    end: int
-
-
-def b64_to_tupleint(s: str) -> tuple[int, ...]:
-    """Convert a base64-encoded string into a tuple of integer numbers in
-    range [0, 255]. """
-    return tuple(b for b in b64decode(s))
+def b64_to_tupleint(b64_string: str) -> tuple[int, ...]:
+    """Convert a base64 string into a tuple of integer in [0, 255]."""
+    assert is_base64(b64_string)
+    return tuple(b for b in b64decode(b64_string))
 
 
 def collecitonint_to_b64(c: Collection[int]) -> str:
-    """Convert a collection of integer numbers in range [0, 255] into a
-    base64-encoded string. """
+    """Convert a collection of integer in [0, 255] into a base64 string."""
     assert all(n in range(0, 256) for n in c)
     return str(b64encode(bytes(c)), 'utf-8')
 
 
 def bit_length(c: Collection[int]) -> int:
-    """
-    Return the number of bits represented by the given collection of integer
-    numbers in range [0, 255]. Each positive integer number is considered
-    8-bits long.
+    """Return number of bits represented by the given collection of integer.
+
+    Each positive integer number is considered 8-bits long, in range [0, 255].
     """
     assert all(n in range(0, 256) for n in c)
     return len(c) * 8
 
 
-def bit_length_b64(s: str) -> int:
+def bit_length_b64(b64_string: str) -> int:
     """Return the number of bits represented by the given base64 string."""
-    return bit_length((b64_to_tupleint(s)))
+    assert is_base64(b64_string)
+    return bit_length(b64_to_tupleint(b64_string))
 
 
-async def generate_key_material(req_bitlength: int) \
-        -> tuple[str, list[Instruction]]:
-    """
-    Return key_material encoded as a base64 string, with the 'req_bitlength'
-    requested. Alongside the key material, the instructions to re-build it,
-    given the exploited blocks, is returned. These instructions have to be
-    stored inside the database shared between communicating KMEs.
-    """
-    assert req_bitlength % 8 == 0
-    key_material: list[int] = []
-    instructions: list[Instruction] = []
-
-    while True:
-        try:
-            b: __Block = await qci.gen_block()
-        except qci.BlockNotGenerated:
-            raise  # TODO
-
-        if bit_length(b.Key) >= req_bitlength - bit_length(key_material):
-            block_id, start, end = b.ID, 0, (
-                    req_bitlength - bit_length(key_material)) // 8
-            instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.Key[start:end])
-            break
-        else:
-            block_id, start, end = b.ID, 0, len(b.Key)
-            instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.Key[start:end])
-
-    return collecitonint_to_b64(key_material), instructions
-
-
-async def retrieve_key_material(instructions: list[Instruction]) -> str:
-    """
-    Return the key material re-created based on the given instructions.
-    """
-    key_material_ints: list[int] = []
-
-    for instruction in instructions:
-        try:
-            b: __Block = await qci.get_block_by_id(instruction.block_id)
-        except qci.BlockNotFound:
-            raise  # TODO
-
-        start, end = instruction.start, instruction.end
-
-        assert end <= len(b.Key)
-
-        key_material_ints.extend(b.Key[start:end])
-
-    return collecitonint_to_b64(key_material_ints)
+def is_base64(s: str) -> bool:
+    """Return True if 's' is a valid base64 string, else False."""
+    bytes_s = bytes(s, 'ascii')
+    return bytes_s == b64encode(b64decode(bytes_s))

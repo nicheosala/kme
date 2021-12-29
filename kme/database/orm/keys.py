@@ -1,6 +1,6 @@
 from orm import Model, Integer, UUID, JSON
 
-from kme.database import models
+from kme.database.database import models
 
 
 class Key(Model):  # type: ignore

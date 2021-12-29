@@ -4,8 +4,9 @@ from typing import AsyncIterator, Iterable
 from httpx import AsyncClient
 from pytest import fixture
 
-from kme import app, orm
-from kme.database import models
+from kme import app
+from kme.database import orm
+from kme.database.database import models
 from kme.tests.examples import key_1, key_2
 
 

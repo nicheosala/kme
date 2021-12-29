@@ -7,7 +7,7 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
-from kme.database import models
+from kme.database.database import models
 from kme.model.errors import Error, BadRequest, \
     ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status

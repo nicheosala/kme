@@ -1,5 +1,6 @@
+from dataclasses import dataclass
+
 from fastapi import HTTPException
-from pydantic.dataclasses import dataclass
 
 
 @dataclass(frozen=True)

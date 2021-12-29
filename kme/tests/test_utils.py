@@ -3,6 +3,7 @@ from typing import Final
 import pytest
 
 from kme import utils
+from kme.channel.qc import generate_key_material
 
 pytestmark = pytest.mark.asyncio
 
@@ -19,5 +20,5 @@ def test_iterableint_to_b64_then_viceversa() -> None:
 
 async def test_generate_key_material() -> None:
     req_bitlength: Final[int] = 256
-    key_material, _ = await utils.generate_key_material(req_bitlength)
+    key_material, _ = await generate_key_material(req_bitlength)
     assert req_bitlength == utils.bit_length_b64(key_material)

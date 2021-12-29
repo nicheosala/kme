@@ -2,7 +2,7 @@
 from typing import Final
 from uuid import UUID
 
-from kme import orm
+from kme.database import orm
 
 key_1: Final[orm.Key] = orm.Key(
     key_id=UUID("bc490419-7d60-487f-adc1-4ddcc177c139"),

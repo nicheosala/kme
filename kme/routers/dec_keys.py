@@ -4,6 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Query, Path
 
+from kme.database.db import get
 from kme.model import KeyContainer, KeyIDs, Key
 
 router: Final[APIRouter] = APIRouter(
@@ -37,7 +38,7 @@ async def get_key_with_key_i_ds(
     time it was called resulting in the return of the Key IDs being
     requested.
     """
-    keys: Final[tuple[Key, ...]] = await Key.get(
+    keys: Final[tuple[Key, ...]] = await get(
         key_ID,
         url_decode(master_SAE_ID)
     ),
@@ -70,7 +71,7 @@ async def post_key_with_key_i_ds(
     """
     keys: Final[list[Key]] = []
     for key_id in key_ids.key_IDs:
-        key: Key = await Key.get(
+        key: Key = await get(
             key_id.key_ID,
             url_decode(master_SAE_ID)
         )
