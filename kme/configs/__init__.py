@@ -12,10 +12,8 @@ def __set_config() -> Base:
     if env == 'prod':
         return Prod()
     elif env == 'test':
-        logging.basicConfig(level=logging.DEBUG)
         return Test()
     else:
-        logging.basicConfig(level=logging.DEBUG)
         return Dev()
 
 
@@ -25,8 +23,10 @@ Config: Final[Base] = __set_config()
 def __set_logging() -> None:
     """Initialize logging."""
     env: str | None = environ.get('env')
-    if env in ('test', 'dev'):
+    if env == 'dev':
         logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
 
 __set_logging()

@@ -16,7 +16,7 @@ router: Final[APIRouter] = APIRouter(
     path="/{master_SAE_ID}/dec_keys",
     summary="Get key with key IDs",
     response_model=KeyContainer,
-    response_model_exclude_unset=True
+    response_model_exclude_none=True
 )
 async def get_key_with_key_i_ds(
         master_SAE_ID: str = Path(
@@ -50,7 +50,7 @@ async def get_key_with_key_i_ds(
     path="/{master_SAE_ID}/dec_keys",
     summary="Post key with key IDs",
     response_model=KeyContainer,
-    response_model_exclude_unset=True
+    response_model_exclude_none=True
 )
 async def post_key_with_key_i_ds(
         key_ids: KeyIDs,

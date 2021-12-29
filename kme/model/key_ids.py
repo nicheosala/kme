@@ -1,11 +1,10 @@
 """Contains the implementation of a KeyIDs object."""
+from dataclasses import dataclass
 from typing import Optional, Any
 from uuid import UUID
 
-from pydantic.dataclasses import dataclass
 
-
-@dataclass(frozen=True)
+@dataclass
 class KeyIDsKeyIDs:
     """Object contained in a KeyIDs object."""
 
@@ -13,7 +12,7 @@ class KeyIDsKeyIDs:
     key_ID_extension: Optional[Any] = None
 
 
-@dataclass(frozen=True)
+@dataclass
 class KeyIDs:
     """Key IDs is used for a request of API 'Get key with key IDs'."""
 

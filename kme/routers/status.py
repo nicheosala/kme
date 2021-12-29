@@ -15,7 +15,7 @@ router: Final[APIRouter] = APIRouter(
     path="/{slave_SAE_ID}/status",
     summary="Get status",
     response_model=Status,
-    response_model_exclude_unset=True
+    response_model_exclude_none=True
 )
 async def get_status(
         slave_SAE_ID: str = Path(

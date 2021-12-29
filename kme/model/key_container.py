@@ -1,9 +1,18 @@
 """Contains the implementation of a Key Container object."""
 from typing import Optional, Any
+from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from kme.model import Key
+
+@dataclass(frozen=True)
+class Key:
+    """Random digital data with an associated universally unique ID."""
+
+    key_ID: UUID
+    key: str
+    key_ID_extension: Optional[Any] = None
+    key_extension: Optional[Any] = None
 
 
 @dataclass(frozen=True)

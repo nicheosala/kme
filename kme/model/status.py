@@ -1,10 +1,9 @@
 """Contains the implementation of a Status object."""
+from dataclasses import dataclass
 from typing import Optional, Any
 
-from pydantic.dataclasses import dataclass
 
-
-@dataclass(frozen=True)
+@dataclass
 class Status:
     """A status object.
 
