@@ -28,8 +28,3 @@ def dump(obj: object) -> object:
         strip_properties=True,
         strict=True
     )
-
-
-def dumps(obj: object) -> str:
-    """Convert the given Python-instance to an equivalent JSON-string."""
-    return jsons.dumps(dump(obj), indent=4)
