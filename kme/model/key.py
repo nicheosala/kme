@@ -2,19 +2,18 @@
 from typing import Any, Final, Optional
 from uuid import uuid4, UUID
 
-from jsons import dump, load
 from orm.exceptions import NoMatch
 from pydantic.dataclasses import dataclass
 
 from kme import orm
 from kme.database import database
+from kme.encoder import dump, load
 from kme.errors import KeyNotFoundError
-from kme.model import BaseModel
 from kme.utils import generate_key_material, Instruction, retrieve_key_material
 
 
 @dataclass(frozen=True)
-class Key(BaseModel):
+class Key:
     """Random digital data with an associated universally unique ID."""
 
     key_ID: UUID
@@ -34,8 +33,7 @@ class Key(BaseModel):
 
         instructions: list[Instruction] = load(
             orm_key.instructions,
-            list[Instruction],
-            strict=True
+            list[Instruction]
         )
 
         # TODO catch errors for block not found.
@@ -59,13 +57,7 @@ class Key(BaseModel):
         key_id: Final[UUID] = uuid4()
         key_material, instructions = await generate_key_material(size)
 
-        json_instructions: Final[object] = dump(
-            instructions,
-            list[Instruction],
-            strip_nulls=True,
-            strict=True,
-            strip_properties=True
-        )
+        json_instructions: Final[object] = dump(instructions)
 
         async with database:
             await orm.Key.objects.create(

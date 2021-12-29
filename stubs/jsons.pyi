@@ -18,10 +18,10 @@ def load(
 
 def dump(
         obj: Self,
-        cls: Type[Self],
         strip_nulls: bool,
-        strict: bool,
-        strip_properties: bool
+        strip_privates: bool,
+        strip_properties: bool,
+        strict: bool
 ) -> object: ...
 
 

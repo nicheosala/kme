@@ -3,11 +3,9 @@ from typing import Optional, Any
 
 from pydantic.dataclasses import dataclass
 
-from kme.model import BaseModel
-
 
 @dataclass(frozen=True)
-class Error(BaseModel):
+class Error:
     """Generic Error defined respecting standard ETSI GS QKD 014."""
 
     message: str

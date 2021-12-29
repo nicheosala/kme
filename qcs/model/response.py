@@ -20,10 +20,10 @@ class Response:
     def json(self) -> object:
         return dump(
             self,
-            cls=self.__class__,
             strip_nulls=True,
             strict=True,
-            strip_properties=True
+            strip_properties=True,
+            strip_privates=True
         )
 
     @property

@@ -4,11 +4,9 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from kme.model import BaseModel
-
 
 @dataclass(frozen=True)
-class KeyIDsKeyIDs(BaseModel):
+class KeyIDsKeyIDs:
     """Object contained in a KeyIDs object."""
 
     key_ID: UUID
@@ -16,7 +14,7 @@ class KeyIDsKeyIDs(BaseModel):
 
 
 @dataclass(frozen=True)
-class KeyIDs(BaseModel):
+class KeyIDs:
     """Key IDs is used for a request of API 'Get key with key IDs'."""
 
     key_IDs: tuple[KeyIDsKeyIDs, ...]

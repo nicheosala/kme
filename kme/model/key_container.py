@@ -3,11 +3,11 @@ from typing import Optional, Any
 
 from pydantic.dataclasses import dataclass
 
-from kme.model import Key, BaseModel
+from kme.model import Key
 
 
 @dataclass(frozen=True)
-class KeyContainer(BaseModel):
+class KeyContainer:
     """Key container is used for 'Get key' and 'Get key with key IDs'."""
 
     keys: tuple[Key, ...]

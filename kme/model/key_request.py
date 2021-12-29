@@ -4,11 +4,10 @@ from typing import Any
 from pydantic.dataclasses import dataclass
 
 from kme.configs import Config
-from kme.model import BaseModel
 
 
 @dataclass(frozen=True)
-class KeyRequest(BaseModel):
+class KeyRequest:
     """Key request is used for a request data model of API 'Get key' method."""
 
     number: int = 1

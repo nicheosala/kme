@@ -3,11 +3,9 @@ from typing import Optional, Any
 
 from pydantic.dataclasses import dataclass
 
-from kme.model import BaseModel
-
 
 @dataclass(frozen=True)
-class Status(BaseModel):
+class Status:
     """A status object.
 
     Status contains information on keys available to be requested by a
