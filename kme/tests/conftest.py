@@ -16,6 +16,7 @@ def run_qcsimulator() -> Iterable[None]:
     from qcs import Simulator
     from qcs.resolver import db
     from qcs.tests.examples import block_1, block_2
+
     with Simulator():
         db.blocks[block_1.ID] = block_1
         db.blocks[block_2.ID] = block_2
@@ -40,12 +41,6 @@ async def init_db() -> None:
     The tests that want to exploit this fixture must include this fixture name
     as a parameter of the test function.
     """
-    await orm.Key.objects.create(
-        key_id=key_1.key_id,
-        instructions=key_1.instructions
-    )
+    await orm.Key.objects.create(key_id=key_1.key_id, instructions=key_1.instructions)
 
-    await orm.Key.objects.create(
-        key_id=key_2.key_id,
-        instructions=key_2.instructions
-    )
+    await orm.Key.objects.create(key_id=key_2.key_id, instructions=key_2.instructions)

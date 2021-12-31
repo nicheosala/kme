@@ -1,8 +1,7 @@
 """Contains the implementation of an Error object."""
-from typing import Optional, Any
+from typing import Any
 
 from fastapi import HTTPException
-from pydantic import Field
 from pydantic.dataclasses import dataclass
 
 
@@ -12,12 +11,10 @@ class Error:
 
     message: str
 
-    details: Optional[tuple[dict[str, Any], ...]] = Field(
-        default=None,
-        description="""(Option) Array to supply additional detailed error 
-        information specified as name/value pairs. Values may be of any 
-        type, including objects. """
-    )
+    details: tuple[dict[str, Any], ...] | None = None
+    """(Option) Array to supply additional detailed error 
+    information specified as name/value pairs. Values may be of any 
+    type, including objects. """
 
 
 @dataclass(frozen=True)
@@ -38,6 +35,6 @@ class Unauthorized(Error):
 @dataclass(frozen=True)
 class KeyNotFound(HTTPException):
     """Error when a requested key is not found."""
-    
+
     detail: str = "One or more keys specified are not found on KME"
     status_code: int = 400

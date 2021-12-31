@@ -29,7 +29,7 @@ class KeyRequest:
         Status data format.
         """,
         multiple_of=8,
-        ge=0
+        ge=0,
     )
 
     additional_slave_SAE_IDs: tuple[str, ...] = Field(
@@ -40,7 +40,7 @@ class KeyRequest:
         of IDs is defined as max_SAE_ID_count in Status data format.
         """,
         min_length=0,
-        max_length=Config.MAX_SAE_ID_COUNT
+        max_length=Config.MAX_SAE_ID_COUNT,
     )
 
     extension_mandatory: tuple[dict[str, Any], ...] = Field(
@@ -62,8 +62,8 @@ class KeyRequest:
     )
 
     @validator("extension_mandatory", each_item=True)
-    def check_supported_extension_mandatory(cls: Any, ext: dict[str, Any]) \
-            -> None:
+    def check_supported_extension_mandatory(cls: Any, ext: dict[str, Any]) -> None:
         """Ensure all mendatory extensions provided are supported."""
         for ext_name in ext.keys():
-            assert ext_name in Config.SUPPORTED_EXTENSION_PARAMS
+            if ext_name not in Config.SUPPORTED_EXTENSION_PARAMS:
+                raise ValueError("Unsupported mandatory exception")

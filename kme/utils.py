@@ -12,7 +12,7 @@ def b64_to_tupleint(b64_string: str) -> tuple[int, ...]:
 def collecitonint_to_b64(c: Collection[int]) -> str:
     """Convert a collection of integer in [0, 255] into a base64 string."""
     assert all(n in range(0, 256) for n in c)
-    return str(b64encode(bytes(c)), 'utf-8')
+    return str(b64encode(bytes(c)), "utf-8")
 
 
 def bit_length(c: Collection[int]) -> int:
@@ -32,5 +32,5 @@ def bit_length_b64(b64_string: str) -> int:
 
 def is_base64(s: str) -> bool:
     """Return True if 's' is a valid base64 string, else False."""
-    bytes_s = bytes(s, 'ascii')
+    bytes_s = bytes(s, "ascii")
     return bytes_s == b64encode(b64decode(bytes_s))

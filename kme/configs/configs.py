@@ -8,8 +8,8 @@ from pydantic import PostgresDsn
 class Base(ABC):
     """Base Config class."""
 
-    BASE_URL = '/api/v1/keys'
-    HOST = 'localhost'
+    BASE_URL = "/api/v1/keys"
+    HOST = "localhost"
     PORT = 5000
 
     # Status
@@ -65,7 +65,7 @@ class Prod(Base):
             password="secret",
             host="localhost",
             port="5432",
-            path="/prod_db"
+            path="/prod_db",
         )
         return url
 
@@ -76,7 +76,7 @@ class Dev(Base):
 
     DEBUG = True
     TESTING = False
-    DATABASE_URL = 'sqlite:///devdb'
+    DATABASE_URL = "sqlite:///devdb"
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -85,4 +85,4 @@ class Test(Base):
 
     DEBUG = False
     TESTING = True
-    DATABASE_URL = 'sqlite:///testdb'
+    DATABASE_URL = "sqlite:///testdb"

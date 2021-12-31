@@ -11,13 +11,13 @@ from qcs.orm import Block as __Block
 @dataclass(frozen=True, slots=True)
 class Instruction:
     """An instruction on how to retrieve key material from a block."""
+
     block_id: UUID
     start: int
     end: int
 
 
-async def generate_key_material(req_bitlength: int) \
-        -> tuple[str, object]:
+async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
     """
     Return key_material encoded as a base64 string, with the 'req_bitlength'
     requested. Alongside the key material, the instructions to re-build it,
@@ -35,8 +35,11 @@ async def generate_key_material(req_bitlength: int) \
             raise  # TODO
 
         if bit_length(b.Key) >= req_bitlength - bit_length(key_material):
-            block_id, start, end = b.ID, 0, (
-                    req_bitlength - bit_length(key_material)) // 8
+            block_id, start, end = (
+                b.ID,
+                0,
+                (req_bitlength - bit_length(key_material)) // 8,
+            )
             instructions.append(Instruction(block_id, start, end))
             key_material.extend(b.Key[start:end])
             break
@@ -55,8 +58,7 @@ async def retrieve_key_material(json_instructions: object) -> str:
     key_material_ints: list[int] = []
 
     instructions: tuple[Instruction, ...] = load(
-        json_instructions,
-        tuple[Instruction, ...]
+        json_instructions, tuple[Instruction, ...]
     )
 
     for instruction in instructions:

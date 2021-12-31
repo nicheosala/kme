@@ -7,8 +7,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
 from kme.database.database import models
-from kme.model.errors import BadRequest, \
-    ServiceUnavailable, Unauthorized
+from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
 app: Final[FastAPI] = FastAPI(
@@ -17,8 +16,8 @@ app: Final[FastAPI] = FastAPI(
     responses={
         400: {"model": BadRequest},
         401: {"model": Unauthorized},
-        503: {"model": ServiceUnavailable}
-    }
+        503: {"model": ServiceUnavailable},
+    },
 )
 
 app.include_router(enc_keys.router, prefix=Config.BASE_URL)
@@ -26,10 +25,10 @@ app.include_router(dec_keys.router, prefix=Config.BASE_URL)
 app.include_router(status.router, prefix=Config.BASE_URL)
 
 
-@app.get('/', include_in_schema=False)
+@app.get("/", include_in_schema=False)
 async def redirect() -> RedirectResponse:
     """Redirect to docs."""
-    return RedirectResponse('/docs', 302)
+    return RedirectResponse("/docs", 302)
 
 
 @app.on_event("startup")
@@ -40,27 +39,15 @@ async def startup() -> None:
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(
-        _: Request,
-        error: RequestValidationError
+    _: Request, error: RequestValidationError
 ) -> JSONResponse:
     """Always return 400 for a RequestValidationError."""
-    return JSONResponse(
-        status_code=400,
-        content={
-            "message": str(error.errors()[0])
-        }
-    )
+    return JSONResponse(status_code=400, content={"message": str(error.errors()[0])})
 
 
 @app.exception_handler(HTTPException)
-async def error_handler(
-        _: Request,
-        exception: HTTPException
-) -> JSONResponse:
+async def error_handler(_: Request, exception: HTTPException) -> JSONResponse:
     """Always return a body of type kme.model.Error for an HTTPException."""
     return JSONResponse(
-        status_code=exception.status_code,
-        content={
-            "message": exception.detail
-        }
+        status_code=exception.status_code, content={"message": exception.detail}
     )

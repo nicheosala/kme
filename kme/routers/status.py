@@ -5,22 +5,17 @@ from fastapi import APIRouter, Path
 
 from kme.model import Status
 
-router: Final[APIRouter] = APIRouter(
-    tags=["status"]
-)
+router: Final[APIRouter] = APIRouter(tags=["status"])
 
 
 @router.get(
     path="/{slave_SAE_ID}/status",
     summary="Get status",
     response_model=Status,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
 )
 async def get_status(
-        slave_SAE_ID: str = Path(
-            ...,
-            description="URL-encoded SAE ID of slave SAE"
-        )
+    slave_SAE_ID: str = Path(..., description="URL-encoded SAE ID of slave SAE")
 ) -> Status:
     """
     Returns Status from a kme to the calling SAE

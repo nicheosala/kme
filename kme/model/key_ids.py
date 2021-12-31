@@ -1,5 +1,5 @@
 """Contains the implementation of a KeyIDs object."""
-from typing import Optional, Any
+from typing import Any
 from uuid import UUID
 
 from pydantic.dataclasses import dataclass
@@ -10,7 +10,7 @@ class KeyIDsKeyIDs:
     """KeyIDsKeyIDs."""
 
     key_ID: UUID
-    key_ID_extension: Optional[Any] = None
+    key_ID_extension: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -22,4 +22,4 @@ class KeyIDs:
     """
 
     key_IDs: tuple[KeyIDsKeyIDs, ...]
-    key_IDs_extension: Optional[Any] = None
+    key_IDs_extension: Any | None = None

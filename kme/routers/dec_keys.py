@@ -7,26 +7,18 @@ from fastapi import APIRouter, Query, Path
 from kme.database.db import get
 from kme.model import KeyContainer, KeyIDs, Key
 
-router: Final[APIRouter] = APIRouter(
-    tags=["dec_keys"]
-)
+router: Final[APIRouter] = APIRouter(tags=["dec_keys"])
 
 
 @router.get(
     path="/{master_SAE_ID}/dec_keys",
     summary="Get key with key IDs",
     response_model=KeyContainer,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
 )
 async def get_key_with_key_i_ds(
-        master_SAE_ID: str = Path(
-            ...,
-            description="URL-encoded SAE ID of master SAE"
-        ),
-        key_ID: UUID = Query(
-            ...,
-            description="single key ID"
-        ),
+    master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
+    key_ID: UUID = Query(..., description="single key ID"),
 ) -> KeyContainer:
     """
     Returns Key container from the kme to the calling slave SAE. Key
@@ -38,10 +30,7 @@ async def get_key_with_key_i_ds(
     time it was called resulting in the return of the Key IDs being
     requested.
     """
-    keys: Final[tuple[Key, ...]] = await get(
-        key_ID,
-        url_decode(master_SAE_ID)
-    ),
+    keys: Final[tuple[Key, ...]] = (await get(key_ID, url_decode(master_SAE_ID)),)
 
     return KeyContainer(keys=keys)
 
@@ -50,14 +39,11 @@ async def get_key_with_key_i_ds(
     path="/{master_SAE_ID}/dec_keys",
     summary="Post key with key IDs",
     response_model=KeyContainer,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
 )
 async def post_key_with_key_i_ds(
-        key_ids: KeyIDs,
-        master_SAE_ID: str = Path(
-            ...,
-            description="URL-encoded SAE ID of master SAE"
-        ),
+    key_ids: KeyIDs,
+    master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
 ) -> KeyContainer:
     """
     Returns Key container from the kme to the calling slave SAE. Key
@@ -71,10 +57,7 @@ async def post_key_with_key_i_ds(
     """
     keys: Final[list[Key]] = []
     for key_id in key_ids.key_IDs:
-        key: Key = await get(
-            key_id.key_ID,
-            url_decode(master_SAE_ID)
-        )
+        key: Key = await get(key_id.key_ID, url_decode(master_SAE_ID))
         keys.append(key)
 
     return KeyContainer(keys=tuple(keys))

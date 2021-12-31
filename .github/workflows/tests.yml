@@ -31,7 +31,6 @@ jobs:
         run: poetry run mypy qcs
       - name: "Test kme using pytest"
         run: poetry run pytest kme
-# Test termporary disabled, because pydantic plugin for mypy does not work.
-#      - name: "Test kme using mypy"
-#        run: poetry run mypy kme
+      - name: "Test kme using mypy"
+        run: poetry run mypy kme
 
