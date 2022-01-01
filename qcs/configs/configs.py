@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from os import environ
 
 
 class Base(ABC):
-    HOST = 'localhost'
     PORT = 9998
     COMPATIBILITY_MODE = True
+
+    @property
+    def HOST(self) -> str:
+        """The host where kme will run."""
+        return "0.0.0.0" if environ.get("DOCKER_RUNNING") == "true" else "localhost"
 
     @property
     @abstractmethod

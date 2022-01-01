@@ -1,6 +1,7 @@
 """Configurations for KME."""
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from os import environ
 
 from pydantic import PostgresDsn
 
@@ -9,7 +10,6 @@ class Base(ABC):
     """Base Config class."""
 
     BASE_URL = "/api/v1/keys"
-    HOST = "localhost"
     PORT = 5000
 
     # Status
@@ -23,6 +23,11 @@ class Base(ABC):
 
     # Key request
     SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
+
+    @property
+    def HOST(self) -> str:
+        """The host where kme will run."""
+        return "0.0.0.0" if environ.get("DOCKER_RUNNING") == "true" else "localhost"
 
     @property
     @abstractmethod

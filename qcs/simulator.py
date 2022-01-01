@@ -13,7 +13,7 @@ from qcs.resolver import resolve
 class Simulator:
     """Start a Quantum Channel Simulator
     Usage:
-    with SImulator():
+    with Simulator():
         *do things*
 
     Otherwise. you can start it with .start(),

@@ -1,0 +1,5 @@
+services:
+  kme:
+    build: .
+    ports:
+      - "5000:5000"
