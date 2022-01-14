@@ -5,6 +5,7 @@ import pytest
 
 from qcs import interface as qci
 from qcs.orm import Block
+from qcs.resolver import db
 from qcs.tests.examples import block_1
 
 pytestmark = pytest.mark.asyncio
@@ -34,8 +35,11 @@ async def test_get_blocks_by_ids_with_block_id_not_found() -> None:
 
 
 async def test_flush_blocks() -> None:
-    pass
+    await qci.flush_blocks()
+    assert len(db.blocks) == 0
 
 
 async def test_delete_by_ids() -> None:
-    pass
+    await qci.delete_blocks((block_1.ID,))
+    with pytest.raises(qci.BlockNotFound):
+        await qci.get_block_by_id(block_1.ID)
