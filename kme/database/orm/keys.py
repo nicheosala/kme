@@ -1,7 +1,7 @@
 """Representation of a Key inside the database."""
 from orm import Model, Integer, UUID, JSON
 
-from kme.database.database import models
+from kme.database import models
 
 
 class Key(Model):  # type: ignore

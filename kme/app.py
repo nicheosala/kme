@@ -6,7 +6,7 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
-from kme.database.database import models
+from kme.database import models
 from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
@@ -39,7 +39,7 @@ async def startup() -> None:
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(
-    _: Request, error: RequestValidationError
+        _: Request, error: RequestValidationError
 ) -> JSONResponse:
     """Always return 400 for a RequestValidationError."""
     return JSONResponse(status_code=400, content={"message": str(error.errors()[0])})

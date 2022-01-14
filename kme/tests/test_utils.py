@@ -3,7 +3,7 @@ from typing import Final
 import pytest
 
 from kme import utils
-from kme.channel.qc import generate_key_material
+from kme.channel import generate_key_material
 
 pytestmark = pytest.mark.asyncio
 

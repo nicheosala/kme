@@ -3,7 +3,7 @@ from urllib.parse import unquote as url_decode
 
 from fastapi import APIRouter, Query, Path
 
-from kme.database.db import generate
+from kme.database import generate
 from kme.model import KeyContainer, Key, KeyRequest
 
 router: Final[APIRouter] = APIRouter(tags=["enc_keys"])
@@ -16,9 +16,9 @@ router: Final[APIRouter] = APIRouter(tags=["enc_keys"])
     response_model_exclude_none=True,
 )
 async def get_key(
-    slave_SAE_ID: str,
-    number: int = Query(default=1, description="Number of keys requested", ge=1),
-    size: int = Query(default=64, description="Size of each key in bits", ge=1),
+        slave_SAE_ID: str,
+        number: int = Query(default=1, description="Number of keys requested", ge=1),
+        size: int = Query(default=64, description="Size of each key in bits", ge=1),
 ) -> KeyContainer:
     """
     Returns Key container data from the kme to the calling master SAE. The
@@ -42,8 +42,8 @@ async def get_key(
     response_model_exclude_none=True,
 )
 async def post_key(
-    key_request: KeyRequest,
-    slave_SAE_ID: str = Path(..., description="URL-encoded SAE ID of slave SAE"),
+        key_request: KeyRequest,
+        slave_SAE_ID: str = Path(..., description="URL-encoded SAE ID of slave SAE"),
 ) -> KeyContainer:
     """
     Returns Key container data from the kme to the calling master SAE. Key
