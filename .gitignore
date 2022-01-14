@@ -11,6 +11,9 @@ __pycache__/
 # Databases
 *db
 
+# Virtual environments
+.qkd-virtualenv
+
 # Distribution / packaging
 .Python
 env/

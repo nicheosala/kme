@@ -15,17 +15,17 @@ class Base(ABC):
     @property
     @abstractmethod
     def POLL_INTERVAL(self) -> float:
-        pass
+        """The simulator polls for shutdown every POLL_INTERVAL seconds."""
 
     @property
     @abstractmethod
     def DEBUG(self) -> bool:
-        pass
+        """Tell if debug mode is active or not."""
 
     @property
     @abstractmethod
     def TESTING(self) -> bool:
-        pass
+        """Tell if testing mode is active or not."""
 
 
 @dataclass(frozen=True, slots=True, init=False)

@@ -92,7 +92,7 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
         self.wfile.write(pack(">I", len_response))
         self.wfile.write(bytes(response.json_string, "utf-8"))
 
-        logging.debug(
+        logging.info(
             f"""
         Client: {self.client_address}
         Request: {request}

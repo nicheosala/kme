@@ -33,19 +33,16 @@ class Base(ABC):
     @abstractmethod
     def DEBUG(self) -> bool:
         """Debug flag."""
-        pass
 
     @property
     @abstractmethod
     def TESTING(self) -> bool:
         """Test flag."""
-        pass
 
     @property
     @abstractmethod
     def DATABASE_URL(self) -> str:
         """URL for database connection."""
-        pass
 
 
 @dataclass(frozen=True, slots=True, init=False)

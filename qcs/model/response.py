@@ -56,7 +56,7 @@ class GetResponse(Response):
 
 @dataclass(frozen=True)
 class EmptyResponse(Response):
-    pass
+    """A Response that does not cointain anything."""
 
 
 @dataclass(frozen=True)

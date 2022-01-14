@@ -10,11 +10,11 @@ from qcs.orm import Block
 
 
 class BlockNotGenerated(Exception):
-    pass
+    """Exception raised when a request of a block generation does not succeed."""
 
 
 class BlockNotFound(Exception):
-    pass
+    """Exception raised when a request of a block with a given ID does not succeed."""
 
 
 async def gen_blocks(number: int = 1) -> tuple[Block, ...]:
