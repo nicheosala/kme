@@ -1,8 +1,11 @@
 """Start a quantum channel simulator."""
-from signal import pause
+from threading import Event
 
 from qcs import Simulator
 
 if __name__ == '__main__':
     with Simulator():
-        pause()
+        try:
+            Event().wait()
+        except KeyboardInterrupt:
+            exit()
