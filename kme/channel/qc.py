@@ -34,19 +34,19 @@ async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
         except qci.BlockNotGenerated:
             raise  # TODO
 
-        if bit_length(b.Key) >= req_bitlength - bit_length(key_material):
+        if bit_length(b.key) >= req_bitlength - bit_length(key_material):
             block_id, start, end = (
-                b.ID,
+                b.id,
                 0,
                 (req_bitlength - bit_length(key_material)) // 8,
             )
             instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.Key[start:end])
+            key_material.extend(b.key[start:end])
             break
         else:
-            block_id, start, end = b.ID, 0, len(b.Key)
+            block_id, start, end = b.id, 0, len(b.key)
             instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.Key[start:end])
+            key_material.extend(b.key[start:end])
 
     return collecitonint_to_b64(key_material), dump(instructions)
 
@@ -69,8 +69,8 @@ async def retrieve_key_material(json_instructions: object) -> str:
 
         start, end = instruction.start, instruction.end
 
-        assert end <= len(b.Key)
+        assert end <= len(b.key)
 
-        key_material_ints.extend(b.Key[start:end])
+        key_material_ints.extend(b.key[start:end])
 
     return collecitonint_to_b64(key_material_ints)

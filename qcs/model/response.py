@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Type, TypeVar, Any
+from typing import Type, TypeVar
 
-from jsons import dump, dumps, loads, load
+from jsons import dump, dumps, loads
 
 from qcs.configs.configs import Base
 from qcs.orm import Block
@@ -38,19 +38,13 @@ class GetResponse(Response):
     @classmethod
     def from_json(cls: Type[Self], json_str: str) -> Self:
         if Base.COMPATIBILITY_MODE:
-            # The received string is not a valid json string. Convert it to
-            # valid json.
-            return loads('{ "blocks":' + json_str[1:-1] + '}',
-                         cls, strict=True)
+            return loads('{ "blocks":' + json_str + '}', cls, strict=True)
         return loads(json_str, cls, strict=True)
 
     @property
     def json_string(self) -> str:
         if Base.COMPATIBILITY_MODE:
-            # The produced object is a valid json string. Convert it to an
-            # invalid json string.
-            blocks = load(self.json, dict[str, Any], strict=True)['blocks']
-            return '{' + dumps(blocks, indent=4) + '}'
+            return dumps(self.blocks, indent=4)
         return dumps(self.json, indent=4)
 
 

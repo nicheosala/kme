@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Final
 from uuid import uuid4
 
-from qcs.orm import Block
-from qcs.model import Response, EmptyResponse, GetResponse
 from qcs.commands import Command
+from qcs.model import Response, EmptyResponse, GetResponse
+from qcs.orm import Block
 
 
 def _get_random_bits() -> tuple[int, ...]:
@@ -57,9 +57,9 @@ class GetBlocks(Command):
         """
         new_block: Final[Block] = Block(_timestamp(), uuid4(),
                                         _get_random_bits())
-        self.database.blocks[new_block.ID] = new_block
+        self.database.blocks[new_block.id] = new_block
 
-        logging.debug(f"New block generated with ID {new_block.ID}")
+        logging.debug(f"New block generated with ID {new_block.id}")
 
         return new_block
 

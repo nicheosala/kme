@@ -25,7 +25,7 @@ async def test_get_multiple_blocks() -> None:
 
 
 async def test_get_blocks_by_ids() -> None:
-    block: Final[Block] = await qci.get_block_by_id(block_1.ID)
+    block: Final[Block] = await qci.get_block_by_id(block_1.id)
     assert block == block_1
 
 
@@ -40,6 +40,6 @@ async def test_flush_blocks() -> None:
 
 
 async def test_delete_by_ids() -> None:
-    await qci.delete_blocks((block_1.ID,))
+    await qci.delete_blocks((block_1.id,))
     with pytest.raises(qci.BlockNotFound):
-        await qci.get_block_by_id(block_1.ID)
+        await qci.get_block_by_id(block_1.id)
