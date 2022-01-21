@@ -10,11 +10,11 @@ commands: Final[dict[str, Callable[[str, str, Database], Command]]] = {
     "Get keys by IDs": GetBlocksByIds,
     "Get keys": GetBlocks,
     "Flush keys": FlushBlocks,
-    "Delete by IDs": DeleteBlocksByIDs
+    "Delete by IDs": DeleteBlocksByIDs,
 }
 
 
 def resolve(request: Request) -> Response:
-    return commands \
-        .get(request.command, NotFound)(request.value, request.attribute, db) \
-        .execute()
+    return commands.get(request.command, NotFound)(
+        request.value, request.attribute, db
+    ).execute()

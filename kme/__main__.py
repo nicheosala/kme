@@ -1,11 +1,21 @@
-from argparse import ArgumentParser
+import logging
+from argparse import ArgumentParser, Namespace
 
 from uvicorn import run
 
 from kme import app
 from kme.configs import Config
 
-if __name__ == "__main__":
+
+def set_logging() -> None:
+    """Initialize logging."""
+    logger = logging.getLogger("kme")
+    logger.setLevel(logging.DEBUG if Config.DEBUG else logging.INFO)
+    logger.addHandler(logging.StreamHandler())
+
+
+def read_args() -> Namespace:
+    """Read parameters from CLI."""
     parser = ArgumentParser()
     parser.add_argument(
         "-H",
@@ -22,6 +32,11 @@ if __name__ == "__main__":
         default=Config.PORT,
     )
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    set_logging()
+    args = read_args()
     # noinspection PyTypeChecker
     run(app=app, host=args.host, port=args.port)

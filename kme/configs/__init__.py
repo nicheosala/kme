@@ -1,5 +1,4 @@
 """Configuration parameters for KME."""
-import logging
 from os import environ
 from typing import Final
 
@@ -18,15 +17,3 @@ def __set_config() -> Base:
 
 
 Config: Final[Base] = __set_config()
-
-
-def __set_logging() -> None:
-    """Initialize logging."""
-    env: str | None = environ.get("env")
-    if env == "dev":
-        logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.INFO)
-
-
-__set_logging()

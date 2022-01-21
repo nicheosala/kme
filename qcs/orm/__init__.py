@@ -1,5 +1,3 @@
 from qcs.orm.block import Block
 
-__all__ = [
-    'Block'
-]
+__all__ = ["Block"]

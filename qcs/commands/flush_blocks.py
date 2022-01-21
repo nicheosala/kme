@@ -11,5 +11,7 @@ class FlushBlocks(Command):
 
     def execute(self) -> Response:
         self.database.blocks.clear()
-        logging.info("All the blocks inside the database have been flushed.")
+        logging.getLogger("qcs").info(
+            "All the blocks inside the database have been flushed."
+        )
         return EmptyResponse()  # TODO

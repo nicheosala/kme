@@ -1,17 +1,16 @@
 from dataclasses import dataclass
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 
 from jsons import dump, dumps, loads
 
 from qcs.configs.configs import Base
 from qcs.orm import Block
 
-Self = TypeVar('Self', bound='Response')
+Self = TypeVar("Self", bound="Response")
 
 
 @dataclass(frozen=True)
 class Response:
-
     @classmethod
     def from_json(cls: Type[Self], json_str: str) -> Self:
         return loads(json_str, cls, strict=True)
@@ -23,7 +22,7 @@ class Response:
             strip_nulls=True,
             strict=True,
             strip_properties=True,
-            strip_privates=True
+            strip_privates=True,
         )
 
     @property
@@ -38,7 +37,7 @@ class GetResponse(Response):
     @classmethod
     def from_json(cls: Type[Self], json_str: str) -> Self:
         if Base.COMPATIBILITY_MODE:
-            return loads('{ "blocks":' + json_str + '}', cls, strict=True)
+            return loads('{ "blocks":' + json_str + "}", cls, strict=True)
         return loads(json_str, cls, strict=True)
 
     @property
@@ -58,3 +57,14 @@ class DeleteResponse(Response):
     command: str = "Keys deleted"
     parameter: str = ""
     value: str = "Done"
+
+
+@dataclass(frozen=True)
+class ErrorResponse(Response):
+    message: str
+    details: Any = None
+
+
+@dataclass(frozen=True)
+class BlockNotFoundResponse(ErrorResponse):
+    message: str = "Block not found"

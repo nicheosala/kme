@@ -17,8 +17,8 @@ router: Final[APIRouter] = APIRouter(tags=["dec_keys"])
     response_model_exclude_none=True,
 )
 async def get_key_with_key_i_ds(
-        master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
-        key_ID: UUID = Query(..., description="single key ID"),
+    master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
+    key_ID: UUID = Query(..., description="single key ID"),
 ) -> KeyContainer:
     """
     Returns Key container from the kme to the calling slave SAE. Key
@@ -42,8 +42,8 @@ async def get_key_with_key_i_ds(
     response_model_exclude_none=True,
 )
 async def post_key_with_key_i_ds(
-        key_ids: KeyIDs,
-        master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
+    key_ids: KeyIDs,
+    master_SAE_ID: str = Path(..., description="URL-encoded SAE ID of master SAE"),
 ) -> KeyContainer:
     """
     Returns Key container from the kme to the calling slave SAE. Key

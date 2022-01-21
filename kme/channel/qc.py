@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from kme.encoder import dump, load
+from kme.model.errors import KeyNotFound
 from kme.utils import bit_length, collecitonint_to_b64
 from qcs import interface as qci
 from qcs.orm import Block as __Block
@@ -32,7 +33,7 @@ async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
         try:
             b: __Block = await qci.gen_block()
         except qci.BlockNotGenerated:
-            raise  # TODO
+            raise KeyNotFound()  # TODO
 
         if bit_length(b.key) >= req_bitlength - bit_length(key_material):
             block_id, start, end = (
@@ -65,7 +66,7 @@ async def retrieve_key_material(json_instructions: object) -> str:
         try:
             b: __Block = await qci.get_block_by_id(instruction.block_id)
         except qci.BlockNotFound:
-            raise  # TODO
+            raise KeyNotFound()
 
         start, end = instruction.start, instruction.end
 

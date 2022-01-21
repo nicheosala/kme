@@ -55,7 +55,7 @@ class Simulator:
         the 'with' statement should be preferred.
         """
         self.server_thread.start()
-        logging.info(f"Server listening on {self.host}:{self.port}")
+        logging.getLogger("qcs").info(f"Server listening on {self.host}:{self.port}")
 
     def stop(self) -> None:
         """Stop the QC Simulator.
@@ -67,7 +67,7 @@ class Simulator:
         self.server.shutdown()
         self.server.server_close()
         self.server_thread.join()
-        logging.info(f"Server shutdown completed.")
+        logging.getLogger("qcs").info(f"Server shutdown completed.")
 
 
 class ThreadedTCPServer(ThreadingMixIn, TCPServer):
@@ -92,7 +92,7 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
         self.wfile.write(pack(">I", len_response))
         self.wfile.write(bytes(response.json_string, "utf-8"))
 
-        logging.info(
+        logging.getLogger("qcs").info(
             f"""
         Client: {self.client_address}
         Request: {request}

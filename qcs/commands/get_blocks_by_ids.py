@@ -4,14 +4,13 @@ from uuid import UUID
 
 from jsons import loads, DeserializationError
 
-from qcs.orm import Block
-from qcs.model import Response, EmptyResponse, GetResponse
 from qcs.commands import Command
+from qcs.model import Response, GetResponse, BlockNotFoundResponse, ErrorResponse
+from qcs.orm import Block
 
 
 @dataclass(frozen=True, slots=True)
 class GetBlocksByIds(Command):
-
     def execute(self) -> Response:
         try:
             blocks: list[Block] = []
@@ -19,11 +18,15 @@ class GetBlocksByIds(Command):
                 if block := self.database.blocks.get(block_id):
                     blocks.append(block)
                 else:
-                    logging.info(
-                        f"Block with ID {block_id} not present inside the "
-                        f"database, so not found")
+                    logging.getLogger("qcs").info(
+                        f"Block with ID {block_id} not found into the database"
+                    )
+                    return BlockNotFoundResponse(
+                        details={"not_found_blocks": (block_id,)}
+                    )
             return GetResponse(tuple(blocks))
         except DeserializationError:
-            logging.error(
-                "request.value cannot be interpreted as tuple[UUID, ...]")
-            return EmptyResponse()  # TODO
+            logging.getLogger("qcs").error(
+                "request.value cannot be interpreted as tuple[UUID, ...]"
+            )
+            return ErrorResponse("Deserialization error")

@@ -8,6 +8,7 @@ from qcs.model import Response
 @dataclass(frozen=True, slots=True)
 class Command(ABC):
     """Generic interface of a class managing a command received by a client."""
+
     value: str
     attribute: str
     database: Database

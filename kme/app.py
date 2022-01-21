@@ -39,7 +39,7 @@ async def startup() -> None:
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(
-        _: Request, error: RequestValidationError
+    _: Request, error: RequestValidationError
 ) -> JSONResponse:
     """Always return 400 for a RequestValidationError."""
     return JSONResponse(status_code=400, content={"message": str(error.errors()[0])})

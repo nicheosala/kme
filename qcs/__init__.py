@@ -1,5 +1,3 @@
 from qcs.simulator import Simulator
 
-__all__ = [
-    'Simulator'
-]
+__all__ = ["Simulator"]

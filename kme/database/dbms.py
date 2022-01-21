@@ -32,7 +32,7 @@ async def delete(key_id: UUID) -> None:
 
 
 async def generate(
-        size: int, slave_sae_ids: frozenset[str], *extensions: dict[str, Any]
+    size: int, slave_sae_ids: frozenset[str], *extensions: dict[str, Any]
 ) -> ModelKey:
     """Generate one new random key."""
     key_id: Final[UUID] = uuid4()

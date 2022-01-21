@@ -1,11 +1,11 @@
 from typing import Final
 from uuid import UUID
 
-from jsons import dumps
+from jsons import dumps, DeserializationError
 
 from qcs import client
 from qcs.model import Request, GetResponse
-from qcs.model.response import DeleteResponse
+from qcs.model.response import BlockNotFoundResponse, DeleteResponse
 from qcs.orm import Block
 
 
@@ -19,11 +19,7 @@ class BlockNotFound(Exception):
 
 async def gen_blocks(number: int = 1) -> tuple[Block, ...]:
     """Ask the quantum channel for the generation of n blocks."""
-    req: Final[Request] = Request(
-        command="Get keys",
-        attribute="",
-        value=str(number)
-    )
+    req: Final[Request] = Request(command="Get keys", attribute="", value=str(number))
 
     received: Final[str] = await client.send(req)
 
@@ -51,32 +47,27 @@ async def get_block_by_id(block_id: UUID) -> Block:
     return blocks[0]
 
 
-async def get_blocks_by_ids(block_ids: tuple[UUID, ...]) \
-        -> tuple[Block, ...]:
+async def get_blocks_by_ids(block_ids: tuple[UUID, ...]) -> tuple[Block, ...]:
     """
     Ask the quantum channel for the blocks associated to the given ids.
     """
     req: Final[Request] = Request(
-        command="Get keys by IDs",
-        attribute="",
-        value=dumps(block_ids, indent=4)
+        command="Get keys by IDs", attribute="", value=dumps(block_ids, indent=4)
     )
 
     received: Final[str] = await client.send(req)
 
-    res: Final[GetResponse] = GetResponse.from_json(received)
-
-    if len(res.blocks) < len(block_ids):
-        raise BlockNotFound
-
-    return res.blocks
+    try:
+        res: Final[GetResponse] = GetResponse.from_json(received)
+        return res.blocks
+    except DeserializationError:
+        e: Final[BlockNotFoundResponse] = BlockNotFoundResponse.from_json(received)
+        raise BlockNotFound(e.details)
 
 
 async def delete_blocks(block_ids: tuple[UUID, ...]) -> DeleteResponse:
     req: Final[Request] = Request(
-        command="Delete by IDs",
-        attribute="",
-        value=dumps(block_ids, indent=4)
+        command="Delete by IDs", attribute="", value=dumps(block_ids, indent=4)
     )
 
     received: Final[str] = await client.send(req)
@@ -87,11 +78,7 @@ async def delete_blocks(block_ids: tuple[UUID, ...]) -> DeleteResponse:
 
 
 async def flush_blocks() -> DeleteResponse:
-    req: Final[Request] = Request(
-        command="Flush keys",
-        attribute="",
-        value=""
-    )
+    req: Final[Request] = Request(command="Flush keys", attribute="", value="")
 
     received: Final[str] = await client.send(req)
 

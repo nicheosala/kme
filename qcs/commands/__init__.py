@@ -6,10 +6,10 @@ from qcs.commands.get_blocks import GetBlocks
 from qcs.commands.not_found import NotFound
 
 __all__ = [
-    'Command',
-    'DeleteBlocksByIDs',
-    'FlushBlocks',
-    'GetBlocksByIds',
-    'GetBlocks',
-    'NotFound'
+    "Command",
+    "DeleteBlocksByIDs",
+    "FlushBlocks",
+    "GetBlocksByIds",
+    "GetBlocks",
+    "NotFound",
 ]
