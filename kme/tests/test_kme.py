@@ -9,6 +9,7 @@ from kme.encoder import dump
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
 from kme.model.errors import Error, KeyNotFound
 from kme.tests.examples import key_1, key_2
+from kme.utils import bit_length_b64
 
 pytestmark = pytest.mark.asyncio
 
@@ -25,6 +26,23 @@ async def test_get_key(client: Client) -> None:
 
     assert response.status_code == 200
     assert len(key_container.keys) == 1
+
+
+async def test_get_key_with_fixed_size(client: Client) -> None:
+    """Test case for get_key fixing key size."""
+    slave_sae_id: Final[str] = "slave_sae_id_example"
+    size: Final[int] = 4096
+
+    response: Final[Response] = await client.get(
+        url=f"{Config.BASE_URL}/{slave_sae_id}/enc_keys",
+        params={"size": size}
+    )
+
+    key_container: Final[KeyContainer] = KeyContainer(**response.json())
+
+    assert response.status_code == 200
+    assert len(key_container.keys) == 1
+    assert all(bit_length_b64(k.key) == size for k in key_container.keys)
 
 
 async def test_get_key_with_invalid_number(client: Client) -> None:
@@ -88,7 +106,8 @@ async def test_get_status(client: Client) -> None:
 async def test_post_key(client: Client) -> None:
     """Test case for post_key"""
     number: Final[int] = 5
-    key_request: Final[KeyRequest] = KeyRequest(number=number)
+    size: Final[int] = 256
+    key_request: Final[KeyRequest] = KeyRequest(number, size)
     slave_sae_id: Final[str] = "slave_sae_id_example"
 
     response: Final[Response] = await client.post(
@@ -100,6 +119,7 @@ async def test_post_key(client: Client) -> None:
 
     assert response.status_code == 200
     assert len(key_container.keys) == number
+    assert all(bit_length_b64(k.key) == size for k in key_container.keys)
 
 
 async def test_post_key_with_invalid_key_size(client: Client) -> None:

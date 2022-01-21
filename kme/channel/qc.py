@@ -11,11 +11,46 @@ from qcs.orm import Block as __Block
 
 @dataclass(frozen=True, slots=True)
 class Instruction:
-    """An instruction on how to retrieve key material from a block."""
+    """An instruction on how to retrieve key material from a block.
+
+    'start' and 'end' works like for function range(): 'start' is included,
+    'end' excluded.
+    """
 
     block_id: UUID
     start: int
     end: int
+
+
+async def get_randbits_from_local_storage(
+    req_bitlength: int, key_material: list[int], instructions: list[Instruction]
+) -> tuple[list[int], list[Instruction]]:
+    """Ask the local storage for random bits."""
+    return key_material, instructions  # TODO exploit locally stored random bits.
+
+
+async def get_randbits_from_quantum_channel(
+    req_bitlength: int, key_material: list[int], instructions: list[Instruction]
+) -> tuple[list[int], list[Instruction]]:
+    """Ask the quantum channel for new blocks.
+
+    If kme does not have a sufficient number of random bits locally, it is forced to
+    communicate with the quantum channel, asking for such bits.
+    """
+    while (diff := req_bitlength - bit_length(key_material)) > 0:
+        try:
+            b: __Block = await qci.gen_block()
+        except qci.BlockNotGenerated:
+            raise KeyNotFound()
+
+        end = diff // 8 if bit_length(b.key) >= diff else len(b.key)
+
+        instructions.append(Instruction(b.id, 0, end))
+        key_material.extend(b.key[:end])
+
+    # TODO store remaining unusued block locally.
+
+    return key_material, instructions
 
 
 async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
@@ -26,28 +61,14 @@ async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
     stored inside the database shared between communicating KMEs.
     """
     assert req_bitlength % 8 == 0
-    key_material: list[int] = []
-    instructions: list[Instruction] = []
 
-    while True:
-        try:
-            b: __Block = await qci.gen_block()
-        except qci.BlockNotGenerated:
-            raise KeyNotFound()  # TODO
+    key_material, instructions = await get_randbits_from_local_storage(
+        req_bitlength, [], []
+    )
 
-        if bit_length(b.key) >= req_bitlength - bit_length(key_material):
-            block_id, start, end = (
-                b.id,
-                0,
-                (req_bitlength - bit_length(key_material)) // 8,
-            )
-            instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.key[start:end])
-            break
-        else:
-            block_id, start, end = b.id, 0, len(b.key)
-            instructions.append(Instruction(block_id, start, end))
-            key_material.extend(b.key[start:end])
+    key_material, instructions = await get_randbits_from_quantum_channel(
+        req_bitlength, key_material, instructions
+    )
 
     return collecitonint_to_b64(key_material), dump(instructions)
 
