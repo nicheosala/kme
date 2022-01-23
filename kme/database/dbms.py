@@ -1,5 +1,5 @@
 """Manage everything about database."""
-
+import logging
 from typing import Final, Any
 from uuid import UUID, uuid4
 
@@ -19,7 +19,6 @@ async def get(key_id: UUID, master_sae_id: str) -> ModelKey:
         except NoMatch:
             raise KeyNotFound
 
-    # TODO catch errors for block not found.
     key_material: Final[str] = await retrieve_key_material(orm_key.instructions)
 
     return ModelKey(key_ID=orm_key.key_id, key=key_material)
@@ -37,6 +36,10 @@ async def generate(
     """Generate one new random key."""
     key_id: Final[UUID] = uuid4()
     key_material, json_instructions = await generate_key_material(size)
+
+    logging.getLogger("kme").debug(
+        f"Key {key_id} generated with instructions {json_instructions}"
+    )
 
     async with database:
         await orm.Key.objects.create(key_id=key_id, instructions=json_instructions)

@@ -34,8 +34,7 @@ async def test_get_key_with_fixed_size(client: Client) -> None:
     size: Final[int] = 4096
 
     response: Final[Response] = await client.get(
-        url=f"{Config.BASE_URL}/{slave_sae_id}/enc_keys",
-        params={"size": size}
+        url=f"{Config.BASE_URL}/{slave_sae_id}/enc_keys", params={"size": size}
     )
 
     key_container: Final[KeyContainer] = KeyContainer(**response.json())

@@ -19,8 +19,7 @@ def _get_random_bits() -> tuple[int, ...]:
     """
     from random import getrandbits, randint
 
-    lb: Final[int] = 10
-    ub: Final[int] = 50
+    lb, ub = 1000, 2000  # Generate a number of random bytes btw [lb, ub].
     return tuple(getrandbits(8) for _ in range(randint(lb, ub)))
 
 
