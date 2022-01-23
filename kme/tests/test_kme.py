@@ -154,3 +154,12 @@ async def test_post_key_non_empty_extension_mandatory(client: Client) -> None:
     parameter."""
     with pytest.raises(ValidationError):
         KeyRequest(extension_mandatory=({"ciao": "mamma"},))
+
+
+async def test_parallel_get_key_requests(client: Client) -> None:
+    """Test case that does multiple parallel get_key requests."""
+    from asyncio import gather
+
+    reqs = [client.get(url=f"{Config.BASE_URL}/sae/enc_keys") for _ in range(10)]
+    await gather(reqs[0])
+    await gather(*reqs[1:])
