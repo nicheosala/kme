@@ -28,6 +28,10 @@ class BlockLeftover:
     block: Block
     starting_from: int
 
+    def __post_init__(self) -> None:
+        if self.starting_from >= len(self.block.key):
+            raise ValueError
+
 
 @dataclass(frozen=True, slots=True)
 class Instruction:
@@ -60,7 +64,7 @@ def get_randbits_from_local_storage(
 
         b, start = left.block, left.starting_from
 
-        if bit_length(b.key) > diff:
+        if bit_length(b.key[start:]) > diff:
             end = start + diff // 8
             lefts.put_nowait(BlockLeftover(b, end))
         else:
