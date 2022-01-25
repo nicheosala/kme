@@ -2,8 +2,8 @@
 
 ## Execution
 
-If you want to start the quantum channel simulator, open a terminal
-inside `qkd` folder and then type:
+If you want to start the quantum channel simulator, open a terminal inside `qkd` folder
+and then type:
 
 ```bash
 python -m qcs
@@ -11,7 +11,7 @@ python -m qcs
 
 ## API
 
-The quantum channel simuator supports the following commands:
+The quantum channel simulator supports the following commands:
 
 - "Get keys by IDs"
 - "Get keys"
@@ -33,8 +33,8 @@ Example request:
 }
 ```
 
-"value" field is an array of IDs of blocks. If a key with a given ID is not
-found, an error message is returned ([TODO1](#TODO1)).
+"value" field is an array of IDs of blocks. If a key with a given ID is not found, an
+error message is returned ([TODO1](#TODO1)).
 
 Example response ([TODO3](#TODO3)):
 
@@ -67,10 +67,9 @@ Example request:
 }
 ```
 
-*N* is the number of blocks the client wants to retrieve ([TODO2](#TODO2)).
-If "value" is empty, default N value is 1. If 'value' is a non-positive integer
-or it cannot be interpreted as an integer, an error should be
-returned ([TODO1](#TODO1)).
+*N* is the number of blocks the client wants to retrieve ([TODO2](#TODO2)). If "value"
+is empty, default N value is 1. If 'value' is a non-positive integer or it cannot be
+interpreted as an integer, an error should be returned ([TODO1](#TODO1)).
 
 Example response ([TODO3](#TODO3)):
 
@@ -139,8 +138,8 @@ Implement error messages.
 
 ### TODO2
 
-How can the client define a priori the number of blocks it needs, if he does
-not know how many random bits it will receive within a block?
+How can the client define a priori the number of blocks it needs, if he does not know
+how many random bits it will receive within a block?
 
 ### TODO3
 

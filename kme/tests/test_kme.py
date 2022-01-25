@@ -14,7 +14,7 @@ from kme.utils import bit_length_b64
 pytestmark = pytest.mark.asyncio
 
 
-async def test_get_key(client: Client) -> None:
+async def test_get_key(client: Client, init_db: None) -> None:
     """Test case for get_key"""
     slave_sae_id: Final[str] = "slave_sae_id_example"
 
@@ -28,10 +28,10 @@ async def test_get_key(client: Client) -> None:
     assert len(key_container.keys) == 1
 
 
-async def test_get_key_with_fixed_size(client: Client) -> None:
+async def test_get_key_with_fixed_size(client: Client, init_db: None) -> None:
     """Test case for get_key fixing key size."""
     slave_sae_id: Final[str] = "slave_sae_id_example"
-    size: Final[int] = 4096
+    size: Final[int] = 256
 
     response: Final[Response] = await client.get(
         url=f"{Config.BASE_URL}/{slave_sae_id}/enc_keys", params={"size": size}
@@ -102,10 +102,10 @@ async def test_get_status(client: Client) -> None:
     assert response.status_code == 200
 
 
-async def test_post_key(client: Client) -> None:
+async def test_post_key(client: Client, init_db: None) -> None:
     """Test case for post_key"""
-    number: Final[int] = 5
-    size: Final[int] = 256
+    number: Final[int] = 2
+    size: Final[int] = 64
     key_request: Final[KeyRequest] = KeyRequest(number, size)
     slave_sae_id: Final[str] = "slave_sae_id_example"
 
@@ -161,8 +161,8 @@ async def test_parallel_get_key_requests(client: Client) -> None:
     from asyncio import gather
 
     reqs = [
-        client.get(url=f"{Config.BASE_URL}/sae/enc_keys", params={"size": 8192})
-        for _ in range(10)
+        client.get(url=f"{Config.BASE_URL}/sae/enc_keys", params={"size": 8})
+        for _ in range(5)
     ]
     await gather(reqs[0])
     await gather(*reqs[1:])

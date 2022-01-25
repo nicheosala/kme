@@ -4,6 +4,7 @@ from argparse import ArgumentParser, Namespace
 from uvicorn import run
 
 from kme import app
+from kme.channel.qc_server import QCServer
 from kme.configs import Config
 
 
@@ -38,5 +39,6 @@ def read_args() -> Namespace:
 if __name__ == "__main__":
     set_logging()
     args = read_args()
-    # noinspection PyTypeChecker
-    run(app=app, host=args.host, port=args.port)
+    with QCServer():
+        # noinspection PyTypeChecker
+        run(app=app, host=args.host, port=args.port)

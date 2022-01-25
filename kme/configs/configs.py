@@ -12,6 +12,8 @@ class Base(ABC):
     HOST = "localhost"
     PORT = 5000
 
+    QC_PORT = 9998
+
     # Status
     MIN_KEY_SIZE = 8
     MAX_KEY_SIZE = 8192
@@ -39,6 +41,11 @@ class Base(ABC):
     def DATABASE_URL(self) -> str:
         """URL for database connection."""
 
+    @property
+    @abstractmethod
+    def POLL_INTERVAL(self) -> float:
+        """The qcserver polls for shutdown every POLL_INTERVAL seconds."""
+
 
 @dataclass(frozen=True, slots=True, init=False)
 class Prod(Base):
@@ -46,6 +53,7 @@ class Prod(Base):
 
     DEBUG = False
     TESTING = False
+    POLL_INTERVAL = 0.5
 
     @property
     def DATABASE_URL(self) -> str:
@@ -74,6 +82,7 @@ class Dev(Base):
     DEBUG = True
     TESTING = False
     DATABASE_URL = "sqlite:///devdb"
+    POLL_INTERVAL = 0.001
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -83,3 +92,4 @@ class Test(Base):
     DEBUG = False
     TESTING = True
     DATABASE_URL = "sqlite:///testdb"
+    POLL_INTERVAL = 0.001

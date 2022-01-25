@@ -1,3 +1,3 @@
-from qcs.simulator import Simulator
+from qcs.model.block import Block
 
-__all__ = ["Simulator"]
+__all__ = ["Block"]
