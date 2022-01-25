@@ -1,5 +1,5 @@
 """This is the only file allowed to communicate with the Quantum Channel."""
-from asyncio import Queue
+from asyncio import Queue, QueueEmpty
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -46,32 +46,34 @@ lefts: Queue[BlockLeftover] = Queue()
 
 
 def get_randbits_from_local_storage(
-        req_bitlength: int,
+    req_bitlength: int,
 ) -> tuple[list[int], list[Instruction]]:
     """Ask the local storage for random bits."""
     key_material: list[int] = []
     instructions: list[Instruction] = []
 
-    try:
-        left = lefts.get_nowait()
-        bt = bit_length(left.block.key[left.starting_from:])
+    while (diff := req_bitlength - bit_length(key_material)) > 0:
+        try:
+            left = lefts.get_nowait()
+        except QueueEmpty:
+            return key_material, instructions
 
-        if bt > req_bitlength:
-            end = left.starting_from + req_bitlength // 8
+        b, start = left.block, left.starting_from
+
+        if bit_length(b.key) > diff:
+            end = start + diff // 8
+            lefts.put_nowait(BlockLeftover(b, end))
         else:
-            end = len(left.block.key)
+            end = len(b.key)
 
-        instructions = [Instruction(left.block.id, left.starting_from, end)]
-        key_material = list(left.block.key[left.starting_from: end])
+        instructions.append(Instruction(b.id, start, end))
+        key_material.extend(b.key[start:end])
 
-        if bt > req_bitlength:
-            lefts.put_nowait(BlockLeftover(left.block, end))
-    finally:
-        return key_material, instructions
+    return key_material, instructions
 
 
 async def get_randbits_from_quantum_channel(
-        req_bitlength: int, key_material: list[int], instructions: list[Instruction]
+    req_bitlength: int, key_material: list[int], instructions: list[Instruction]
 ) -> tuple[list[int], list[Instruction]]:
     """Ask the quantum channel for new blocks.
 
@@ -80,7 +82,7 @@ async def get_randbits_from_quantum_channel(
     """
     while (diff := req_bitlength - bit_length(key_material)) > 0:
         try:
-            b: Block = await qci.gen_block()
+            b = await qci.gen_block()
         except qci.BlockNotGenerated:
             raise KeyNotFound()
 
@@ -131,6 +133,6 @@ async def retrieve_key_material(json_instructions: object) -> str:
         except qci.BlockNotFound:
             raise KeyNotFound()
 
-        key_material_ints.extend(b.key[i.start: i.end])
+        key_material_ints.extend(b.key[i.start : i.end])
 
     return collecitonint_to_b64(key_material_ints)
