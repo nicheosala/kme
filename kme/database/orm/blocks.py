@@ -19,5 +19,5 @@ class Block(Model):  # type: ignore
         "block_id": UUID(unique=True, allow_null=False),
         "timestamp": Integer(allow_null=False),
         "material": JSON(allow_null=False),
-        "available_bits": Integer(allow_null=False)
+        "available_bits": Integer(allow_null=False),
     }

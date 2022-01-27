@@ -97,5 +97,5 @@ async def add_block(new_block: Block) -> None:
             block_id=new_block.id,
             material=new_block.key,
             timestamp=new_block.time,
-            available_bits=len(new_block.key)
+            available_bits=len(new_block.key),
         )
