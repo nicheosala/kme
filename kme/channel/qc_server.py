@@ -20,8 +20,8 @@ class QCServer:
     with QCServer():
         *do things*
 
-    Otherwise. you can start it with .start(),
-    BUT then you have to remember to close it with .stop()
+    Otherwise, you can start it with .start(),
+    BUT then you have to remember to close it calling .stop()
     """
 
     def __init__(self, host: str = Config.HOST, port: int = Config.QC_PORT):
@@ -87,7 +87,7 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
 
         asyncio.run(add_block(new_block))
 
-        logging.getLogger("kme").info(f"Received new block with id {new_block.id}")
+        logging.getLogger("kme").debug(f"Received new block with id {new_block.id}")
 
 
 async def add_block(new_block: Block) -> None:

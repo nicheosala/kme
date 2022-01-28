@@ -73,6 +73,29 @@ class Instruction:
     start: int
     end: int
 
+    def __post_init__(self) -> None:
+        if self.start >= self.end:
+            raise ValueError(
+                f"Instruction for block {self.block_id} has start "
+                f"{self.start} >= end {self.end}"
+            )
+
+
+async def pop_block() -> orm.Block | None:
+    """Retrieve a block from the database, removing it from there.
+
+    This function exploits an async lock, because it has to ensure that the database
+    does not return the very same block to multiple requests, before deleting that
+    block from the database. The behaviour of pick_block() has to be rimilar to the
+    one of list.pop() or Queue.get_nowait()."""
+    async with lock:
+        b: orm.Block = await orm.Block.objects.filter(available_bits__gt=0).first()
+
+        if b is not None:
+            await b.delete()
+
+    return b
+
 
 async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]]:
     """Ask the quantum channel for new blocks.
@@ -84,11 +107,7 @@ async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]
     instructions: list[Instruction] = []
 
     while (diff := req_bitlength - bit_length(key_material)) > 0:
-        async with lock:
-            b: orm.Block = await orm.Block.objects.filter(available_bits__gt=0).first()
-
-            if b is not None:
-                await b.delete()
+        b = await pop_block()
 
         if b is None:
             raise KeyNotFound()
