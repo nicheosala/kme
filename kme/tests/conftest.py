@@ -5,7 +5,7 @@ from httpx import AsyncClient
 from pytest import fixture
 
 from kme import app
-from kme.database import orm, models
+from kme.database import orm, local_models, shared_models, shared_db
 from kme.tests.examples import key_1, key_2, block_1, block_2
 
 
@@ -13,9 +13,11 @@ from kme.tests.examples import key_1, key_2, block_1, block_2
 async def client() -> AsyncIterator[AsyncClient]:
     """Return a client stub."""
     async with AsyncClient(app=app, base_url="http://test") as client:
-        await models.create_all()
+        await local_models.create_all()
+        await shared_models.create_all()
         yield client
-        await models.drop_all()
+        await local_models.drop_all()
+        await shared_models.drop_all()
 
 
 @fixture
@@ -38,5 +40,10 @@ async def init_blocks() -> None:
 @fixture
 async def init_keys() -> None:
     """Add example keys into the database."""
-    await orm.Key.objects.create(key_id=key_1.key_id, instructions=key_1.instructions)
-    await orm.Key.objects.create(key_id=key_2.key_id, instructions=key_2.instructions)
+    async with shared_db:
+        await orm.Key.objects.create(
+            key_id=key_1.key_id, instructions=key_1.instructions
+        )
+        await orm.Key.objects.create(
+            key_id=key_2.key_id, instructions=key_2.instructions
+        )

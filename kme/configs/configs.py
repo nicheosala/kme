@@ -36,10 +36,12 @@ class Base(ABC):
     def TESTING(self) -> bool:
         """Test flag."""
 
+    LOCAL_DB_URL = "sqlite:///local_db"
+
     @property
     @abstractmethod
-    def DATABASE_URL(self) -> str:
-        """URL for database connection."""
+    def SHARED_DB_URL(self) -> str:
+        """URL for shared database connection."""
 
     @property
     @abstractmethod
@@ -56,7 +58,7 @@ class Prod(Base):
     POLL_INTERVAL = 0.5
 
     @property
-    def DATABASE_URL(self) -> str:
+    def SHARED_DB_URL(self) -> str:
         """URL for database connection.
 
         1. Install PostgreSQL
@@ -81,7 +83,7 @@ class Dev(Base):
 
     DEBUG = True
     TESTING = False
-    DATABASE_URL = "sqlite:///devdb"
+    SHARED_DB_URL = "sqlite:///devdb"
     POLL_INTERVAL = 0.001
 
 
@@ -91,5 +93,5 @@ class Test(Base):
 
     DEBUG = False
     TESTING = True
-    DATABASE_URL = "sqlite:///testdb"
+    SHARED_DB_URL = "sqlite:///testdb"
     POLL_INTERVAL = 0.001

@@ -9,7 +9,7 @@ from typing import Final, Any
 from jsons import loads
 
 from kme.configs import Config
-from kme.database import database, orm
+from kme.database import orm
 from qcs import Block
 
 
@@ -92,10 +92,9 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
 
 async def add_block(new_block: Block) -> None:
     """Add newly-generated block to database."""
-    async with database:
-        await orm.Block.objects.create(
-            block_id=new_block.id,
-            material=new_block.key,
-            timestamp=new_block.time,
-            available_bits=len(new_block.key),
-        )
+    await orm.Block.objects.create(
+        block_id=new_block.id,
+        material=new_block.key,
+        timestamp=new_block.time,
+        available_bits=len(new_block.key),
+    )

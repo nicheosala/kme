@@ -1,7 +1,7 @@
 """Representation of a Block inside the database."""
 from orm import Model, Integer, UUID, JSON
 
-from kme.database import models
+from kme.database import local_models
 
 
 class Block(Model):  # type: ignore
@@ -13,7 +13,7 @@ class Block(Model):  # type: ignore
     available_bits: int
 
     tablename = "blocks"
-    registry = models
+    registry = local_models
     fields = {
         "id": Integer(primary_key=True),
         "block_id": UUID(unique=True, allow_null=False),

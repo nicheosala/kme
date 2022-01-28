@@ -1,7 +1,7 @@
 """Representation of a Key inside the database."""
 from orm import Model, Integer, UUID, JSON
 
-from kme.database import models
+from kme.database import shared_models
 
 
 class Key(Model):  # type: ignore
@@ -11,7 +11,7 @@ class Key(Model):  # type: ignore
     instructions: object
 
     tablename = "keys"
-    registry = models
+    registry = shared_models
     fields = {
         "id": Integer(primary_key=True),
         "key_id": UUID(unique=True, allow_null=False),

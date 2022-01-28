@@ -6,7 +6,7 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
-from kme.database import models
+from kme.database import local_models, shared_models
 from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
@@ -34,7 +34,8 @@ async def redirect() -> RedirectResponse:
 @app.on_event("startup")
 async def startup() -> None:
     """Create ORM tables inside the database, if not already present."""
-    await models.create_all()
+    await local_models.create_all()
+    await shared_models.create_all()
 
 
 @app.exception_handler(RequestValidationError)
