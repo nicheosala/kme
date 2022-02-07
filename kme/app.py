@@ -6,7 +6,7 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
-from kme.database import local_models, shared_models
+from kme.database import local_models, shared_models, shared_db
 from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers import enc_keys, dec_keys, status
 
@@ -36,6 +36,14 @@ async def startup() -> None:
     """Create ORM tables inside the database, if not already present."""
     await local_models.create_all()
     await shared_models.create_all()
+
+    await shared_db.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    """Disconnect from shared DB."""
+    await shared_db.disconnect()
 
 
 @app.exception_handler(RequestValidationError)

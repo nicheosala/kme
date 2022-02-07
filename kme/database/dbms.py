@@ -7,7 +7,7 @@ from uuid import UUID, uuid4
 
 from orm import NoMatch
 
-from kme.database import orm, shared_db
+from kme.database import orm
 from kme.encoder import dump, load
 from kme.model import Key as ModelKey
 from kme.model.errors import KeyNotFound
@@ -19,8 +19,7 @@ lock = asyncio.Lock()
 async def get(key_id: UUID, master_sae_id: str) -> ModelKey:
     """Get the keys associated to the given SAE ID."""
     try:
-        async with shared_db:
-            orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
+        orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
     except NoMatch:
         raise KeyNotFound()
 
@@ -31,8 +30,7 @@ async def get(key_id: UUID, master_sae_id: str) -> ModelKey:
 
 async def delete(key_id: UUID) -> None:
     """Delete the key associated to the given key_id."""
-    async with shared_db:
-        await orm.Key.objects.delete(key_id=key_id)
+    await orm.Key.objects.delete(key_id=key_id)
 
 
 async def generate(
@@ -46,8 +44,7 @@ async def generate(
         f"Key {key_id} generated with instructions {json_instructions}"
     )
 
-    async with shared_db:
-        await orm.Key.objects.create(key_id=key_id, instructions=json_instructions)
+    await orm.Key.objects.create(key_id=key_id, instructions=json_instructions)
 
     return ModelKey(key_id, key_material)
 

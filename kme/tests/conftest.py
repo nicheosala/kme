@@ -2,10 +2,10 @@
 from typing import AsyncIterator
 
 from httpx import AsyncClient
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from kme import app
-from kme.database import orm, local_models, shared_models, shared_db
+from kme.database import orm, local_models, shared_models
 from kme.tests.examples import key_1, key_2, block_1, block_2
 
 
@@ -40,10 +40,5 @@ async def init_blocks() -> None:
 @fixture
 async def init_keys() -> None:
     """Add example keys into the database."""
-    async with shared_db:
-        await orm.Key.objects.create(
-            key_id=key_1.key_id, instructions=key_1.instructions
-        )
-        await orm.Key.objects.create(
-            key_id=key_2.key_id, instructions=key_2.instructions
-        )
+    await orm.Key.objects.create(key_id=key_1.key_id, instructions=key_1.instructions)
+    await orm.Key.objects.create(key_id=key_2.key_id, instructions=key_2.instructions)

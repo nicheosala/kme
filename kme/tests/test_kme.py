@@ -7,7 +7,7 @@ from httpx import AsyncClient, Response
 from pydantic import ValidationError
 
 from kme.configs import Config
-from kme.database import orm, shared_db
+from kme.database import orm
 from kme.database.dbms import retrieve_key_material, Instruction
 from kme.encoder import dump, load
 from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
@@ -174,8 +174,7 @@ async def test_response_and_database_coherency(
     key_container: Final[KeyContainer] = KeyContainer(**response.json())
     response_key = key_container.keys[0]
 
-    async with shared_db:
-        db_key: orm.Key = await orm.Key.objects.get(key_id=response_key.key_ID)
+    db_key: orm.Key = await orm.Key.objects.get(key_id=response_key.key_ID)
     db_key_material = await retrieve_key_material(db_key.instructions)
 
     assert db_key_material == response_key.key
@@ -189,8 +188,7 @@ async def test_non_overlapping_instructions(
     requests = (client.get(url, params={"size": 64}) for _ in range(5))
     responses = await gather(*requests)
 
-    async with shared_db:
-        orm_keys: list[orm.Key] = await orm.Key.objects.all()
+    orm_keys: list[orm.Key] = await orm.Key.objects.all()
     instructions: list[Instruction] = []
     for k in orm_keys:
         instructions.extend(load(k.instructions, tuple[Instruction, ...]))
