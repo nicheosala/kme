@@ -3,6 +3,7 @@ from typing import Final
 from uuid import UUID
 
 from kme.database import orm
+from kme.utils import now
 from qcs import Block
 
 key_1: Final[orm.Key] = orm.Key(
@@ -20,7 +21,7 @@ key_2: Final[orm.Key] = orm.Key(
 )
 
 block_1: Final[Block] = Block(
-    time=1640034528,
+    time=now(),
     id=UUID("fa63d644-62c3-4818-a170-f3d0bd367888"),
     key=(
         189,
@@ -59,8 +60,40 @@ block_1: Final[Block] = Block(
 )
 
 block_2: Final[Block] = Block(
-    time=1640534728,
+    time=now(),
     id=UUID("22832407-7a17-4417-a754-71e51b968889"),
+    key=(
+        152,
+        45,
+        15,
+        171,
+        239,
+        119,
+        71,
+        83,
+        154,
+        86,
+        18,
+        169,
+        13,
+        109,
+        37,
+        238,
+        128,
+        163,
+        129,
+        126,
+        193,
+        222,
+        2,
+        48,
+    ),
+)
+
+# A fake block generated in december 2021.
+obsolete_block = Block(
+    time=1640034528,
+    id=UUID("a0949845-2d58-45fe-9d54-913cff2da042"),
     key=(
         152,
         45,

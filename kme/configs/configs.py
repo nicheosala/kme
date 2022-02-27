@@ -14,6 +14,14 @@ class Base(ABC):
 
     QC_PORT = 9998
 
+    """
+    A block inside the local database cannot be exploited to generate new keys
+    if the difference between "now" and its timestamp is greater than TTL.
+    The default value estabilished - by me, Nicolò - is 60 * 60 * 24 * 30:
+    number of seconds in 30 days
+    """
+    TTL = 2592000
+
     # Status
     MIN_KEY_SIZE = 8
     MAX_KEY_SIZE = 8192

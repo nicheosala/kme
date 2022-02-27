@@ -6,7 +6,7 @@ from pytest_asyncio import fixture
 
 from kme import app
 from kme.database import orm, local_models, shared_models
-from kme.tests.examples import key_1, key_2, block_1, block_2
+from kme.tests.examples import key_1, key_2, block_1, block_2, obsolete_block
 
 
 @fixture
@@ -34,6 +34,12 @@ async def init_blocks() -> None:
         timestamp=block_2.time,
         material=block_2.key,
         available_bits=len(block_2.key),
+    )
+    await orm.Block.objects.create(
+        block_id=obsolete_block.id,
+        timestamp=obsolete_block.time,
+        material=obsolete_block.key,
+        available_bits=len(obsolete_block.key),
     )
 
 

@@ -1,5 +1,6 @@
 """Utility functions."""
 from base64 import b64decode, b64encode
+from datetime import datetime
 from typing import Collection
 
 
@@ -34,3 +35,8 @@ def is_base64(s: str) -> bool:
     """Return True if 's' is a valid base64 string, else False."""
     bytes_s = bytes(s, "ascii")
     return bytes_s == b64encode(b64decode(bytes_s))
+
+
+def now() -> int:
+    """Return the actual timestamp as an integer."""
+    return int(datetime.now().timestamp())

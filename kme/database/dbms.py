@@ -6,12 +6,31 @@ from typing import Final, Any
 from uuid import UUID, uuid4
 
 from orm import NoMatch
+from kme.configs import Config
 
 from kme.database import orm
 from kme.encoder import dump, load
 from kme.model import Key as ModelKey
 from kme.model.errors import KeyNotFound
-from kme.utils import bit_length, collecitonint_to_b64
+from kme.utils import bit_length, collecitonint_to_b64, now
+
+
+async def clear_routine() -> None:
+    while True:
+        await asyncio.sleep(Config.TTL // 10)
+        await clear()
+
+
+async def clear() -> None:
+    """Delete unnecessary blocks from database.
+
+    A block is deleted if it satisfies at least one of the following conditions:
+    - It reached Config.TTL, that is: it is considered too old in order to be used for key generation.
+    - Its number of available bits is 0: the block has been completely exploited for key generation.
+    """
+    await orm.Block.objects.filter(available_bits__exact=0).delete()
+    await orm.Block.objects.filter(timestamp__lte=now() - Config.TTL).delete()
+
 
 lock = asyncio.Lock()
 
@@ -86,7 +105,11 @@ async def pop_block() -> orm.Block | None:
     block from the database. The behaviour of pick_block() has to be rimilar to the
     one of list.pop() or Queue.get_nowait()."""
     async with lock:
-        b: orm.Block = await orm.Block.objects.filter(available_bits__gt=0).first()
+        b: orm.Block = (
+            await orm.Block.objects.filter(available_bits__gt=0)
+            .filter(timestamp__gt=now() - Config.TTL)
+            .first()
+        )
 
         if b is not None:
             await b.delete()
