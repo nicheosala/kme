@@ -92,9 +92,4 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
 
 async def add_block(new_block: Block) -> None:
     """Add newly-generated block to database."""
-    await orm.Block.objects.create(
-        block_id=new_block.id,
-        material=new_block.key,
-        timestamp=new_block.time,
-        available_bits=len(new_block.key),
-    )
+    await orm.Block.create_from_qcs_block(new_block)

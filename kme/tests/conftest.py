@@ -23,24 +23,9 @@ async def client() -> AsyncIterator[AsyncClient]:
 @fixture
 async def init_blocks() -> None:
     """Add example blocks into the database."""
-    await orm.Block.objects.create(
-        block_id=block_1.id,
-        timestamp=block_1.time,
-        material=block_1.key,
-        available_bits=len(block_1.key),
-    )
-    await orm.Block.objects.create(
-        block_id=block_2.id,
-        timestamp=block_2.time,
-        material=block_2.key,
-        available_bits=len(block_2.key),
-    )
-    await orm.Block.objects.create(
-        block_id=obsolete_block.id,
-        timestamp=obsolete_block.time,
-        material=obsolete_block.key,
-        available_bits=len(obsolete_block.key),
-    )
+    await orm.Block.create_from_qcs_block(block_1)
+    await orm.Block.create_from_qcs_block(block_2)
+    await orm.Block.create_from_qcs_block(obsolete_block)
 
 
 @fixture

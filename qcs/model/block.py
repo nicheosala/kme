@@ -9,3 +9,4 @@ class Block:
     time: int
     id: UUID
     key: tuple[int, ...]
+    link_id: UUID

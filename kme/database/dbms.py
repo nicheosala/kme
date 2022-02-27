@@ -6,8 +6,8 @@ from typing import Final, Any
 from uuid import UUID, uuid4
 
 from orm import NoMatch
-from kme.configs import Config
 
+from kme.configs import Config
 from kme.database import orm
 from kme.encoder import dump, load
 from kme.model import Key as ModelKey
@@ -141,6 +141,7 @@ async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]
 
         await orm.Block.objects.create(
             block_id=b.block_id,
+            link_id=b.link_id,
             material=b.material,
             timestamp=b.timestamp,
             available_bits=len(b.material) - end,

@@ -14,6 +14,7 @@ KM_HOST: str = "localhost"
 KM_PORT: int = 9998
 DEBUG: bool = True
 GEN_INTERVAL: int = 1
+LINK_ID = uuid4()
 
 
 def timestamp() -> int:
@@ -67,7 +68,7 @@ async def main() -> None:
     while True:
         await sleep(GEN_INTERVAL)
 
-        new_block = Block(timestamp(), uuid4(), get_random_bits())
+        new_block = Block(timestamp(), uuid4(), get_random_bits(), LINK_ID)
         logging.getLogger("qcs").debug(f"New block generated with ID {new_block.id}")
 
         await send(new_block)
