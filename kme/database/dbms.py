@@ -35,7 +35,7 @@ async def clear() -> None:
 lock = asyncio.Lock()
 
 
-async def get(key_id: UUID, master_sae_id: str) -> ModelKey:
+async def get(key_id: UUID, master_sae_id: str | None = None) -> ModelKey:
     """Get the keys associated to the given SAE ID."""
     try:
         orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
@@ -53,7 +53,7 @@ async def delete(key_id: UUID) -> None:
 
 
 async def generate(
-    size: int, slave_sae_ids: frozenset[str], *extensions: dict[str, Any]
+    size: int, slave_sae_ids: frozenset[str] = frozenset(), *extensions: dict[str, Any]
 ) -> ModelKey:
     """Generate one new random key."""
     key_id: Final[UUID] = uuid4()

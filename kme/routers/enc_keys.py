@@ -1,12 +1,34 @@
 from typing import Final
 from urllib.parse import unquote as url_decode
+from uuid import UUID
 
 from fastapi import APIRouter, Query, Path
+from httpx import AsyncClient
 
-from kme.database import generate
+from kme.configs import Config
+from kme.database import generate, get
+from kme.encoder import load
 from kme.model import KeyContainer, Key, KeyRequest
 
 router: Final[APIRouter] = APIRouter(tags=["enc_keys"])
+
+
+async def ask_alice(number: int, size: int) -> tuple[Key, ...]:
+    """Bob cannot create keys: he must ask Alice for the creation of keys."""
+    async with AsyncClient() as client:
+        response = await client.get(
+            url=f"{Config.COMPANION_URL}/gen_keys",
+            params={"number": number, "size": size},
+        )
+
+        new_keys_ids = load(response.json(), tuple[UUID, ...])
+
+    new_keys = []
+
+    for key_id in new_keys_ids:
+        new_keys.append(await get(key_id))
+
+    return tuple(new_keys)
 
 
 @router.get(
@@ -27,12 +49,17 @@ async def get_key(
     slave_SAE_ID parameter may subsequently request matching keys from a
     remote kme using key_ID identifiers from the returned Key container.
     """
-    new_keys: Final[list[Key]] = []
-    for _ in range(number):
-        new_key: Key = await generate(size, frozenset([url_decode(slave_SAE_ID)]))
-        new_keys.append(new_key)
+    if Config.KME_ID == "Bob":
+        keys = await ask_alice(number, size)
+        return KeyContainer(keys=keys)
+    else:
+        new_keys = []
 
-    return KeyContainer(keys=tuple(new_keys))
+        for _ in range(number):
+            new_key: Key = await generate(size, frozenset([url_decode(slave_SAE_ID)]))
+            new_keys.append(new_key)
+
+        return KeyContainer(keys=tuple(new_keys))
 
 
 @router.post(
@@ -53,17 +80,21 @@ async def post_key(
     subsequently request matching keys from a remote kme using key_ID
     identifiers from the returned Key container.
     """
-    new_keys: Final[list[Key]] = []
-    for _ in range(key_request.number):
-        new_key: Key = await generate(
-            key_request.size,
-            frozenset(
-                (url_decode(slave_SAE_ID), *key_request.additional_slave_SAE_IDs)
-            ),
-            *key_request.extension_mandatory,
-            *key_request.extension_optional
-        )
+    if Config.KME_ID == "Bob":
+        keys = await ask_alice(key_request.number, key_request.size)
+        return KeyContainer(keys=keys)
+    else:
+        new_keys = []
+        for _ in range(key_request.number):
+            new_key: Key = await generate(
+                key_request.size,
+                frozenset(
+                    (url_decode(slave_SAE_ID), *key_request.additional_slave_SAE_IDs)
+                ),
+                *key_request.extension_mandatory,
+                *key_request.extension_optional,
+            )
 
-        new_keys.append(new_key)
+            new_keys.append(new_key)
 
-    return KeyContainer(keys=tuple(new_keys))
+        return KeyContainer(keys=tuple(new_keys))

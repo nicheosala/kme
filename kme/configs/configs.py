@@ -8,19 +8,20 @@ from pydantic import PostgresDsn
 class Base(ABC):
     """Base Config class."""
 
+    KME_ID = "Alice"
+    COMPANION_URL = "http://localhost:3000"
+
     BASE_URL = "/api/v1/keys"
     HOST = "localhost"
     PORT = 5000
 
-    QC_PORT = 9998
+    QC_PORT = 9999
 
     """
     A block inside the local database cannot be exploited to generate new keys
     if the difference between "now" and its timestamp is greater than TTL.
-    The default value estabilished - by me, Nicolò - is 60 * 60 * 24 * 30:
-    number of seconds in 30 days
     """
-    TTL = 2592000
+    TTL = 120
 
     # Status
     MIN_KEY_SIZE = 8
