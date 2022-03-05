@@ -1,6 +1,7 @@
 """A quantum channel simulator."""
 import logging
 from asyncio import open_connection, sleep, run
+from dataclasses import dataclass
 from datetime import datetime
 from struct import pack
 from typing import Final
@@ -10,10 +11,21 @@ from jsons import dumps
 
 from qcs import Block
 
-KM_HOST: str = "localhost"
-KM_PORT: int = 9998
+
+@dataclass
+class KME:
+    """A KME (host, port) couple."""
+
+    host: str
+    port: int
+
+
+KME_A = KME("localhost", 9998)
+KME_B = KME("localhost", 9999)
+KMEs = (KME_A, KME_B)
+
 DEBUG: bool = True
-GEN_INTERVAL: int = 1
+GEN_INTERVAL: int = 5
 LINK_ID = uuid4()
 
 
@@ -37,9 +49,9 @@ def get_random_bits() -> tuple[int, ...]:
     return tuple(getrandbits(8) for _ in range(randint(lb, ub)))
 
 
-async def send(block: Block) -> None:
+async def send(block: Block, kme: KME) -> None:
     """Send to the key manager a newly-generated block."""
-    _, writer = await open_connection(KM_HOST, KM_PORT)
+    _, writer = await open_connection(kme.host, kme.port)
 
     message: Final[str] = dumps(block, indent=4) + "\n"
     len_message: Final[int] = len(message)
@@ -71,7 +83,8 @@ async def main() -> None:
         new_block = Block(timestamp(), uuid4(), get_random_bits(), LINK_ID)
         logging.getLogger("qcs").debug(f"New block generated with ID {new_block.id}")
 
-        await send(new_block)
+        for kme in KMEs:
+            await send(new_block, kme)
 
 
 if __name__ == "__main__":

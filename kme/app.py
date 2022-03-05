@@ -12,7 +12,7 @@ from kme.routers import enc_keys, dec_keys, status, kme_companion
 
 app: Final[FastAPI] = FastAPI(
     debug=Config.DEBUG,
-    title="Key Management Entity",
+    title=Config.KME_ID,
     responses={
         400: {"model": BadRequest},
         401: {"model": Unauthorized},
@@ -49,7 +49,7 @@ async def shutdown() -> None:
 
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(
-        _: Request, error: RequestValidationError
+    _: Request, error: RequestValidationError
 ) -> JSONResponse:
     """Always return 400 for a RequestValidationError."""
     return JSONResponse(status_code=400, content={"message": str(error.errors()[0])})

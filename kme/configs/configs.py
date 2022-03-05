@@ -9,13 +9,16 @@ class Base(ABC):
     """Base Config class."""
 
     KME_ID = "Alice"
-    COMPANION_URL = "http://localhost:3000"
 
-    BASE_URL = "/api/v1/keys"
     HOST = "localhost"
     PORT = 5000
 
-    QC_PORT = 9999
+    QC_HOST = "localhost"
+    QC_PORT = 9998
+
+    COMPANION_URL = "http://localhost:3000"
+
+    BASE_URL = "/api/v1/keys"
 
     """
     A block inside the local database cannot be exploited to generate new keys
