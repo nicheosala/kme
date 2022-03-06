@@ -81,7 +81,7 @@ async def main() -> None:
         await sleep(GEN_INTERVAL)
 
         new_block = Block(timestamp(), uuid4(), get_random_bits(), LINK_ID)
-        logging.getLogger("qcs").debug(f"New block generated with ID {new_block.id}")
+        logging.getLogger("qcs").info(f"New block generated with ID {new_block.id}")
 
         for kme in KMEs:
             await send(new_block, kme)

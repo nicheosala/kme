@@ -21,6 +21,13 @@ class Base(ABC):
     BASE_URL = "/api/v1/keys"
 
     """
+    The Polimi's QCS has some unwanted behaviours. For example, it does not send 
+    blocks with a "link_id" field. Therefore, we set COMPATIBILITY_MODE to True when 
+    we are working with that quantum channel simulator.
+    """
+    COMPATIBILITY_MODE = True
+
+    """
     A block inside the local database cannot be exploited to generate new keys
     if the difference between "now" and its timestamp is greater than TTL.
     """
