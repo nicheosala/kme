@@ -55,7 +55,7 @@ class Base(ABC):
     def TESTING(self) -> bool:
         """Test flag."""
 
-    LOCAL_DB_URL = "sqlite:///local_db"
+    LOCAL_DB_URL = f"sqlite:///{KME_ID}_local_db"
 
     @property
     @abstractmethod
