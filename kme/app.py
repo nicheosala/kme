@@ -6,13 +6,13 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
 from kme.configs import Config
-from kme.database import models
+from kme.database import local_models, shared_models, shared_db
 from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
-from kme.routers import enc_keys, dec_keys, status
+from kme.routers import enc_keys, dec_keys, status, kme_companion
 
 app: Final[FastAPI] = FastAPI(
     debug=Config.DEBUG,
-    title="Key Management Entity",
+    title=Config.KME_ID,
     responses={
         400: {"model": BadRequest},
         401: {"model": Unauthorized},
@@ -23,6 +23,7 @@ app: Final[FastAPI] = FastAPI(
 app.include_router(enc_keys.router, prefix=Config.BASE_URL)
 app.include_router(dec_keys.router, prefix=Config.BASE_URL)
 app.include_router(status.router, prefix=Config.BASE_URL)
+app.include_router(kme_companion.router)
 
 
 @app.get("/", include_in_schema=False)
@@ -34,7 +35,16 @@ async def redirect() -> RedirectResponse:
 @app.on_event("startup")
 async def startup() -> None:
     """Create ORM tables inside the database, if not already present."""
-    await models.create_all()
+    await local_models.create_all()
+    await shared_models.create_all()
+
+    await shared_db.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    """Disconnect from shared DB."""
+    await shared_db.disconnect()
 
 
 @app.exception_handler(RequestValidationError)

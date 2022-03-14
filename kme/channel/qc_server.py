@@ -1,35 +1,34 @@
-"""A simulator of a quantum channel."""
+"""The server listening to new blocks from the quantum channel."""
+import asyncio
 import logging
 from socketserver import TCPServer, StreamRequestHandler, ThreadingMixIn
-from struct import unpack, pack
+from struct import unpack
 from threading import Thread
 from typing import Final, Any
 
 from jsons import loads
 
-from qcs.configs import Config
-from qcs.model import Request, Response
-from qcs.resolver import resolve
+from kme.configs import Config
+from kme.database import orm
+from qcs import Block
 
 
-class Simulator:
-    """Start a Quantum Channel Simulator.
+class QCServer:
+    """The server listening to new blocks from the quantum channel.
 
     Usage:
-    with Simulator():
+    with QCServer():
         *do things*
 
-    Otherwise. you can start it with .start(),
-    BUT then you have to remember to close it with .stop()
+    Otherwise, you can start it with .start(),
+    BUT then you have to remember to close it calling .stop()
     """
 
-    def __init__(self, host: str = Config.HOST, port: int = Config.PORT):
-        """Initialize the simulator."""
+    def __init__(self, host: str = Config.QC_HOST, port: int = Config.QC_PORT):
+        """Initialize the server."""
         self.host = host
         self.port = port
-        self.server = ThreadedTCPServer(
-            (Config.HOST, Config.PORT), ThreadedTCPRequestHandler
-        )
+        self.server = ThreadedTCPServer((host, port), ThreadedTCPRequestHandler)
 
         def start_server() -> None:
             self.server.serve_forever(poll_interval=Config.POLL_INTERVAL)
@@ -55,7 +54,7 @@ class Simulator:
         the 'with' statement should be preferred.
         """
         self.server_thread.start()
-        logging.getLogger("qcs").info(f"Server listening on {self.host}:{self.port}")
+        logging.getLogger("kme").info(f"QCServer listening on {self.host}:{self.port}")
 
     def stop(self) -> None:
         """Stop the QC Simulator.
@@ -67,11 +66,11 @@ class Simulator:
         self.server.shutdown()
         self.server.server_close()
         self.server_thread.join()
-        logging.getLogger("qcs").info(f"Server shutdown completed.")
+        logging.getLogger("kme").info(f"QCServer shutdown completed.")
 
 
 class ThreadedTCPServer(ThreadingMixIn, TCPServer):
-    """Provide thread anc TCP functionlaities to the simulator."""
+    """Provide thread anc TCP functionalities to the QCServer."""
 
     allow_reuse_address = True
 
@@ -84,17 +83,20 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
         len_data: Final[int] = unpack(">I", self.rfile.read(4))[0]
         data: Final[str] = self.rfile.read(len_data).decode()
 
-        request: Final[Request] = loads(data, Request, strict=True)
+        new_block: Block = loads(data, Block, strict=True)
 
-        response: Final[Response] = resolve(request)
+        if Config.COMPATIBILITY_MODE and new_block.link_id is None:
+            from uuid import uuid4
 
-        len_response: Final[int] = len(response.json_string)
-        self.wfile.write(pack(">I", len_response))
-        self.wfile.write(bytes(response.json_string, "utf-8"))
+            new_block = Block(
+                time=new_block.time, id=new_block.id, key=new_block.key, link_id=uuid4()
+            )
 
-        logging.getLogger("qcs").info(
-            f"""
-        Client: {self.client_address}
-        Request: {request}
-        Response: {response}"""
-        )
+        asyncio.run(add_block(new_block))
+
+        logging.getLogger("kme").debug(f"Received new block with id {new_block.id}")
+
+
+async def add_block(new_block: Block) -> None:
+    """Add newly-generated block to database."""
+    await orm.Block.create_from_qcs_block(new_block)

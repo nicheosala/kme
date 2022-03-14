@@ -8,9 +8,30 @@ from pydantic import PostgresDsn
 class Base(ABC):
     """Base Config class."""
 
-    BASE_URL = "/api/v1/keys"
+    KME_ID = "Alice"
+
     HOST = "localhost"
     PORT = 5000
+
+    QC_HOST = "localhost"
+    QC_PORT = 9998
+
+    COMPANION_URL = "http://localhost:3000"
+
+    BASE_URL = "/api/v1/keys"
+
+    """
+    The Polimi's QCS has some unwanted behaviours. For example, it does not send 
+    blocks with a "link_id" field. Therefore, we set COMPATIBILITY_MODE to True when 
+    we are working with that quantum channel simulator.
+    """
+    COMPATIBILITY_MODE = True
+
+    """
+    A block inside the local database cannot be exploited to generate new keys
+    if the difference between "now" and its timestamp is greater than TTL.
+    """
+    TTL = 120
 
     # Status
     MIN_KEY_SIZE = 8
@@ -34,10 +55,17 @@ class Base(ABC):
     def TESTING(self) -> bool:
         """Test flag."""
 
+    LOCAL_DB_URL = f"sqlite:///{KME_ID}_local_db"
+
     @property
     @abstractmethod
-    def DATABASE_URL(self) -> str:
-        """URL for database connection."""
+    def SHARED_DB_URL(self) -> str:
+        """URL for shared database connection."""
+
+    @property
+    @abstractmethod
+    def POLL_INTERVAL(self) -> float:
+        """The qcserver polls for shutdown every POLL_INTERVAL seconds."""
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -46,9 +74,10 @@ class Prod(Base):
 
     DEBUG = False
     TESTING = False
+    POLL_INTERVAL = 0.5
 
     @property
-    def DATABASE_URL(self) -> str:
+    def SHARED_DB_URL(self) -> str:
         """URL for database connection.
 
         1. Install PostgreSQL
@@ -73,7 +102,8 @@ class Dev(Base):
 
     DEBUG = True
     TESTING = False
-    DATABASE_URL = "sqlite:///devdb"
+    SHARED_DB_URL = "sqlite:///devdb"
+    POLL_INTERVAL = 0.001
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -82,4 +112,5 @@ class Test(Base):
 
     DEBUG = False
     TESTING = True
-    DATABASE_URL = "sqlite:///testdb"
+    SHARED_DB_URL = "sqlite:///testdb"
+    POLL_INTERVAL = 0.001

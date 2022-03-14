@@ -25,8 +25,6 @@ jobs:
                export env=test
           fi
         shell: bash
-      - name: "Test qcs using pytest"
-        run: poetry run pytest qcs
       - name: "Test qcs using mypy"
         run: poetry run mypy qcs
       - name: "Test kme using pytest"

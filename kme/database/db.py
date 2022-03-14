@@ -7,6 +7,10 @@ from orm import ModelRegistry
 
 from kme.configs import Config
 
-database: Final[Database] = Database(Config.DATABASE_URL, force_rollback=Config.TESTING)
+local_db: Final[Database] = Database(Config.LOCAL_DB_URL, force_rollback=Config.TESTING)
+local_models: Final[ModelRegistry] = ModelRegistry(database=local_db)
 
-models: Final[ModelRegistry] = ModelRegistry(database=database)
+shared_db: Final[Database] = Database(
+    Config.SHARED_DB_URL, force_rollback=Config.TESTING
+)
+shared_models: Final[ModelRegistry] = ModelRegistry(database=shared_db)
