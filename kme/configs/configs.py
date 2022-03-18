@@ -1,4 +1,6 @@
 """Configurations for KME."""
+import configparser
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
@@ -8,42 +10,30 @@ from pydantic import PostgresDsn
 class Base(ABC):
     """Base Config class."""
 
-    KME_ID = "Alice"
-
-    HOST = "localhost"
-    PORT = 5000
-
-    QC_HOST = "localhost"
-    QC_PORT = 9998
-
-    COMPANION_URL = "http://localhost:3000"
-
-    BASE_URL = "/api/v1/keys"
-
-    """
-    The Polimi's QCS has some unwanted behaviours. For example, it does not send 
-    blocks with a "link_id" field. Therefore, we set COMPATIBILITY_MODE to True when 
-    we are working with that quantum channel simulator.
-    """
-    COMPATIBILITY_MODE = True
-
-    """
-    A block inside the local database cannot be exploited to generate new keys
-    if the difference between "now" and its timestamp is greater than TTL.
-    """
-    TTL = 120
-
-    # Status
-    MIN_KEY_SIZE = 8
-    MAX_KEY_SIZE = 8192
-    DEFAULT_KEY_SIZE = 256
-    MAX_KEY_PER_REQUEST = 10
-    STORED_KEY_COUNT = 10
-    MAX_KEY_COUNT = 10
-    MAX_SAE_ID_COUNT = 10
-
-    # Key request
-    SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
+    # Check Config file for info
+    def __init__(self, kme_id: str = "Alice"):
+        super().__init__()
+        config = configparser.ConfigParser()
+        config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
+        upper_id = kme_id.upper()
+        self.KME_ID = config[upper_id]["KME_ID"]
+        self.KME_IP = config[upper_id]["KME_IP"]
+        self.SAE_TO_KME_PORT = int(config[upper_id]["SAE_TO_KME_PORT"])  # check if correct
+        self.QC_TO_KME_PORT = int(config[upper_id]["QC_TO_KME_PORT"])  # check if correct
+        self.COMPANION_URL = config[upper_id]["COMPANION_URL"]
+        self.BASE_URL = config["SHARED"]["BASE_URL"]
+        self.COMPATIBILITY_MODE = config["SHARED"]["COMPATIBILITY_MODE"]
+        self.TTL = int(config["SHARED"]["TTL"])
+        self.MIN_KEY_SIZE = int(config["SHARED"]["MIN_KEY_SIZE"])
+        self.MAX_KEY_SIZE = int(config["SHARED"]["MAX_KEY_SIZE"])
+        self.DEFAULT_KEY_SIZE = int(config["SHARED"]["DEFAULT_KEY_SIZE"])
+        self.MAX_KEY_PER_REQUEST = int(config["SHARED"]["MAX_KEY_PER_REQUEST"])
+        self.STORED_KEY_COUNT = int(config["SHARED"]["STORED_KEY_COUNT"])
+        self.MAX_KEY_COUNT = int(config["SHARED"]["MAX_KEY_COUNT"])
+        self.MAX_SAE_ID_COUNT = int(config["SHARED"]["MAX_SAE_ID_COUNT"])
+        # Key request
+        self.SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
+        self.LOCAL_DB_URL = f"sqlite:///{self.KME_ID}_local_db"
 
     @property
     @abstractmethod
@@ -54,8 +44,6 @@ class Base(ABC):
     @abstractmethod
     def TESTING(self) -> bool:
         """Test flag."""
-
-    LOCAL_DB_URL = f"sqlite:///{KME_ID}_local_db"
 
     @property
     @abstractmethod
@@ -68,7 +56,7 @@ class Base(ABC):
         """The qcserver polls for shutdown every POLL_INTERVAL seconds."""
 
 
-@dataclass(frozen=True, slots=True, init=False)
+# @dataclass(frozen=True, slots=True, init=False)
 class Prod(Base):
     """Configuration for production environment."""
 
@@ -96,7 +84,7 @@ class Prod(Base):
         return url
 
 
-@dataclass(frozen=True, slots=True, init=False)
+# @dataclass(frozen=True, slots=True, init=False)
 class Dev(Base):
     """Configuration for development environment."""
 
@@ -106,7 +94,7 @@ class Dev(Base):
     POLL_INTERVAL = 0.001
 
 
-@dataclass(frozen=True, slots=True, init=False)
+# @dataclass(frozen=True, slots=True, init=False)
 class Test(Base):
     """Configuration for testing environment."""
 

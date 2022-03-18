@@ -15,30 +15,8 @@ def set_logging() -> None:
     logger.addHandler(logging.StreamHandler())
 
 
-def read_args() -> Namespace:
-    """Read parameters from CLI."""
-    parser = ArgumentParser()
-    parser.add_argument(
-        "-H",
-        "--host",
-        type=str,
-        help="The host address where kme will run.",
-        default=Config.HOST,
-    )
-    parser.add_argument(
-        "-P",
-        "--port",
-        type=int,
-        help="The port where kme will run.",
-        default=Config.PORT,
-    )
-
-    return parser.parse_args()
-
-
 if __name__ == "__main__":
     set_logging()
-    args = read_args()
     with QCServer():
         # noinspection PyTypeChecker
-        run(app=app, host=args.host, port=args.port)
+        run(app=app, host=Config.KME_IP, port=Config.SAE_TO_KME_PORT)

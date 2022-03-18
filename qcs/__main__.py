@@ -1,5 +1,8 @@
 """A quantum channel simulator."""
+import configparser
 import logging
+import os
+from argparse import Namespace, ArgumentParser
 from asyncio import open_connection, sleep, run
 from dataclasses import dataclass
 from datetime import datetime
@@ -73,9 +76,38 @@ def set_logging() -> None:
     logger.addHandler(logging.StreamHandler())
 
 
+def read_args() -> Namespace:
+    """Read parameters from CLI."""
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-C",
+        "--config",
+        type=str,
+        help="The two kme ids to which the qcs is referred.",
+        default="Alice-Bob",
+    )
+
+    return parser.parse_args()
+
+
+# Check Config file for info
+def set_params(served_nodes: str = "Alice-Bob"):
+    config = configparser.ConfigParser()
+    config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
+    upper_nodes = served_nodes.upper()
+    global KME_A, KME_B, DEBUG, GEN_INTERVAL, KMEs
+    KME_A = KME(config[upper_nodes]["KME_A_IP"], int(config[upper_nodes]["KME_A_PORT"]))
+    KME_B = KME(config[upper_nodes]["KME_B_IP"], int(config[upper_nodes]["KME_B_PORT"]))
+    DEBUG = bool(config["SHARED"]["DEBUG"])
+    GEN_INTERVAL = int(config["SHARED"]["GEN_INTERVAL"])
+    KMEs = (KME_A, KME_B)
+
+
 async def main() -> None:
     """Main function."""
     set_logging()
+    args = read_args()
+    set_params(args.config)
 
     while True:
         await sleep(GEN_INTERVAL)

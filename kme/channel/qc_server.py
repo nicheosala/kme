@@ -24,7 +24,7 @@ class QCServer:
     BUT then you have to remember to close it calling .stop()
     """
 
-    def __init__(self, host: str = Config.QC_HOST, port: int = Config.QC_PORT):
+    def __init__(self, host: str = Config.KME_IP, port: int = Config.QC_TO_KME_PORT):
         """Initialize the server."""
         self.host = host
         self.port = port
