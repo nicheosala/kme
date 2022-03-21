@@ -1,3 +1,4 @@
+import uuid
 from asyncio import gather
 from itertools import combinations
 from typing import Final
@@ -10,9 +11,10 @@ from kme.configs import Config
 from kme.database import orm
 from kme.database.dbms import retrieve_key_material, Instruction
 from kme.encoder import dump, load
-from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs
+from kme.model import KeyContainer, KeyRequest, KeyIDs, KeyIDsKeyIDs, OpenSessionResponse
 from kme.model.errors import Error, KeyNotFound
-from kme.tests.examples import key_1, key_2
+from kme.model.open_session_request import OpenSessionRequest
+from kme.tests.examples import key_1, key_2, qos
 from kme.utils import bit_length_b64
 
 pytestmark = pytest.mark.asyncio
@@ -202,3 +204,18 @@ def disjoint(a: Instruction, b: Instruction) -> bool:
     return a.block_id != b.block_id or not (
         set(range(a.start, a.end)) & set(range(b.start, b.end))
     )
+
+
+async def test_open_key_session(client: AsyncClient) -> None:
+    """Tests an app requesting a connection to another app."""
+    app_registration: Final[OpenSessionRequest] = OpenSessionRequest(src=uuid.uuid4(), dst=uuid.uuid4(), qos=qos)
+
+    response: Final[Response] = await client.post(
+        url=f"/open_key_session",
+        json=dump(app_registration)
+    )
+
+    waiting_response: Final[OpenSessionResponse] = OpenSessionResponse(**response.json())
+
+    assert response.status_code == 200
+    assert isinstance(waiting_response.key_stream_id, type(uuid.uuid4()))

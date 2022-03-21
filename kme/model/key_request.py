@@ -47,7 +47,7 @@ class KeyRequest:
         default_factory=tuple,
         description="""
         (Option) Array of extension parameters specified as name/value 
-        pairsthat KME shall handle or return an error. Parameter values may 
+        pairs that KME shall handle or return an error. Parameter values may 
         be of any type, including objects.
         """,
     )
@@ -56,14 +56,14 @@ class KeyRequest:
         default_factory=tuple,
         description="""
         (Option) Array of extension parameters specified as name/value 
-        pairsthat KME may ignore. Parameter values may be of any type, 
+        pairs that KME may ignore. Parameter values may be of any type, 
         including objects.
         """,
     )
 
     @validator("extension_mandatory", each_item=True)
     def check_supported_extension_mandatory(cls: Any, ext: dict[str, Any]) -> None:
-        """Ensure all mendatory extensions provided are supported."""
+        """Ensure all mandatory extensions provided are supported."""
         for ext_name in ext.keys():
             if ext_name not in Config.SUPPORTED_EXTENSION_PARAMS:
                 raise ValueError("Unsupported mandatory exception")

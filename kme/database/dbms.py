@@ -36,7 +36,7 @@ lock = asyncio.Lock()
 
 
 async def get(key_id: UUID, master_sae_id: str | None = None) -> ModelKey:
-    """Get the keys associated to the given SAE ID."""
+    """Get the keys associated to the given key ID."""
     try:
         orm_key: Final[orm.Key] = await orm.Key.objects.get(key_id=key_id)
     except NoMatch:

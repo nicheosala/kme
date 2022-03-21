@@ -31,6 +31,8 @@ class Base(ABC):
         self.STORED_KEY_COUNT = int(config["SHARED"]["STORED_KEY_COUNT"])
         self.MAX_KEY_COUNT = int(config["SHARED"]["MAX_KEY_COUNT"])
         self.MAX_SAE_ID_COUNT = int(config["SHARED"]["MAX_SAE_ID_COUNT"])
+        self.SDN_CONTROLLER_IP = config["SHARED"]["SDN_CONTROLLER_IP"]
+        self.SND_CONTROLLER_PORT = int(config["SHARED"]["SND_CONTROLLER_PORT"])
         # Key request
         self.SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
         self.LOCAL_DB_URL = f"sqlite:///{self.KME_ID}_local_db"
