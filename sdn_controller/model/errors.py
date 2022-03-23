@@ -34,9 +34,18 @@ class Unauthorized(Error):
 
 
 @dataclass(frozen=True)
-class KeyNotFound(HTTPException):
+class KmeNotFound(HTTPException):
     # TODO check
     """Error when a requested key is not found."""
 
-    detail: str = "One or more keys specified are not found on KME"
+    detail: str = "The KME specified has not been found."
+    status_code: int = 400
+
+
+@dataclass(frozen=True)
+class SaeNotFound(HTTPException):
+    # TODO check
+    """Error when a requested SAE is not found."""
+
+    detail: str = "The SAE specified has not been found."
     status_code: int = 400

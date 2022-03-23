@@ -12,10 +12,20 @@ class NewAppRequest:
 
     src: UUID
     dst: UUID
-    kme: str    # TODO should be a UUID
+    kme: UUID
     qos: dict[str, int | bool] = Field(
         default_factory=dict,
         description="""
         The QoS requested by the sae.
         """
     )
+
+
+@dataclass(frozen=True)
+class NewAppResponse:
+    """Response to 'new_app'. If the other app is already registered, the Controller will return an assigned
+    'key_stream_id', otherwise it will be the Nil UUID.
+    """
+    sae1: UUID  # TODO useless for now
+    sae2: UUID  # TODO useless for now
+    key_stream_id: UUID = UUID('00000000-0000-0000-0000-000000000000')

@@ -18,3 +18,13 @@ class OpenSessionRequest:
         The QoS requested by the sae.
         """
     )
+
+
+@dataclass(frozen=True)
+class OpenSessionResponse:
+    """Response to open_key_session with another app. If the other app is already registered, the kme will return an
+    assigned 'key_stream_id', otherwise it will be the Nil UUID.
+    """
+    sae1: UUID  # TODO useless for now
+    sae2: UUID  # TODO useless for now
+    key_stream_id: UUID = UUID('00000000-0000-0000-0000-000000000000')

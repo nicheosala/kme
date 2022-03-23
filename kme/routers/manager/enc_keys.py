@@ -49,7 +49,7 @@ async def get_key(
     slave_SAE_ID parameter may subsequently request matching keys from a
     remote kme using key_ID identifiers from the returned Key container.
     """
-    if Config.KME_ID == "Bob":
+    if Config.KME_NAME == "Bob":
         keys = await ask_alice(number, size)
         return KeyContainer(keys=keys)
     else:
@@ -80,7 +80,7 @@ async def post_key(
     subsequently request matching keys from a remote kme using key_ID
     identifiers from the returned Key container.
     """
-    if Config.KME_ID == "Bob":
+    if Config.KME_NAME == "Bob":
         keys = await ask_alice(key_request.number, key_request.size)
         return KeyContainer(keys=keys)
     else:

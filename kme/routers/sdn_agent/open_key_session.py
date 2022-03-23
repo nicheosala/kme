@@ -1,19 +1,15 @@
-import uuid
 from typing import Final
 
-from httpx import Response, AsyncClient
+from httpx import AsyncClient
 
 from kme.configs import Config
 from kme.encoder import dump
-from kme.model import OpenSessionResponse
 
 from fastapi import APIRouter
 
-from kme.model.open_session_request import OpenSessionRequest
-from kme.tests.examples import qos
-from sdn_controller import app
-from sdn_controller.model.new_app_request import NewAppRequest
-from sdn_controller.model.new_app_response import NewAppResponse
+from kme.model.open_session import OpenSessionRequest, OpenSessionResponse
+from sdn_controller import sdn_app
+from sdn_controller.model.new_app import NewAppRequest
 
 router: Final[APIRouter] = APIRouter(tags=["open_key_session"])
 
@@ -33,16 +29,12 @@ async def open_key_session(
     """
 
     app_registration: Final[NewAppRequest] = NewAppRequest(
-        src=uuid.uuid4(),
-        dst=uuid.uuid4(),
-        kme=Config.KME_ID,
-        qos=qos
+        src=request.src, dst=request.dst, kme=Config.KME_ID, qos=request.qos
     )
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(app=sdn_app.app, base_url=Config.SDN_CONTROLLER_ADDRESS) as client:
         response = await client.post(
             url=f"/new_app",
             json=dump(app_registration)
         )
-        new_app_response: Final[NewAppResponse] = NewAppResponse(**response.json())
-        return OpenSessionResponse(key_stream_id=new_app_response.key_stream_id)
+        return OpenSessionResponse(**response.json())

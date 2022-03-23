@@ -9,11 +9,11 @@ from kme.configs import Config
 from kme.database import local_models, shared_models, shared_db
 from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
 from kme.routers.manager import dec_keys, kme_companion, enc_keys, status
-from kme.routers.sdn_agent import open_key_session
+from kme.routers.sdn_agent import open_key_session, assign_ksid
 
 app: Final[FastAPI] = FastAPI(
     debug=Config.DEBUG,
-    title=Config.KME_ID,
+    title=Config.KME_NAME,
     responses={
         400: {"model": BadRequest},
         401: {"model": Unauthorized},
@@ -25,6 +25,7 @@ app.include_router(enc_keys.router, prefix=Config.BASE_URL)
 app.include_router(dec_keys.router, prefix=Config.BASE_URL)
 app.include_router(status.router, prefix=Config.BASE_URL)
 app.include_router(open_key_session.router)
+app.include_router(assign_ksid.router)
 app.include_router(kme_companion.router)
 
 

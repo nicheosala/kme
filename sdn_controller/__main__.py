@@ -2,7 +2,7 @@ import logging
 
 from uvicorn import run
 
-from sdn_controller import app
+from sdn_controller import sdn_app
 from sdn_controller.configs import Config
 
 
@@ -15,7 +15,5 @@ def set_logging() -> None:
 
 if __name__ == "__main__":
     set_logging()
-    # with Controller():
-        # pass
-        # noinspection PyTypeChecker
-    run(app=app, host=Config.IP, port=Config.PORT)
+    # noinspection PyTypeChecker
+    run(app=sdn_app.app, host=Config.IP, port=Config.PORT)

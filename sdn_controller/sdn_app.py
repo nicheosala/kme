@@ -5,9 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
-from kme.database import local_models, shared_models, shared_db
-from kme.model.errors import BadRequest, ServiceUnavailable, Unauthorized
-from sdn_controller.routers import new_app
+from sdn_controller.database import local_models, shared_models, shared_db
+from sdn_controller.model.errors import BadRequest, Unauthorized, ServiceUnavailable
+from sdn_controller.routers import new_app, new_kme
 
 app: Final[FastAPI] = FastAPI(
     debug=True,
@@ -20,6 +20,7 @@ app: Final[FastAPI] = FastAPI(
 )
 
 app.include_router(new_app.router)
+app.include_router(new_kme.router)
 
 
 @app.get("/", include_in_schema=False)
@@ -31,18 +32,16 @@ async def redirect() -> RedirectResponse:
 @app.on_event("startup")
 async def startup() -> None:
     """Create ORM tables inside the database, if not already present."""
-    # await local_models.create_all()
-    # await shared_models.create_all()
+    await local_models.create_all()
+    await shared_models.create_all()
 
-    # await shared_db.connect()
-    pass
+    await shared_db.connect()
 
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
     """Disconnect from shared DB."""
-    # await shared_db.disconnect()
-    pass
+    await shared_db.disconnect()
 
 
 @app.exception_handler(RequestValidationError)

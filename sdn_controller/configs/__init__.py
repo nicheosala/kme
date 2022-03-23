@@ -1,14 +1,18 @@
-import configparser
 import os
+from typing import Final
+
+from sdn_controller.configs.configs import Base, Prod, Test, Dev
 
 
-class Configuration:
-    def __init__(self):
-        config = configparser.ConfigParser()
-        config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
-        self.IP = config["GENERIC"]["IP"]
-        self.PORT = int(config["GENERIC"]["PORT"])
-        self.POLL_INTERVAL = float(config["GENERIC"]["POLL_INTERVAL"])
+def __set_config() -> Base:
+    """Initialize the configuration."""
+    env: str | None = os.environ.get("env")
+    if env == "prod":
+        return Prod()
+    elif env == "test":
+        return Test()
+    else:
+        return Dev()
 
 
-Config = Configuration()
+Config: Final[Base] = __set_config()

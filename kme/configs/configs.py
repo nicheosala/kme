@@ -3,6 +3,7 @@ import configparser
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from uuid import UUID
 
 from pydantic import PostgresDsn
 
@@ -16,10 +17,11 @@ class Base(ABC):
         config = configparser.ConfigParser()
         config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
         upper_id = kme_id.upper()
-        self.KME_ID = config[upper_id]["KME_ID"]
+        self.KME_NAME = config[upper_id]["KME_NAME"]
+        self.KME_ID = UUID('00000000-0000-0000-0000-000000000000')
         self.KME_IP = config[upper_id]["KME_IP"]
-        self.SAE_TO_KME_PORT = int(config[upper_id]["SAE_TO_KME_PORT"])  # check if correct
-        self.QC_TO_KME_PORT = int(config[upper_id]["QC_TO_KME_PORT"])  # check if correct
+        self.SAE_TO_KME_PORT = int(config[upper_id]["SAE_TO_KME_PORT"])
+        self.QC_TO_KME_PORT = int(config[upper_id]["QC_TO_KME_PORT"])
         self.COMPANION_URL = config[upper_id]["COMPANION_URL"]
         self.BASE_URL = config["SHARED"]["BASE_URL"]
         self.COMPATIBILITY_MODE = config["SHARED"]["COMPATIBILITY_MODE"]
@@ -33,9 +35,10 @@ class Base(ABC):
         self.MAX_SAE_ID_COUNT = int(config["SHARED"]["MAX_SAE_ID_COUNT"])
         self.SDN_CONTROLLER_IP = config["SHARED"]["SDN_CONTROLLER_IP"]
         self.SND_CONTROLLER_PORT = int(config["SHARED"]["SND_CONTROLLER_PORT"])
+        self.SDN_CONTROLLER_ADDRESS = f"http://{self.SDN_CONTROLLER_IP}:{self.SND_CONTROLLER_PORT}"
         # Key request
         self.SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
-        self.LOCAL_DB_URL = f"sqlite:///{self.KME_ID}_local_db"
+        self.LOCAL_DB_URL = f"sqlite:///{self.KME_NAME}_local_db"
 
     @property
     @abstractmethod
@@ -58,7 +61,7 @@ class Base(ABC):
         """The qcserver polls for shutdown every POLL_INTERVAL seconds."""
 
 
-# @dataclass(frozen=True, slots=True, init=False)
+@dataclass(frozen=False, slots=True, init=False)
 class Prod(Base):
     """Configuration for production environment."""
 
@@ -86,7 +89,7 @@ class Prod(Base):
         return url
 
 
-# @dataclass(frozen=True, slots=True, init=False)
+@dataclass(frozen=False, slots=True, init=False)
 class Dev(Base):
     """Configuration for development environment."""
 
@@ -96,7 +99,7 @@ class Dev(Base):
     POLL_INTERVAL = 0.001
 
 
-# @dataclass(frozen=True, slots=True, init=False)
+@dataclass(frozen=False, slots=True, init=False)
 class Test(Base):
     """Configuration for testing environment."""
 
