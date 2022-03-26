@@ -3,12 +3,14 @@
 This project is about Quantum Key Distribution (QKD).\
 It is divided into the following packages:
 
-- a [Key Management Entity (KME)](kme/README.md)
+- a [Software-Defined QKD Node (SD-QKD node)](sd_qkd_node/README.md)
 - a [Quantum Channel Simulator (QCS)](qcs/README.md)
+- an [SDN Controller](sdn_controller/README.md)
 
-In summary, KME receives requests from applications that want to use
+In summary, SD-QKD node receives requests from applications that want to use
 quantum-generated secret keys. QCS is a simulator of a quantum channel that
-produces quantum secret keys.
+produces quantum secret keys. The SDN Controller is in charge of managing 
+the new connections and the network optimizations.
 
 ## Installation
 
@@ -25,13 +27,34 @@ poetry install
 ## Execution
 
 All the following commands must be executed in a terminal positioned inside
-folder 'qkd'.
+folder `qkd`.
 
-If you want to start a key management entity:
+First start the SDN Controller through the command:
+```bash
+poetry run python -m sdn_controller
+```
+
+Then to start a key management entity:
 
 ```bash
-poetry run python -m kme
+poetry run python -m sd_qkd_node
 ```
+
+This will start a default configuration (called *Alice*) in the [config file](sd_qkd_node/configs/config.ini).\
+You can change or add any configuration to the file and then run them with the following command:
+
+```bash
+poetry run python -m sd_qkd_node --config configuration_name
+```
+
+Then for each pair of `sd_qkd_nodes` you have to start a `qcs` (important: **add and check the configurations
+for each `qcs` in the [config file](qcs/config.ini)**).\
+Start a `qcs` with the command:
+
+```bash
+poetry run python -m qcs
+```
+Also here use the `--config first_node-second_node` flag to select the desired configuration (default is *Alice-Bob*).
 
 ## Testing
 
@@ -65,7 +88,7 @@ poetry run pytest
 If you want to test with mypy:
 
 ```bash
-poetry run mypy kme qcs
+poetry run mypy sd_qkd_node qcs sdn_controller
 ```
 
 ### Automated testing
@@ -88,6 +111,8 @@ act
 ## People
 
 - [Nicolò Sala](mailto:nicolo4.sala@mail.polimi.it), graduate student
+- [Riccardo Bassi](mailto:riccardo4.bassi@mail.polimi.it), graduate student
 - [Paolo Martelli](mailto:paolo.martelli@polimi.it), supervisor
 - [Marco Brunero](mailto:marco.brunero@polimi.it), project contact person
 - [Alberto Gatto](mailto:alberto.gatto@polimi.it), project contact person
+- [Giacomo Verticale](mailto:giacomo.verticale@polimi.it), project contact person

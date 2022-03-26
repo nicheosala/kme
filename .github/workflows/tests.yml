@@ -27,8 +27,8 @@ jobs:
         shell: bash
       - name: "Test qcs using mypy"
         run: poetry run mypy qcs
-      - name: "Test kme using pytest"
-        run: poetry run pytest kme
-      - name: "Test kme using mypy"
-        run: poetry run mypy kme
+      - name: "Test sd_qkd_node using pytest"
+        run: poetry run pytest sd_qkd_node
+      - name: "Test sd_qkd_node using mypy"
+        run: poetry run mypy sd_qkd_node
 

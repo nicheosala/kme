@@ -9,6 +9,9 @@ and then type:
 python -m qcs
 ```
 
+Use the `--config first_node-second_node` (ex. *alice-bob*, that is the default configuration)
+flag to select the desired configuration in the [config file](config.ini).
+
 ## API
 
 The quantum channel simulator supports the following commands:

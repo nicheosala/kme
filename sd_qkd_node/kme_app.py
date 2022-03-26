@@ -5,13 +5,15 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, RedirectResponse
 
-from sdn_controller.database import local_models, shared_models, shared_db
-from sdn_controller.model.errors import BadRequest, Unauthorized, ServiceUnavailable
-from sdn_controller.routers import new_app, new_kme
+from sd_qkd_node.configs import Config
+from sd_qkd_node.database import local_models, shared_models, shared_db
+from sd_qkd_node.model.errors import BadRequest, ServiceUnavailable, Unauthorized
+from sd_qkd_node.routers.kme import dec_keys, kme_companion, enc_keys, status
+from sd_qkd_node.routers.sdn_agent import open_key_session, assign_ksid
 
 app: Final[FastAPI] = FastAPI(
-    debug=True,
-    title="SDN Controller",
+    debug=Config.DEBUG,
+    title=Config.KME_NAME,
     responses={
         400: {"model": BadRequest},
         401: {"model": Unauthorized},
@@ -19,8 +21,12 @@ app: Final[FastAPI] = FastAPI(
     },
 )
 
-app.include_router(new_app.router)
-app.include_router(new_kme.router)
+app.include_router(enc_keys.router, prefix=Config.BASE_URL)
+app.include_router(dec_keys.router, prefix=Config.BASE_URL)
+app.include_router(status.router, prefix=Config.BASE_URL)
+app.include_router(open_key_session.router)
+app.include_router(assign_ksid.router)
+app.include_router(kme_companion.router)
 
 
 @app.get("/", include_in_schema=False)

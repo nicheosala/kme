@@ -8,7 +8,7 @@ from sdn_controller.configs import Config
 
 def set_logging() -> None:
     """Initialize logging."""
-    logger = logging.getLogger("ctrl")
+    logger = logging.getLogger("sdn_controller")
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
 

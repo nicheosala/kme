@@ -53,7 +53,7 @@ def get_random_bits() -> tuple[int, ...]:
 
 
 async def send(block: Block, kme: KME) -> None:
-    """Send to the key manager a newly-generated block."""
+    """Send to the key kme a newly-generated block."""
     _, writer = await open_connection(kme.host, kme.port)
 
     message: Final[str] = dumps(block, indent=4) + "\n"
@@ -83,7 +83,7 @@ def read_args() -> Namespace:
         "-C",
         "--config",
         type=str,
-        help="The two kme ids to which the qcs is referred.",
+        help="The two sd_qkd_node ids to which the qcs is referred.",
         default="Alice-Bob",
     )
 
@@ -91,7 +91,7 @@ def read_args() -> Namespace:
 
 
 # Check Config file for info
-def set_params(served_nodes: str = "Alice-Bob"):
+def set_params(served_nodes: str = "Alice-Bob") -> None:
     config = configparser.ConfigParser()
     config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
     upper_nodes = served_nodes.upper()

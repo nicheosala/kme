@@ -5,9 +5,9 @@ import pytest
 
 from httpx import AsyncClient, Response
 
-from kme.model.new_kme import NewKmeRequest, NewKmeResponse
+from sd_qkd_node.model.new_kme import NewKmeRequest, NewKmeResponse
 from sdn_controller.encoder import dump
-from sdn_controller.model.new_app import NewAppRequest, NewAppResponse
+from sdn_controller.model.new_app import NewAppRequest, WaitingForApp
 from sdn_controller.tests.examples import qos
 
 pytestmark = pytest.mark.asyncio
@@ -26,6 +26,7 @@ async def test_new_app(client: AsyncClient) -> None:
     kme: Final[NewKmeResponse] = NewKmeResponse(**response1.json())
 
     app_registration: Final[NewAppRequest] = NewAppRequest(
+        src_flag=True,
         src=uuid.uuid4(),
         dst=uuid.uuid4(),
         kme=kme.kme_id,
@@ -37,10 +38,10 @@ async def test_new_app(client: AsyncClient) -> None:
         json=dump(app_registration)
     )
 
-    new_app_response: Final[NewAppResponse] = NewAppResponse(**response2.json())
+    new_app_response: Final[WaitingForApp] = WaitingForApp()
 
     assert response2.status_code == 200
-    assert new_app_response.key_stream_id == uuid.UUID('00000000-0000-0000-0000-000000000000')
+    assert new_app_response.wait is True
 
 
 async def test_new_kme(client: AsyncClient) -> None:

@@ -3,7 +3,7 @@ from typing import Final
 from fastapi import APIRouter
 
 from sdn_controller.database.dbms import add_new_kme
-from kme.model.new_kme import NewKmeRequest, NewKmeResponse
+from sd_qkd_node.model.new_kme import NewKmeRequest, NewKmeResponse
 
 router: Final[APIRouter] = APIRouter(tags=["new_kme"])
 
@@ -18,9 +18,8 @@ async def new_kme(
         request: NewKmeRequest
 ) -> NewKmeResponse:
     """
-    Adds a new KME in the network seen by the SDN Controller
+    Adds a new KME in the network seen by the SDN Controller.
     """
-
     kme: Final[NewKmeResponse] = await add_new_kme(request)
 
     return kme

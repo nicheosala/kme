@@ -3,29 +3,40 @@ from pydantic.dataclasses import dataclass
 from pydantic import Field
 
 
-@dataclass(frozen=False)
+@dataclass(frozen=True)
 class NewAppRequest:
     """New app registration request.
-
-    It is used for a request data model of API 'New app' method.
+    It is used for a request data model of API 'new_app' method.
     """
-
+    src_flag: bool
     src: UUID
     dst: UUID
     kme: UUID
     qos: dict[str, int | bool] = Field(
         default_factory=dict,
         description="""
-        The QoS requested by the sae.
+        The QoS requested by the SAEs.
         """
     )
 
 
 @dataclass(frozen=True)
-class NewAppResponse:
-    """Response to 'new_app'. If the other app is already registered, the Controller will return an assigned
-    'key_stream_id', otherwise it will be the Nil UUID.
-    """
-    sae1: UUID  # TODO useless for now
-    sae2: UUID  # TODO useless for now
-    key_stream_id: UUID = UUID('00000000-0000-0000-0000-000000000000')
+class WaitingForApp:
+    """Response to 'new_app' when the other SAE is not registered yet."""
+    wait: bool = True
+
+
+@dataclass(frozen=True)
+class RegisterApp:
+    """Response to 'new_app' when the two SAEs have been registered"""
+    ksid: UUID
+    src: UUID
+    dst: UUID
+    kme_src: UUID
+    kme_dst: UUID
+    qos: dict[str, int | bool] = Field(
+        default_factory=dict,
+        description="""
+            The QoS requested by the SAEs.
+            """
+    )

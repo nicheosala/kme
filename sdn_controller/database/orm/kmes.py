@@ -1,7 +1,9 @@
 """Representation of a Key inside the database."""
+import uuid
 
-from orm import Model, UUID, String, Integer, IPAddress
+from orm import Model, UUID, String, Integer
 
+from sdn_controller.configs import Config
 from sdn_controller.database.db import local_models
 
 
@@ -15,8 +17,8 @@ class Kme(Model):  # type: ignore
     tablename = "kmes"
     registry = local_models
     fields = {
-        "id": Integer(primary_key=True),
-        "kme_id": UUID(unique=True, allow_null=False),
-        "ip": String(allow_null=False, max_length=15),
+        "kme_id": UUID(primary_key=True, default=uuid.uuid4),
+        # if debugging or testing the IP will be 'localhost', then not unique
+        "ip": String(unique=not(Config.DEBUG or Config.TESTING), allow_null=False, max_length=15),
         "port": Integer(allow_null=False)
     }
