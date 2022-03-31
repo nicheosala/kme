@@ -8,24 +8,17 @@ from pydantic import PostgresDsn
 class Base(ABC):
     """Base Config class."""
 
-    KME_ID = "Alice"
+    KME_ID = "Bob B"
 
     HOST = "localhost"
-    PORT = 5000
+    PORT = 8000
 
     QC_HOST = "localhost"
-    QC_PORT = 9998
+    QC_PORT = 9997
 
-    COMPANION_URL = "http://localhost:3000"
+    COMPANION_URL = "http://localhost:5000"
 
     BASE_URL = "/api/v1/keys"
-
-    """
-    The Polimi's QCS has some unwanted behaviours. For example, it does not send 
-    blocks with a "link_id" field. Therefore, we set COMPATIBILITY_MODE to True when 
-    we are working with that quantum channel simulator.
-    """
-    COMPATIBILITY_MODE = True
 
     """
     A block inside the local database cannot be exploited to generate new keys
@@ -43,7 +36,7 @@ class Base(ABC):
     MAX_SAE_ID_COUNT = 10
 
     # Key request
-    SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset()
+    SUPPORTED_EXTENSION_PARAMS: frozenset[str] = frozenset(["link_id"])
 
     @property
     @abstractmethod
@@ -55,7 +48,7 @@ class Base(ABC):
     def TESTING(self) -> bool:
         """Test flag."""
 
-    LOCAL_DB_URL = f"sqlite:///{KME_ID}_local_db"
+    LOCAL_DB_URL = f"sqlite:///{KME_ID}_local.db"
 
     @property
     @abstractmethod
@@ -83,7 +76,7 @@ class Prod(Base):
         1. Install PostgreSQL
         2. `sudo -i -u postgres psql`
         3. `ALTER ROLE postgres WITH PASSWORD 'very_strong_password';`
-        4. `CREATE DATABASE prod_db;`
+        4. `CREATE DATABASE prod.db;`
         """
         url: str = PostgresDsn.build(
             scheme="postgresql",
@@ -91,7 +84,7 @@ class Prod(Base):
             password="secret",
             host="localhost",
             port="5432",
-            path="/prod_db",
+            path="/prod.db",
         )
         return url
 
@@ -102,7 +95,7 @@ class Dev(Base):
 
     DEBUG = True
     TESTING = False
-    SHARED_DB_URL = "sqlite:///devdb"
+    SHARED_DB_URL = "sqlite:///dev.db"
     POLL_INTERVAL = 0.001
 
 
@@ -112,5 +105,5 @@ class Test(Base):
 
     DEBUG = False
     TESTING = True
-    SHARED_DB_URL = "sqlite:///testdb"
+    SHARED_DB_URL = "sqlite:///test.db"
     POLL_INTERVAL = 0.001

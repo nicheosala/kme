@@ -62,8 +62,9 @@ class KeyRequest:
     )
 
     @validator("extension_mandatory", each_item=True)
-    def check_supported_extension_mandatory(cls: Any, ext: dict[str, Any]) -> None:
+    def check_supported_extension_mandatory(cls: Any, ext: dict[str, Any]) -> dict[str, Any]:
         """Ensure all mendatory extensions provided are supported."""
         for ext_name in ext.keys():
             if ext_name not in Config.SUPPORTED_EXTENSION_PARAMS:
                 raise ValueError("Unsupported mandatory exception")
+        return ext

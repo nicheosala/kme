@@ -85,13 +85,6 @@ class ThreadedTCPRequestHandler(StreamRequestHandler):
 
         new_block: Block = loads(data, Block, strict=True)
 
-        if Config.COMPATIBILITY_MODE and new_block.link_id is None:
-            from uuid import uuid4
-
-            new_block = Block(
-                time=new_block.time, id=new_block.id, key=new_block.key, link_id=uuid4()
-            )
-
         asyncio.run(add_block(new_block))
 
         logging.getLogger("kme").debug(f"Received new block with id {new_block.id}")

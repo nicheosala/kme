@@ -57,7 +57,13 @@ async def generate(
 ) -> ModelKey:
     """Generate one new random key."""
     key_id: Final[UUID] = uuid4()
-    key_material, json_instructions = await generate_key_material(size)
+
+    if extensions and (link_id := extensions[0].get("link_id")):
+        logging.getLogger("kme").debug(f"Generating key with blocks from link_id {link_id}")
+        key_material, json_instructions = await generate_key_material(size, UUID(link_id))
+    else:
+        logging.getLogger("kme").warning(f"Deprecated: generating key with no link_id specified.")
+        key_material, json_instructions = await generate_key_material(size)
 
     logging.getLogger("kme").debug(
         f"Key {key_id} generated with instructions {json_instructions}"
@@ -74,6 +80,7 @@ async def get_block_by_id(block_id: UUID) -> orm.Block:
         b: orm.Block = await orm.Block.objects.get(block_id=block_id)
         return b
     except NoMatch:
+        logging.getLogger("kme").error(f"Block with UUID {block_id} not found.")
         raise KeyNotFound()
 
 
@@ -97,7 +104,7 @@ class Instruction:
             )
 
 
-async def pop_block() -> orm.Block | None:
+async def pop_block(link_id: UUID | None) -> orm.Block | None:
     """Retrieve a block from the database, removing it from there.
 
     This function exploits an async lock, because it has to ensure that the database
@@ -105,11 +112,20 @@ async def pop_block() -> orm.Block | None:
     block from the database. The behaviour of pick_block() has to be rimilar to the
     one of list.pop() or Queue.get_nowait()."""
     async with lock:
-        b: orm.Block = (
-            await orm.Block.objects.filter(available_bits__gt=0)
-            .filter(timestamp__gt=now() - Config.TTL)
-            .first()
-        )
+        b: orm.Block
+        if link_id is not None:
+            b = (
+                await orm.Block.objects.filter(link_id=link_id)
+                .filter(available_bits__gt=0)
+                .filter(timestamp__gt=now() - Config.TTL)
+                .first()
+            )
+        else:
+            b = (
+                await orm.Block.objects.filter(available_bits__gt=0)
+                .filter(timestamp__gt=now() - Config.TTL)
+                .first()
+            )
 
         if b is not None:
             await b.delete()
@@ -117,7 +133,7 @@ async def pop_block() -> orm.Block | None:
     return b
 
 
-async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]]:
+async def get_randbits(req_bitlength: int, link_id: UUID | None) -> tuple[list[int], list[Instruction]]:
     """Ask the quantum channel for new blocks.
 
     If kme does not have a sufficient number of random bits locally, it is forced to
@@ -127,7 +143,7 @@ async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]
     instructions: list[Instruction] = []
 
     while (diff := req_bitlength - bit_length(key_material)) > 0:
-        b = await pop_block()
+        b = await pop_block(link_id)
 
         if b is None:
             raise KeyNotFound()
@@ -153,7 +169,7 @@ async def get_randbits(req_bitlength: int) -> tuple[list[int], list[Instruction]
     return key_material, instructions
 
 
-async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
+async def generate_key_material(req_bitlength: int, link_id: UUID | None = None) -> tuple[str, object]:
     """
     Return key_material encoded as a base64 string, with the 'req_bitlength'
     requested. Alongside the key material, the instructions to re-build it,
@@ -162,7 +178,7 @@ async def generate_key_material(req_bitlength: int) -> tuple[str, object]:
     """
     assert req_bitlength % 8 == 0
 
-    key_material, instructions = await get_randbits(req_bitlength)
+    key_material, instructions = await get_randbits(req_bitlength, link_id)
 
     return collecitonint_to_b64(key_material), dump(instructions)
 
