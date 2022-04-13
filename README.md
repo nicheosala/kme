@@ -6,15 +6,12 @@ It is divided into the following packages:
 - a [Key Management Entity (KME)](kme/README.md)
 - a [Quantum Channel Simulator (QCS)](qcs/README.md)
 
-In summary, KME receives requests from applications that want to use
-quantum-generated secret keys. QCS is a simulator of a quantum channel that
-produces quantum secret keys.
-
 ## Installation
+This project **requires Python 3.10 or higher.**
 
-1. (Optional) This project **requires Python 3.10 or higher.** If you don't
+1. (Optional) If you don't
    have Python 3.10 installed system-wide, you may want to install it
-   through [pyenv](https://realpython.com/intro-to-pyenv/).
+   through [pyenv](https://realpython.com/intro-to-pyenv/)
 2. [Install Poetry](https://python-poetry.org/docs/master/#installation)
 3. In a terminal inside folder 'qkd', install project dependencies:
 
@@ -32,6 +29,13 @@ If you want to start a key management entity:
 ```bash
 poetry run python -m kme
 ```
+
+If you want to start the Quantum Channel Simulator:
+
+```bash
+poetry run python -m qcs
+```
+
 
 ## Testing
 
@@ -65,7 +69,7 @@ poetry run pytest
 If you want to test with mypy:
 
 ```bash
-poetry run mypy kme qcs
+poetry run mypy kme
 ```
 
 ### Automated testing
@@ -88,6 +92,6 @@ act
 ## People
 
 - [Nicolò Sala](mailto:nicolo4.sala@mail.polimi.it), graduate student
-- [Paolo Martelli](mailto:paolo.martelli@polimi.it), supervisor
-- [Marco Brunero](mailto:marco.brunero@polimi.it), project contact person
-- [Alberto Gatto](mailto:alberto.gatto@polimi.it), project contact person
+- [Paolo Martelli](mailto:paolo.martelli@polimi.it), advisor
+- [Marco Brunero](mailto:marco.brunero@polimi.it), co-advisor
+- [Alberto Gatto](mailto:alberto.gatto@polimi.it), co-advisor

@@ -1,0 +1,14 @@
+\chapter{Conclusions and future developments}
+\label{ch:conclusions}%
+
+Quantum Key Distribution (QKD) is an information-theoretic secure protocol that solves the computational problems of classical key-exchange algorithms. However, exploiting QKD, the secret sequences of bits produced by a Quantum Channel, which we call blocks, have non-deterministic lengths. So, they cannot be delivered directly to Secure Application Entities (SAEs), requiring fixed-sized keys to encrypt messages.
+
+The Key Management Entity (KME) is the middleware that builds fixed-sized keys, starting from the blocks produced by a Quantum Channel. Moreover, cooperating KMEs supervise the distribution of generated keys to one or multiple Secure Application Entities.
+
+This thesis work focused on implementing a Key Management Entity and exploring its relationship with Quantum Channels, SAEs, and other KMEs. First, we made the KME communicate with the Quantum Channel realized in Politecnico di Milano. Then, we implemented the KME and SAEs interface following the standard ETSI GS QKD 014. Finally, we showed some actual use case scenarios of the Key Management Entity cooperating with other KMEs.
+
+Our implementation of the KME can handle multiple requests from SAEs asynchronously. Moreover, it manages the blocks produced by the Quantum Channel so that its quantum devices do not have to devote resources to address these blocks. Finally, the KME can communicate with multiple Quantum Channels, receiving their blocks and handling SAE's requests for keys produced by exploiting blocks of a specific QC.
+
+However, the development process of the KME is not done. First, the KME should define an authentication mechanism for SAEs connecting to it. Then, it should improve its capabilities of managing changes in the topology of the underlying network of Quantum Channels. Chapter 4 showed an example where one KME handles blocks from two different Quantum Channels. However, we had to manually communicate the UUID of the Quantum Channel for each request to the KME.
+
+The solution to these problems may be a centralized entity called an SDN controller, whose implementation is described in standard ETSI GS QKD 015 \cite{etsi015}. The SDN controller would communicate with all the entities of a QKD network - i.e., the Quantum Channels, the KMEs, the SAEs - ensuring coherent and automatic management of the key delivery process. Therefore, a notable improvement for the KME would be implementing a communication interface with the SDN controller. Thanks to this feature, the SAEs' authentication and the configuration parameters' definition would be managed automatically inside the Quantum Key Network.
